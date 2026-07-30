@@ -1,0 +1,5267 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel Maikon Caldeira — Advocacia Digital</title>
+<style>
+* { box-sizing:border-box; margin:0; padding:0; }
+body { background:#0a0a0f; font-family:system-ui,sans-serif; }
+
+.nav {
+  position:fixed;
+  top:0; left:0; right:0;
+  background:#12121a;
+  border-bottom:2px solid #a3a082;
+  padding:10px 16px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  align-items:center;
+  z-index:9999;
+  box-shadow:0 3px 15px rgba(0,0,0,0.6);
+}
+
+.nav-titulo {
+  font-size:12px;
+  font-weight:700;
+  color:#a3a082;
+  letter-spacing:2px;
+  margin-right:8px;
+  white-space:nowrap;
+}
+
+.nav-btn {
+  padding:8px 16px;
+  background:#1a1a2e;
+  border:1px solid #2d2d3a;
+  border-radius:8px;
+  color:#94a3b8;
+  font-size:12px;
+  font-weight:600;
+  cursor:pointer;
+  transition:all 0.2s;
+  white-space:nowrap;
+}
+
+.nav-btn:hover { background:#a3a082; color:#000; border-color:#a3a082; }
+.nav-btn.active { background:#a3a082; color:#000; border-color:#d4d0a8; }
+
+.projeto { display:none; padding-top:110px; min-height:100vh; }
+.projeto.ativo { display:block; }
+
+.projeto iframe {
+  width:100%;
+  min-height:calc(100vh - 110px);
+  border:none;
+  display:block;
+}
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <span class="nav-titulo">⚖️ MC</span>
+  <button class="nav-btn active" onclick="trocar(0)">🔷 1.Gerador </button>
+  <button class="nav-btn " onclick="trocar(1)">🔶 2. Corretor Automático </button>
+  <button class="nav-btn " onclick="trocar(2)">🔸 3. Debug Visual</button>
+  <button class="nav-btn " onclick="trocar(3)">🟢 4. Validador </button>
+  <button class="nav-btn " onclick="trocar(4)">🟣 5. Gerador Relatorio</button>
+</div>
+
+<div class="projeto ativo" id="p0"><iframe srcdoc="<!DOCTYPE html>
+<html lang=&quot;pt-BR&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;>
+<title>Gerador de Documentação Automática</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', monospace;
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 20px;
+  min-height: 100vh;
+}
+.container { max-width: 1800px; margin: 0 auto; }
+h1 { color: #a3a082; margin-bottom: 10px; text-align: center; font-size: 24px; }
+.subtitle { text-align: center; color: #94a3b8; margin-bottom: 20px; font-size: 13px; }
+h2 { color: #4ade80; margin: 25px 0 15px 0; font-size: 16px; border-bottom: 2px solid #334155; padding-bottom: 8px; }
+h3 { color: #60a5fa; margin: 12px 0 8px 0; font-size: 13px; }
+
+.upload-area {
+  background: #1e293b;
+  border: 2px dashed #334155;
+  border-radius: 10px;
+  padding: 40px;
+  text-align: center;
+  margin-bottom: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.upload-area:hover { border-color: #a3a082; background: #334155; }
+.upload-area.dragover { border-color: #4ade80; background: rgba(74, 222, 128, 0.1); }
+
+input[type=&quot;file&quot;] { display: none; }
+
+.btn {
+  background: #a3a082;
+  color: #000;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  margin: 5px;
+  transition: all 0.2s;
+  font-size: 12px;
+}
+.btn:hover { background: #d4d0a8; transform: translateY(-2px); }
+.btn-secondary { background: #3b82f6; color: #fff; }
+.btn-secondary:hover { background: #2563eb; }
+.btn-danger { background: #f87171; color: #fff; }
+.btn-danger:hover { background: #dc2626; }
+.btn-success { background: #4ade80; color: #000; }
+.btn-success:hover { background: #22c55e; }
+.btn-small { padding: 6px 12px; font-size: 11px; }
+
+.loading {
+  text-align: center;
+  color: #94a3b8;
+  padding: 30px;
+  font-size: 14px;
+}
+.spinner {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border: 4px solid #334155;
+  border-top-color: #a3a082;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.tabs {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #334155;
+  flex-wrap: wrap;
+}
+
+.tab {
+  padding: 10px 15px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  font-size: 12px;
+}
+
+.tab:hover { color: #e2e8f0; }
+.tab.active { color: #a3a082; border-bottom-color: #a3a082; }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+.results {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: #0f172a;
+  border-left: 4px solid #a3a082;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+}
+
+.card-title {
+  color: #e2e8f0;
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.card-content {
+  font-size: 12px;
+  color: #94a3b8;
+  line-height: 1.6;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.stat-box {
+  background: #334155;
+  padding: 12px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.stat-box strong {
+  display: block;
+  color: #a3a082;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.stat-box span {
+  font-size: 10px;
+  color: #94a3b8;
+}
+
+.doc-section {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.doc-title {
+  color: #e2e8f0;
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 10px;
+}
+
+.doc-content {
+  font-size: 12px;
+  color: #94a3b8;
+  line-height: 1.8;
+}
+
+.code-block {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 12px;
+  margin: 10px 0;
+  overflow-x: auto;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  line-height: 1.4;
+  max-height: 250px;
+  overflow-y: auto;
+  color: #60a5fa;
+}
+
+.api-doc {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.api-method {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.api-method.get { background: #60a5fa; color: #fff; }
+.api-method.post { background: #4ade80; color: #000; }
+.api-method.put { background: #fbbf24; color: #000; }
+.api-method.delete { background: #f87171; color: #fff; }
+.api-method.patch { background: #a78bfa; color: #fff; }
+
+.api-path {
+  color: #e2e8f0;
+  font-weight: 600;
+  font-size: 12px;
+  margin: 8px 0;
+  font-family: 'Courier New', monospace;
+}
+
+.api-description {
+  font-size: 12px;
+  color: #94a3b8;
+  margin: 8px 0;
+}
+
+.param-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 10px 0;
+  font-size: 11px;
+}
+
+.param-table th,
+.param-table td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #334155;
+}
+
+.param-table th {
+  background: #334155;
+  color: #a3a082;
+  font-weight: 600;
+}
+
+.param-table td {
+  color: #94a3b8;
+}
+
+.function-doc {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.function-name {
+  color: #60a5fa;
+  font-weight: 600;
+  font-family: 'Courier New', monospace;
+  margin-bottom: 8px;
+}
+
+.function-desc {
+  font-size: 12px;
+  color: #94a3b8;
+  margin-bottom: 10px;
+}
+
+.function-params {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 4px;
+  padding: 10px;
+  margin: 8px 0;
+  font-size: 11px;
+}
+
+.function-params strong {
+  color: #a3a082;
+}
+
+.function-return {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 4px;
+  padding: 10px;
+  margin: 8px 0;
+  font-size: 11px;
+}
+
+.function-return strong {
+  color: #4ade80;
+}
+
+.example-code {
+  background: #0f172a;
+  border-left: 4px solid #60a5fa;
+  border-radius: 4px;
+  padding: 10px;
+  margin: 10px 0;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  color: #60a5fa;
+  overflow-x: auto;
+}
+
+.toc {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+
+.toc-item {
+  padding: 5px 0;
+  margin-left: 15px;
+  font-size: 12px;
+  color: #60a5fa;
+  cursor: pointer;
+}
+
+.toc-item:hover {
+  color: #a3a082;
+}
+
+.export-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.dependency-tree {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 15px;
+  margin: 10px 0;
+  font-size: 11px;
+  font-family: 'Courier New', monospace;
+}
+
+.tree-item {
+  padding: 5px 0;
+  margin-left: 20px;
+}
+
+.tree-item.root {
+  margin-left: 0;
+  color: #a3a082;
+  font-weight: 600;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #0f172a; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+
+@media (max-width: 1200px) {
+  .stats-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class=&quot;container&quot;>
+  <h1>📚 Gerador de Documentação Automática</h1>
+  <p class=&quot;subtitle&quot;>Gera documentação completa do projeto em múltiplos formatos</p>
+
+  <div class=&quot;upload-area&quot; id=&quot;dropZone&quot;>
+    <p style=&quot;font-size: 18px; margin-bottom: 10px;&quot;>📦 Arraste seu ZIP da Replit aqui</p>
+    <p style=&quot;color: #94a3b8; font-size: 13px; margin-bottom: 15px;&quot;>Será analisado e gerará documentação automática</p>
+    <button class=&quot;btn&quot; onclick=&quot;document.getElementById('fileInput').click()&quot;>Selecionar ZIP</button>
+    <input type=&quot;file&quot; id=&quot;fileInput&quot; accept=&quot;.zip&quot; />
+  </div>
+
+  <div id=&quot;loading&quot; class=&quot;loading&quot; style=&quot;display:none;&quot;>
+    <div class=&quot;spinner&quot;></div>
+    <p>Analisando projeto e gerando documentação...</p>
+  </div>
+
+  <div id=&quot;results&quot;></div>
+</div>
+
+<script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js&quot;></script>
+
+<script>
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const resultsDiv = document.getElementById('results');
+const loadingDiv = document.getElementById('loading');
+
+let projectDocs = {
+  projectInfo: {},
+  apis: [],
+  functions: [],
+  components: [],
+  modules: [],
+  dependencies: [],
+  fileStructure: {},
+  examples: [],
+  gettingStarted: '',
+  architecture: ''
+};
+
+dropZone.addEventListener('dragover', e => {
+  e.preventDefault();
+  dropZone.classList.add('dragover');
+});
+dropZone.addEventListener('dragleave', () => {
+  dropZone.classList.remove('dragover');
+});
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('dragover');
+  handleFile(e.dataTransfer.files[0]);
+});
+
+fileInput.addEventListener('change', e => {
+  handleFile(e.target.files[0]);
+});
+
+async function handleFile(file) {
+  if (!file) return;
+  
+  loadingDiv.style.display = 'block';
+  resultsDiv.innerHTML = '';
+  projectDocs = {
+    projectInfo: {},
+    apis: [],
+    functions: [],
+    components: [],
+    modules: [],
+    dependencies: [],
+    fileStructure: {},
+    examples: [],
+    gettingStarted: '',
+    architecture: ''
+  };
+  
+  try {
+    const zip = new JSZip();
+    const content = await zip.loadAsync(file);
+    
+    const files = {};
+    
+    // Extrai arquivos
+    for (let [path, zipEntry] of Object.entries(content.files)) {
+      if (!zipEntry.dir) {
+        try {
+          const fileContent = await zipEntry.async('text');
+          files[path] = fileContent;
+        } catch (e) {}
+      }
+    }
+    
+    // Gera documentação
+    generateDocumentation(files);
+    
+    loadingDiv.style.display = 'none';
+    displayDocumentation();
+    
+  } catch (err) {
+    loadingDiv.style.display = 'none';
+    resultsDiv.innerHTML = `<div class=&quot;card&quot;>
+      <div class=&quot;card-title&quot;>❌ Erro ao processar</div>
+      <div class=&quot;card-content&quot;>${err.message}</div>
+    </div>`;
+  }
+}
+
+function generateDocumentation(files) {
+  // Análise de package.json
+  for (let [path, content] of Object.entries(files)) {
+    if (path.includes('package.json')) {
+      try {
+        const pkg = JSON.parse(content);
+        projectDocs.projectInfo = {
+          name: pkg.name || 'Projeto sem nome',
+          version: pkg.version || '1.0.0',
+          description: pkg.description || 'Sem descrição',
+          author: pkg.author || 'Desconhecido',
+          license: pkg.license || 'MIT',
+          homepage: pkg.homepage || '',
+          repository: pkg.repository || ''
+        };
+        
+        projectDocs.dependencies = Object.entries(pkg.dependencies || {}).map(([name, version]) => ({
+          name,
+          version,
+          type: 'production'
+        })).concat(
+          Object.entries(pkg.devDependencies || {}).map(([name, version]) => ({
+            name,
+            version,
+            type: 'development'
+          }))
+        );
+      } catch (e) {}
+    }
+  }
+  
+  // Análise de arquivos JS/TS
+  for (let [path, content] of Object.entries(files)) {
+    if (/\.(js|ts|jsx|tsx)$/.test(path)) {
+      analyzeJSFile(path, content);
+    }
+  }
+  
+  // Análise de estrutura de arquivos
+  analyzeFileStructure(files);
+  
+  // Gera guia de início
+  generateGettingStarted();
+  
+  // Gera arquitetura
+  generateArchitecture();
+}
+
+function analyzeJSFile(filePath, content) {
+  // Detecta funções
+  const functionPattern = /(?:export\s+)?(?:async\s+)?function\s+(\w+)\s*\(([^)]*)\)\s*(?::\s*(\w+))?\s*\{/g;
+  let match;
+  
+  while ((match = functionPattern.exec(content)) !== null) {
+    const name = match[1];
+    const params = match[2].split(',').map(p => p.trim()).filter(p => p);
+    const returnType = match[3] || 'void';
+    
+    // Tenta encontrar comentário JSDoc
+    const docPattern = new RegExp(`/\\*\\*[\\s\\S]*?\\*\\/\\s*(?:export\\s+)?(?:async\\s+)?function\\s+${name}`, 'g');
+    const docMatch = docPattern.exec(content);
+    
+    projectDocs.functions.push({
+      name,
+      file: filePath,
+      params,
+      returnType,
+      description: 'Função do projeto',
+      example: `${name}(${params.join(', ')})`
+    });
+  }
+  
+  // Detecta APIs (endpoints)
+  const apiPatterns = [
+    { regex: /app\.(get|post|put|delete|patch)\s*\(\s*['&quot;`]([^'&quot;`]+)['&quot;`]/g, type: 'express' },
+    { regex: /router\.(get|post|put|delete|patch)\s*\(\s*['&quot;`]([^'&quot;`]+)['&quot;`]/g, type: 'express' }
+  ];
+  
+  apiPatterns.forEach(pattern => {
+    let apiMatch;
+    const regex = new RegExp(pattern.regex.source, 'g');
+    
+    while ((apiMatch = regex.exec(content)) !== null) {
+      const method = apiMatch[1].toUpperCase();
+      const path = apiMatch[2];
+      
+      projectDocs.apis.push({
+        method,
+        path,
+        file: filePath,
+        description: `${method} ${path}`,
+        params: [],
+        response: 'JSON'
+      });
+    }
+  });
+  
+  // Detecta componentes React/Vue
+  if (content.includes('export default') || content.includes('export const')) {
+    const componentPattern = /(?:export\s+(?:default\s+)?)?(?:const|function)\s+(\w+)\s*(?:=|:)/g;
+    let compMatch;
+    
+    while ((compMatch = componentPattern.exec(content)) !== null) {
+      const componentName = compMatch[1];
+      if (componentName.charAt(0) === componentName.charAt(0).toUpperCase()) {
+        projectDocs.components.push({
+          name: componentName,
+          file: filePath,
+          description: `Componente ${componentName}`,
+          props: [],
+          usage: `<${componentName} />`
+        });
+      }
+    }
+  }
+}
+
+function analyzeFileStructure(files) {
+  const structure = {};
+  
+  Object.keys(files).forEach(path => {
+    const parts = path.split('/');
+    let current = structure;
+    
+    parts.forEach((part, idx) => {
+      if (!current[part]) {
+        current[part] = {};
+      }
+      if (idx === parts.length - 1) {
+        current[part]._file = true;
+      }
+      current = current[part];
+    });
+  });
+  
+  projectDocs.fileStructure = structure;
+}
+
+function generateGettingStarted() {
+  projectDocs.gettingStarted = `
+# 🚀 Guia de Início Rápido
+
+## Instalação
+
+\`\`\`bash
+npm install
+\`\`\`
+
+## Desenvolvimento
+
+\`\`\`bash
+npm run dev
+\`\`\`
+
+## Build
+
+\`\`\`bash
+npm run build
+\`\`\`
+
+## Testes
+
+\`\`\`bash
+npm test
+\`\`\`
+
+## Estrutura do Projeto
+
+\`\`\`
+${generateFileTree()}
+\`\`\`
+  `;
+}
+
+function generateFileTree() {
+  let tree = '';
+  
+  function buildTree(obj, prefix = '') {
+    Object.entries(obj).forEach(([key, value], idx, arr) => {
+      const isLast = idx === arr.length - 1;
+      const connector = isLast ? '└── ' : '├── ';
+      tree += prefix + connector + key + '\n';
+      
+      if (value._file !== true &amp;&amp; Object.keys(value).length > 0) {
+        const nextPrefix = prefix + (isLast ? '    ' : '│   ');
+        buildTree(value, nextPrefix);
+      }
+    });
+  }
+  
+  buildTree(projectDocs.fileStructure);
+  return tree;
+}
+
+function generateArchitecture() {
+  projectDocs.architecture = `
+# 🏗️ Arquitetura do Projeto
+
+## Componentes Principais
+
+${projectDocs.components.map(comp => `- **${comp.name}** - ${comp.description}`).join('\n')}
+
+## APIs/Endpoints
+
+${projectDocs.apis.map(api => `- **${api.method}** \`${api.path}\` - ${api.description}`).join('\n')}
+
+## Dependências Principais
+
+${projectDocs.dependencies.filter(d => d.type === 'production').slice(0, 10).map(dep => `- **${dep.name}** (${dep.version})`).join('\n')}
+
+## Fluxo de Dados
+
+1. Cliente faz requisição
+2. API processa dados
+3. Banco de dados é consultado
+4. Resposta é retornada
+5. Frontend renderiza resultado
+  `;
+}
+
+function displayDocumentation() {
+  const apiCount = projectDocs.apis.length;
+  const funcCount = projectDocs.functions.length;
+  const compCount = projectDocs.components.length;
+  const depCount = projectDocs.dependencies.length;
+  
+  let html = `
+    <div class=&quot;tabs&quot;>
+      <button class=&quot;tab active&quot; onclick=&quot;switchTab('overview')&quot;>📊 Visão Geral</button>
+      <button class=&quot;tab&quot; onclick=&quot;switchTab('apis')&quot;>🔌 APIs</button>
+      <button class=&quot;tab&quot; onclick=&quot;switchTab('functions')&quot;>⚙️ Funções</button>
+      <button class=&quot;tab&quot; onclick=&quot;switchTab('components')&quot;>🧩 Componentes</button>
+      <button class=&quot;tab&quot; onclick=&quot;switchTab('guide')&quot;>📖 Guia</button>
+      <button class=&quot;tab&quot; onclick=&quot;switchTab('export')&quot;>📥 Exportar</button>
+    </div>
+    
+    <!-- TAB: VISÃO GERAL -->
+    <div id=&quot;tab-overview&quot; class=&quot;tab-content active&quot;>
+      <div class=&quot;results&quot;>
+        <h2>📊 Informações do Projeto</h2>
+        <div class=&quot;stats-grid&quot;>
+          <div class=&quot;stat-box&quot;>
+            <strong>${projectDocs.projectInfo.name || 'N/A'}</strong>
+            <span>Nome</span>
+          </div>
+          <div class=&quot;stat-box&quot;>
+            <strong>${projectDocs.projectInfo.version || 'N/A'}</strong>
+            <span>Versão</span>
+          </div>
+          <div class=&quot;stat-box&quot;>
+            <strong>${apiCount}</strong>
+            <span>Endpoints</span>
+          </div>
+          <div class=&quot;stat-box&quot;>
+            <strong>${funcCount}</strong>
+            <span>Funções</span>
+          </div>
+          <div class=&quot;stat-box&quot;>
+            <strong>${compCount}</strong>
+            <span>Componentes</span>
+          </div>
+          <div class=&quot;stat-box&quot;>
+            <strong>${depCount}</strong>
+            <span>Dependências</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class=&quot;results&quot;>
+        <h2>📝 Descrição</h2>
+        <div class=&quot;doc-section&quot;>
+          <div class=&quot;doc-content&quot;>
+            <strong>Nome:</strong> ${projectDocs.projectInfo.name || 'Sem nome'}<br>
+            <strong>Versão:</strong> ${projectDocs.projectInfo.version || '1.0.0'}<br>
+            <strong>Descrição:</strong> ${projectDocs.projectInfo.description || 'Sem descrição'}<br>
+            <strong>Autor:</strong> ${projectDocs.projectInfo.author || 'Desconhecido'}<br>
+            <strong>Licença:</strong> ${projectDocs.projectInfo.license || 'MIT'}<br>
+          </div>
+        </div>
+      </div>
+      
+      <div class=&quot;results&quot;>
+        <h2>📦 Dependências Principais</h2>
+        <div class=&quot;doc-section&quot;>
+          <table class=&quot;param-table&quot;>
+            <thead>
+              <tr>
+                <th>Pacote</th>
+                <th>Versão</th>
+                <th>Tipo</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${projectDocs.dependencies.slice(0, 15).map(dep => `
+                <tr>
+                  <td>${dep.name}</td>
+                  <td>${dep.version}</td>
+                  <td>${dep.type}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    
+    <!-- TAB: APIs -->
+    <div id=&quot;tab-apis&quot; class=&quot;tab-content&quot;>
+      <div class=&quot;results&quot;>
+        <h2>🔌 Endpoints da API</h2>
+        ${apiCount > 0 ? projectDocs.apis.map(api => `
+          <div class=&quot;api-doc&quot;>
+            <div>
+              <span class=&quot;api-method ${api.method.toLowerCase()}&quot;>${api.method}</span>
+              <span class=&quot;api-path&quot;>${api.path}</span>
+            </div>
+            <div class=&quot;api-description&quot;>
+              <strong>Descrição:</strong> ${api.description}<br>
+              <strong>Arquivo:</strong> ${api.file}
+            </div>
+            ${api.params.length > 0 ? `
+              <div style=&quot;margin-top: 10px;&quot;>
+                <strong>Parâmetros:</strong>
+                <table class=&quot;param-table&quot;>
+                  <thead>
+                    <tr>
+                      <th>Nome</th>
+                      <th>Tipo</th>
+                      <th>Descrição</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${api.params.map(p => `
+                      <tr>
+                        <td>${p.name || 'N/A'}</td>
+                        <td>${p.type || 'string'}</td>
+                        <td>${p.description || 'N/A'}</td>
+                      </tr>
+                    `).join('')}
+                  </tbody>
+                </table>
+              </div>
+            ` : ''}
+            <div style=&quot;margin-top: 10px;&quot;>
+              <strong>Response:</strong>
+              <div class=&quot;code-block&quot;>
+{
+  &quot;status&quot;: &quot;success&quot;,
+  &quot;data&quot;: {}
+}
+              </div>
+            </div>
+          </div>
+        `).join('') : '<p style=&quot;color: #94a3b8;&quot;>Nenhuma API detectada</p>'}
+      </div>
+    </div>
+    
+    <!-- TAB: FUNÇÕES -->
+    <div id=&quot;tab-functions&quot; class=&quot;tab-content&quot;>
+      <div class=&quot;results&quot;>
+        <h2>⚙️ Funções Documentadas</h2>
+        ${funcCount > 0 ? projectDocs.functions.map(func => `
+          <div class=&quot;function-doc&quot;>
+            <div class=&quot;function-name&quot;>
+              ${func.name}(${func.params.join(', ')})
+            </div>
+            <div class=&quot;function-desc&quot;>
+              ${func.description}
+            </div>
+            ${func.params.length > 0 ? `
+              <div class=&quot;function-params&quot;>
+                <strong>Parâmetros:</strong><br>
+                ${func.params.map(p => `- <strong>${p}</strong>: tipo desconhecido`).join('<br>')}
+              </div>
+            ` : ''}
+            <div class=&quot;function-return&quot;>
+              <strong>Retorna:</strong> ${func.returnType}
+            </div>
+            <div class=&quot;example-code&quot;>
+// Exemplo de uso:
+${func.example}
+            </div>
+            <div style=&quot;font-size: 11px; color: #94a3b8; margin-top: 8px;&quot;>
+              📄 ${func.file}
+            </div>
+          </div>
+        `).join('') : '<p style=&quot;color: #94a3b8;&quot;>Nenhuma função detectada</p>'}
+      </div>
+    </div>
+    
+    <!-- TAB: COMPONENTES -->
+    <div id=&quot;tab-components&quot; class=&quot;tab-content&quot;>
+      <div class=&quot;results&quot;>
+        <h2>🧩 Componentes</h2>
+        ${compCount > 0 ? projectDocs.components.map(comp => `
+          <div class=&quot;function-doc&quot;>
+            <div class=&quot;function-name&quot;>
+              &amp;lt;${comp.name} /&amp;gt;
+            </div>
+            <div class=&quot;function-desc&quot;>
+              ${comp.description}
+            </div>
+            ${comp.props.length > 0 ? `
+              <div class=&quot;function-params&quot;>
+                <strong>Props:</strong><br>
+                ${comp.props.map(p => `- <strong>${p.name}</strong>: ${p.type}`).join('<br>')}
+              </div>
+            ` : '<div class=&quot;function-params&quot;><strong>Props:</strong> Nenhuma</div>'}
+            <div class=&quot;example-code&quot;>
+// Exemplo de uso:
+import ${comp.name} from '${comp.file}';
+
+export default function App() {
+  return &amp;lt;${comp.name} /&amp;gt;;
+}
+            </div>
+            <div style=&quot;font-size: 11px; color: #94a3b8; margin-top: 8px;&quot;>
+              📄 ${comp.file}
+            </div>
+          </div>
+        `).join('') : '<p style=&quot;color: #94a3b8;&quot;>Nenhum componente detectado</p>'}
+      </div>
+    </div>
+    
+    <!-- TAB: GUIA -->
+    <div id=&quot;tab-guide&quot; class=&quot;tab-content&quot;>
+      <div class=&quot;results&quot;>
+        <h2>📖 Guia de Início Rápido</h2>
+        <div class=&quot;doc-section&quot;>
+          <div class=&quot;doc-content&quot;>
+            ${projectDocs.gettingStarted.replace(/\n/g, '<br>').replace(/\`\`\`bash([\s\S]*?)\`\`\`/g, '<div class=&quot;code-block&quot;>$1</div>')}
+          </div>
+        </div>
+      </div>
+      
+      <div class=&quot;results&quot;>
+        <h2>🏗️ Arquitetura</h2>
+        <div class=&quot;doc-section&quot;>
+          <div class=&quot;doc-content&quot;>
+            ${projectDocs.architecture.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\`(.*?)\`/g, '<code style=&quot;background: #0f172a; padding: 2px 4px; border-radius: 2px;&quot;>$1</code>')}
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- TAB: EXPORTAR -->
+    <div id=&quot;tab-export&quot; class=&quot;tab-content&quot;>
+      <div class=&quot;results&quot;>
+        <h2>📥 Exportar Documentação</h2>
+        <p style=&quot;color: #94a3b8; margin-bottom: 20px;&quot;>Escolha o formato de exportação:</p>
+        
+        <div style=&quot;display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 20px;&quot;>
+          <button class=&quot;btn btn-success&quot; onclick=&quot;exportDocs('markdown')&quot;>
+            📝 Markdown
+          </button>
+          <button class=&quot;btn btn-success&quot; onclick=&quot;exportDocs('html')&quot;>
+            🌐 HTML
+          </button>
+          <button class=&quot;btn btn-success&quot; onclick=&quot;exportDocs('json')&quot;>
+            📊 JSON
+          </button>
+          <button class=&quot;btn btn-success&quot; onclick=&quot;exportDocs('pdf')&quot;>
+            📄 PDF (HTML)
+          </button>
+        </div>
+        
+        <div class=&quot;results&quot; style=&quot;background: #0f172a; border: 1px solid #334155;&quot;>
+          <h3>📋 Conteúdo da Documentação</h3>
+          <ul style=&quot;margin-left: 20px; margin-top: 10px; font-size: 12px; color: #94a3b8; line-height: 1.8;&quot;>
+            <li>✅ Informações do projeto</li>
+            <li>✅ ${apiCount} endpoints documentados</li>
+            <li>✅ ${funcCount} funções documentadas</li>
+            <li>✅ ${compCount} componentes documentados</li>
+            <li>✅ ${depCount} dependências listadas</li>
+            <li>✅ Guia de início rápido</li>
+            <li>✅ Arquitetura do projeto</li>
+            <li>✅ Estrutura de arquivos</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  resultsDiv.innerHTML = html;
+}
+
+function switchTab(tabName) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  
+  event.target.classList.add('active');
+  document.getElementById(`tab-${tabName}`).classList.add('active');
+}
+
+function exportDocs(format) {
+  if (format === 'markdown') {
+    exportMarkdown();
+  } else if (format === 'html') {
+    exportHTML();
+  } else if (format === 'json') {
+    exportJSON();
+  } else if (format === 'pdf') {
+    exportPDF();
+  }
+}
+
+function exportMarkdown() {
+  let md = `# ${projectDocs.projectInfo.name || 'Documentação do Projeto'}\n\n`;
+  md += `**Versão:** ${projectDocs.projectInfo.version || '1.0.0'}\n`;
+  md += `**Autor:** ${projectDocs.projectInfo.author || 'Desconhecido'}\n`;
+  md += `**Licença:** ${projectDocs.projectInfo.license || 'MIT'}\n\n`;
+  
+  md += `## 📝 Descrição\n\n`;
+  md += `${projectDocs.projectInfo.description || 'Sem descrição'}\n\n`;
+  
+  md += `## 🚀 Instalação\n\n`;
+  md += `\`\`\`bash\nnpm install\n\`\`\`\n\n`;
+  
+  md += `## 🔌 Endpoints da API\n\n`;
+  projectDocs.apis.forEach(api => {
+    md += `### ${api.method} \`${api.path}\`\n\n`;
+    md += `${api.description}\n\n`;
+    md += `**Arquivo:** \`${api.file}\`\n\n`;
+  });
+  
+  md += `## ⚙️ Funções\n\n`;
+  projectDocs.functions.forEach(func => {
+    md += `### ${func.name}()\n\n`;
+    md += `${func.description}\n\n`;
+    md += `**Parâmetros:** ${func.params.join(', ') || 'Nenhum'}\n`;
+    md += `**Retorna:** ${func.returnType}\n\n`;
+  });
+  
+  md += `## 🧩 Componentes\n\n`;
+  projectDocs.components.forEach(comp => {
+    md += `### ${comp.name}\n\n`;
+    md += `${comp.description}\n\n`;
+    md += `\`\`\`jsx\n<${comp.name} />\n\`\`\`\n\n`;
+  });
+  
+  md += `## 📦 Dependências\n\n`;
+  projectDocs.dependencies.forEach(dep => {
+    md += `- **${dep.name}** (${dep.version}) - ${dep.type}\n`;
+  });
+  
+  downloadFile(md, `documentacao-${projectDocs.projectInfo.name || 'projeto'}.md`, 'text/markdown');
+}
+
+function exportHTML() {
+  let html = `<!DOCTYPE html>
+<html lang=&quot;pt-BR&quot;>
+<head>
+  <meta charset=&quot;UTF-8&quot;>
+  <meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;>
+  <title>Documentação - ${projectDocs.projectInfo.name || 'Projeto'}</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f5f5; color: #333; line-height: 1.6; }
+    .container { max-width: 1000px; margin: 0 auto; background: white; padding: 40px; }
+    h1 { color: #a3a082; margin-bottom: 10px; }
+    h2 { color: #4ade80; margin-top: 30px; margin-bottom: 15px; border-bottom: 2px solid #e0e0e0; padding-bottom: 10px; }
+    h3 { color: #60a5fa; margin-top: 20px; margin-bottom: 10px; }
+    code { background: #f0f0f0; padding: 2px 6px; border-radius: 3px; font-family: 'Courier New', monospace; }
+    pre { background: #f0f0f0; padding: 15px; border-radius: 5px; overflow-x: auto; margin: 10px 0; }
+    table { width: 100%; border-collapse: collapse; margin: 15px 0; }
+    th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
+    th { background: #f0f0f0; font-weight: 600; }
+    .api { background: #f9f9f9; padding: 15px; border-left: 4px solid #60a5fa; margin: 15px 0; border-radius: 4px; }
+    .method { display: inline-block; padding: 4px 8px; border-radius: 3px; color: white; font-size: 12px; font-weight: 600; margin-right: 8px; }
+    .get { background: #60a5fa; }
+    .post { background: #4ade80; }
+    .put { background: #fbbf24; }
+    .delete { background: #f87171; }
+  </style>
+</head>
+<body>
+  <div class=&quot;container&quot;>
+    <h1>📚 ${projectDocs.projectInfo.name || 'Documentação do Projeto'}</h1>
+    <p><strong>Versão:</strong> ${projectDocs.projectInfo.version || '1.0.0'}</p>
+    <p><strong>Autor:</strong> ${projectDocs.projectInfo.author || 'Desconhecido'}</p>
+    
+    <h2>📝 Descrição</h2>
+    <p>${projectDocs.projectInfo.description || 'Sem descrição'}</p>
+    
+    <h2>🔌 Endpoints da API</h2>
+    ${projectDocs.apis.map(api => `
+      <div class=&quot;api&quot;>
+        <span class=&quot;method ${api.method.toLowerCase()}&quot;>${api.method}</span>
+        <code>${api.path}</code>
+        <p>${api.description}</p>
+      </div>
+    `).join('')}
+    
+    <h2>⚙️ Funções</h2>
+    ${projectDocs.functions.map(func => `
+      <div style=&quot;margin: 15px 0; padding: 15px; background: #f9f9f9; border-radius: 4px;&quot;>
+        <h3><code>${func.name}(${func.params.join(', ')})</code></h3>
+        <p>${func.description}</p>
+        <p><strong>Retorna:</strong> ${func.returnType}</p>
+      </div>
+    `).join('')}
+    
+    <h2>📦 Dependências</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Pacote</th>
+          <th>Versão</th>
+          <th>Tipo</th>
+        </tr>
+      </thead>
+      <tbody>
+        ${projectDocs.dependencies.map(dep => `
+          <tr>
+            <td>${dep.name}</td>
+            <td>${dep.version}</td>
+            <td>${dep.type}</td>
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>`;
+  
+  downloadFile(html, `documentacao-${projectDocs.projectInfo.name || 'projeto'}.html`, 'text/html');
+}
+
+function exportJSON() {
+  const json = JSON.stringify(projectDocs, null, 2);
+  downloadFile(json, `documentacao-${projectDocs.projectInfo.name || 'projeto'}.json`, 'application/json');
+}
+
+function exportPDF() {
+  alert('💡 Para gerar PDF, use a função &quot;Imprimir como PDF&quot; do seu navegador (Ctrl+P ou Cmd+P) após exportar como HTML');
+  exportHTML();
+}
+
+function downloadFile(content, filename, type) {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function escapeHtml(text) {
+  const map = {
+    '&amp;': '&amp;amp;',
+    '<': '&amp;lt;',
+    '>': '&amp;gt;',
+    '&quot;': '&amp;quot;',
+    &quot;'&quot;: '&amp;#039;'
+  };
+  return text.replace(/[&amp;<>&quot;']/g, m => map[m]);
+}
+</script>
+
+</body>
+</html>
+" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"></iframe></div>
+<div class="projeto " id="p1"><iframe srcdoc="<!DOCTYPE html>
+<html lang=&quot;pt-BR&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;>
+<title>Corretor Automático Inteligente</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', monospace;
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 20px;
+  min-height: 100vh;
+}
+.container { max-width: 1800px; margin: 0 auto; }
+h1 { color: #a3a082; margin-bottom: 10px; text-align: center; font-size: 24px; }
+.subtitle { text-align: center; color: #94a3b8; margin-bottom: 20px; font-size: 13px; }
+h2 { color: #4ade80; margin: 25px 0 15px 0; font-size: 16px; border-bottom: 2px solid #334155; padding-bottom: 8px; }
+h3 { color: #60a5fa; margin: 12px 0 8px 0; font-size: 13px; }
+
+.upload-area {
+  background: #1e293b;
+  border: 2px dashed #334155;
+  border-radius: 10px;
+  padding: 40px;
+  text-align: center;
+  margin-bottom: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.upload-area:hover { border-color: #a3a082; background: #334155; }
+.upload-area.dragover { border-color: #4ade80; background: rgba(74, 222, 128, 0.1); }
+
+input[type=&quot;file&quot;] { display: none; }
+
+.btn {
+  background: #a3a082;
+  color: #000;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  margin: 5px;
+  transition: all 0.2s;
+  font-size: 12px;
+}
+.btn:hover { background: #d4d0a8; transform: translateY(-2px); }
+.btn-secondary { background: #3b82f6; color: #fff; }
+.btn-secondary:hover { background: #2563eb; }
+.btn-danger { background: #f87171; color: #fff; }
+.btn-danger:hover { background: #dc2626; }
+.btn-success { background: #4ade80; color: #000; }
+.btn-success:hover { background: #22c55e; }
+.btn-warning { background: #fbbf24; color: #000; }
+.btn-warning:hover { background: #eab308; }
+.btn-small { padding: 6px 12px; font-size: 11px; }
+
+.loading {
+  text-align: center;
+  color: #94a3b8;
+  padding: 30px;
+  font-size: 14px;
+}
+.spinner {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border: 4px solid #334155;
+  border-top-color: #a3a082;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.tabs {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #334155;
+  flex-wrap: wrap;
+}
+
+.tab {
+  padding: 10px 15px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  font-size: 12px;
+}
+
+.tab:hover { color: #e2e8f0; }
+.tab.active { color: #a3a082; border-bottom-color: #a3a082; }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+.results {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: #0f172a;
+  border-left: 4px solid #a3a082;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+}
+
+.card-error { border-left-color: #f87171; }
+.card-warning { border-left-color: #fbbf24; }
+.card-success { border-left-color: #4ade80; }
+.card-info { border-left-color: #60a5fa; }
+.card-critical { border-left-color: #ef4444; background: rgba(239, 68, 68, 0.05); }
+
+.card-title {
+  color: #e2e8f0;
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.card-content {
+  font-size: 12px;
+  color: #94a3b8;
+  line-height: 1.6;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.stat-box {
+  background: #334155;
+  padding: 12px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.stat-box strong {
+  display: block;
+  color: #a3a082;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.stat-box span {
+  font-size: 10px;
+  color: #94a3b8;
+}
+
+.fix-item {
+  padding: 15px;
+  margin-bottom: 15px;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  background: #1e293b;
+}
+
+.fix-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.fix-title {
+  color: #e2e8f0;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.fix-severity {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.fix-severity.critical { background: #ef4444; color: #fff; }
+.fix-severity.error { background: #f87171; color: #fff; }
+.fix-severity.warning { background: #fbbf24; color: #000; }
+.fix-severity.info { background: #60a5fa; color: #fff; }
+
+.fix-detail {
+  font-size: 11px;
+  color: #94a3b8;
+  margin: 8px 0;
+}
+
+.code-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.code-block {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 4px;
+  padding: 10px;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  line-height: 1.4;
+  max-height: 150px;
+  overflow: auto;
+}
+
+.code-before {
+  border-left: 4px solid #f87171;
+}
+
+.code-after {
+  border-left: 4px solid #4ade80;
+}
+
+.code-label {
+  font-size: 10px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: #94a3b8;
+}
+
+.fix-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  flex-wrap: wrap;
+}
+
+.fix-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+}
+
+.fix-checkbox input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.progress-bar {
+  background: #334155;
+  border-radius: 4px;
+  height: 24px;
+  margin: 10px 0;
+  overflow: hidden;
+}
+
+.progress-fill {
+  background: linear-gradient(90deg, #4ade80, #60a5fa);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.summary-box {
+  background: #334155;
+  border-left: 4px solid #a3a082;
+  padding: 15px;
+  margin: 15px 0;
+  border-radius: 4px;
+}
+
+.file-list {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 15px;
+  margin: 10px 0;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.file-item {
+  padding: 10px;
+  margin-bottom: 8px;
+  border: 1px solid #334155;
+  border-radius: 4px;
+  background: #1e293b;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.file-item:hover {
+  background: #334155;
+  border-color: #a3a082;
+}
+
+.file-name {
+  flex: 1;
+  color: #e2e8f0;
+  font-size: 12px;
+}
+
+.file-status {
+  font-size: 11px;
+  padding: 4px 8px;
+  border-radius: 3px;
+  background: #fbbf24;
+  color: #000;
+}
+
+.file-status.fixed {
+  background: #4ade80;
+  color: #000;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal.open {
+  display: flex;
+}
+
+.modal-content {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 90%;
+  max-height: 90vh;
+  overflow: auto;
+  width: 900px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #334155;
+}
+
+.modal-close {
+  background: #f87171;
+  color: #fff;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #0f172a; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+
+@media (max-width: 1200px) {
+  .code-comparison { grid-template-columns: 1fr; }
+  .stats-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class=&quot;container&quot;>
+  <h1>🔧 Corretor Automático Inteligente</h1>
+  <p class=&quot;subtitle&quot;>Detecta problemas e sugere correções automáticas - Você escolhe o que aplicar</p>
+
+  <div class=&quot;upload-area&quot; id=&quot;dropZone&quot;>
+    <p style=&quot;font-size: 18px; margin-bottom: 10px;&quot;>📦 Arraste seu ZIP da Replit aqui</p>
+    <p style=&quot;color: #94a3b8; font-size: 13px; margin-bottom: 15px;&quot;>Será analisado e sugerirá correções automáticas</p>
+    <button class=&quot;btn&quot; onclick=&quot;document.getElementById('fileInput').click()&quot;>Selecionar ZIP</button>
+    <input type=&quot;file&quot; id=&quot;fileInput&quot; accept=&quot;.zip&quot; />
+  </div>
+
+  <div id=&quot;loading&quot; class=&quot;loading&quot; style=&quot;display:none;&quot;>
+    <div class=&quot;spinner&quot;></div>
+    <p>Analisando e gerando sugestões de correção...</p>
+  </div>
+
+  <div id=&quot;results&quot;></div>
+</div>
+
+<script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js&quot;></script>
+
+<script>
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const resultsDiv = document.getElementById('results');
+const loadingDiv = document.getElementById('loading');
+
+let projectData = {
+  files: {},
+  fixes: [],
+  applied: new Set(),
+  correctedFiles: {}
+};
+
+dropZone.addEventListener('dragover', e => {
+  e.preventDefault();
+  dropZone.classList.add('dragover');
+});
+dropZone.addEventListener('dragleave', () => {
+  dropZone.classList.remove('dragover');
+});
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('dragover');
+  handleFile(e.dataTransfer.files[0]);
+});
+
+fileInput.addEventListener('change', e => {
+  handleFile(e.target.files[0]);
+});
+
+async function handleFile(file) {
+  if (!file) return;
+  
+  loadingDiv.style.display = 'block';
+  resultsDiv.innerHTML = '';
+  projectData = {
+    files: {},
+    fixes: [],
+    applied: new Set(),
+    correctedFiles: {}
+  };
+  
+  try {
+    const zip = new JSZip();
+    const content = await zip.loadAsync(file);
+    
+    // Extrai arquivos
+    for (let [path, zipEntry] of Object.entries(content.files)) {
+      if (!zipEntry.dir &amp;&amp; /\.(js|ts|jsx|tsx|json|html|css)$/.test(path)) {
+        try {
+          const fileContent = await zipEntry.async('text');
+          projectData.files[path] = fileContent;
+        } catch (e) {}
+      }
+    }
+    
+    // Gera sugestões de correção
+    generateFixes();
+    
+    loadingDiv.style.display = 'none';
+    displayResults();
+    
+  } catch (err) {
+    loadingDiv.style.display = 'none';
+    resultsDiv.innerHTML = `<div class=&quot;card card-error&quot;>
+      <div class=&quot;card-title&quot;>❌ Erro ao processar</div>
+      <div class=&quot;card-content&quot;>${err.message}</div>
+    </div>`;
+  }
+}
+
+function generateFixes() {
+  for (let [filePath, content] of Object.entries(projectData.files)) {
+    const ext = filePath.split('.').pop().toLowerCase();
+    
+    if (ext === 'js' || ext === 'ts' || ext === 'jsx' || ext === 'tsx') {
+      generateJSFixes(filePath, content);
+    } else if (ext === 'json') {
+      generateJSONFixes(filePath, content);
+    } else if (ext === 'html') {
+      generateHTMLFixes(filePath, content);
+    }
+  }
+}
+
+function generateJSFixes(filePath, content) {
+  const lines = content.split('\n');
+  
+  // 1. Adicionar try-catch em promises
+  const promisePattern = /\.then\s*\(/g;
+  if (promisePattern.test(content)) {
+    const thenCount = (content.match(/\.then\s*\(/g) || []).length;
+    const catchCount = (content.match(/\.catch\s*\(/g) || []).length;
+    
+    if (thenCount > catchCount) {
+      projectData.fixes.push({
+        id: `fix-${projectData.fixes.length}`,
+        severity: 'warning',
+        file: filePath,
+        title: 'Adicionar .catch() em promises',
+        detail: `Detectado ${thenCount} .then() mas apenas ${catchCount} .catch()`,
+        before: `.then(response => {\n  // seu código\n})`,
+        after: `.then(response => {\n  // seu código\n})\n.catch(error => {\n  console.error('Erro:', error);\n})`,
+        type: 'promise_catch',
+        autoFix: true,
+        code: `
+// Encontrar todas as promises sem catch
+const promiseRegex = /\.then\\s*\\(([^)]+)\\)(?!\\s*\\.catch)/g;
+content = content.replace(promiseRegex, '.then($1).catch(error => console.error(error))');
+        `
+      });
+    }
+  }
+  
+  // 2. Remover console.log em produção
+  const consolePattern = /console\.(log|error|warn|info|debug)\s*\(/g;
+  const consoleMatches = content.match(consolePattern) || [];
+  
+  if (consoleMatches.length > 0) {
+    projectData.fixes.push({
+      id: `fix-${projectData.fixes.length}`,
+      severity: 'warning',
+      file: filePath,
+      title: 'Remover console.log em produção',
+      detail: `Detectado ${consoleMatches.length} console statement(s)`,
+      before: `console.log('Debug:', data);`,
+      after: `// console.log('Debug:', data); // Removido em produção`,
+      type: 'console_removal',
+      autoFix: true,
+      code: `
+// Comentar console statements
+content = content.replace(/console\\.(log|error|warn|info|debug)\\s*\\(/g, '// console.$1(');
+      `
+    });
+  }
+  
+  // 3. Adicionar async/await em funções
+  const asyncPattern = /async\s+function\s+(\w+)/g;
+  const asyncFuncs = (content.match(asyncPattern) || []).length;
+  const awaitCount = (content.match(/await\s+/g) || []).length;
+  
+  if (asyncFuncs > 0 &amp;&amp; awaitCount === 0) {
+    projectData.fixes.push({
+      id: `fix-${projectData.fixes.length}`,
+      severity: 'info',
+      file: filePath,
+      title: 'Função async sem await',
+      detail: `${asyncFuncs} função(ões) async sem usar await`,
+      before: `async function getData() {\n  return fetch('/api/data');\n}`,
+      after: `async function getData() {\n  return await fetch('/api/data');\n}`,
+      type: 'async_await',
+      autoFix: false
+    });
+  }
+  
+  // 4. Adicionar validação de entrada
+  const fetchPattern = /fetch\s*\(\s*['&quot;`]([^'&quot;`]+)['&quot;`]/g;
+  const fetchMatches = content.match(fetchPattern) || [];
+  
+  if (fetchMatches.length > 0) {
+    projectData.fixes.push({
+      id: `fix-${projectData.fixes.length}`,
+      severity: 'warning',
+      file: filePath,
+      title: 'Adicionar validação em fetch',
+      detail: `${fetchMatches.length} chamada(s) fetch sem validação de resposta`,
+      before: `const response = await fetch(url);\nconst data = await response.json();`,
+      after: `const response = await fetch(url);\nif (!response.ok) throw new Error('API error');\nconst data = await response.json();`,
+      type: 'fetch_validation',
+      autoFix: false
+    });
+  }
+  
+  // 5. Adicionar try-catch em JSON.parse
+  const jsonParsePattern = /JSON\.parse\s*\(/g;
+  if (jsonParsePattern.test(content)) {
+    projectData.fixes.push({
+      id: `fix-${projectData.fixes.length}`,
+      severity: 'warning',
+      file: filePath,
+      title: 'Adicionar try-catch em JSON.parse',
+      detail: 'JSON.parse sem tratamento de erro',
+      before: `const data = JSON.parse(jsonString);`,
+      after: `let data;\ntry {\n  data = JSON.parse(jsonString);\n} catch (e) {\n  console.error('JSON inválido:', e);\n}`,
+      type: 'json_parse_try',
+      autoFix: false
+    });
+  }
+  
+  // 6. Remover variáveis não usadas
+  const varPattern = /(?:const|let|var)\s+(\w+)\s*=/g;
+  const usedVars = new Set();
+  const declaredVars = new Set();
+  
+  let match;
+  while ((match = varPattern.exec(content)) !== null) {
+    declaredVars.add(match[1]);
+  }
+  
+  declaredVars.forEach(varName => {
+    const regex = new RegExp(`\\b${varName}\\b`, 'g');
+    const occurrences = (content.match(regex) || []).length;
+    if (occurrences === 1) {
+      projectData.fixes.push({
+        id: `fix-${projectData.fixes.length}`,
+        severity: 'info',
+        file: filePath,
+        title: `Variável não usada: ${varName}`,
+        detail: `Variável &quot;${varName}&quot; é declarada mas nunca usada`,
+        before: `const ${varName} = value;`,
+        after: `// const ${varName} = value; // Não utilizada`,
+        type: 'unused_var',
+        autoFix: false
+      });
+    }
+  });
+  
+  // 7. Adicionar null checks
+  if (content.includes('.') &amp;&amp; !content.includes('?.')) {
+    projectData.fixes.push({
+      id: `fix-${projectData.fixes.length}`,
+      severity: 'info',
+      file: filePath,
+      title: 'Considerar usar optional chaining (?.)',
+      detail: 'Código pode se beneficiar de optional chaining',
+      before: `if (user &amp;&amp; user.profile &amp;&amp; user.profile.name) { ... }`,
+      after: `if (user?.profile?.name) { ... }`,
+      type: 'optional_chaining',
+      autoFix: false
+    });
+  }
+}
+
+function generateJSONFixes(filePath, content) {
+  try {
+    JSON.parse(content);
+  } catch (e) {
+    projectData.fixes.push({
+      id: `fix-${projectData.fixes.length}`,
+      severity: 'error',
+      file: filePath,
+      title: 'JSON inválido',
+      detail: `Erro de sintaxe: ${e.message}`,
+      before: content.substring(0, 100),
+      after: 'JSON válido',
+      type: 'json_syntax',
+      autoFix: false
+    });
+  }
+  
+  // Verifica package.json
+  if (filePath.includes('package.json')) {
+    try {
+      const pkg = JSON.parse(content);
+      
+      if (!pkg.name) {
+        projectData.fixes.push({
+          id: `fix-${projectData.fixes.length}`,
+          severity: 'warning',
+          file: filePath,
+          title: 'package.json sem nome',
+          detail: 'Campo &quot;name&quot; é obrigatório',
+          before: `{\n  &quot;version&quot;: &quot;1.0.0&quot;\n}`,
+          after: `{\n  &quot;name&quot;: &quot;meu-projeto&quot;,\n  &quot;version&quot;: &quot;1.0.0&quot;\n}`,
+          type: 'pkg_name',
+          autoFix: true
+        });
+      }
+      
+      if (!pkg.scripts || !pkg.scripts.start) {
+        projectData.fixes.push({
+          id: `fix-${projectData.fixes.length}`,
+          severity: 'warning',
+          file: filePath,
+          title: 'Script &quot;start&quot; não definido',
+          detail: 'Adicione um script de inicialização',
+          before: `&quot;scripts&quot;: {}`,
+          after: `&quot;scripts&quot;: { &quot;start&quot;: &quot;node index.js&quot; }`,
+          type: 'pkg_start',
+          autoFix: false
+        });
+      }
+    } catch (e) {}
+  }
+}
+
+function generateHTMLFixes(filePath, content) {
+  // Verifica meta tags
+  if (!content.includes('charset')) {
+    projectData.fixes.push({
+      id: `fix-${projectData.fixes.length}`,
+      severity: 'warning',
+      file: filePath,
+      title: 'Meta charset ausente',
+      detail: 'Adicione charset UTF-8',
+      before: `<head>\n  <title>Meu Site</title>\n</head>`,
+      after: `<head>\n  <meta charset=&quot;UTF-8&quot;>\n  <title>Meu Site</title>\n</head>`,
+      type: 'html_charset',
+      autoFix: true
+    });
+  }
+  
+  // Verifica viewport
+  if (!content.includes('viewport')) {
+    projectData.fixes.push({
+      id: `fix-${projectData.fixes.length}`,
+      severity: 'warning',
+      file: filePath,
+      title: 'Meta viewport ausente',
+      detail: 'Adicione viewport para responsividade',
+      before: `<head>\n  <meta charset=&quot;UTF-8&quot;>\n</head>`,
+      after: `<head>\n  <meta charset=&quot;UTF-8&quot;>\n  <meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;>\n</head>`,
+      type: 'html_viewport',
+      autoFix: true
+    });
+  }
+  
+  // Verifica alt em imagens
+  const imgPattern = /<img[^>]*>/g;
+  const imgs = content.match(imgPattern) || [];
+  const imgsWithoutAlt = imgs.filter(img => !img.includes('alt='));
+  
+  if (imgsWithoutAlt.length > 0) {
+    projectData.fixes.push({
+      id: `fix-${projectData.fixes.length}`,
+      severity: 'warning',
+      file: filePath,
+      title: `${imgsWithoutAlt.length} imagem(ns) sem alt`,
+      detail: 'Adicione atributo alt para acessibilidade',
+      before: `<img src=&quot;imagem.jpg&quot;>`,
+      after: `<img src=&quot;imagem.jpg&quot; alt=&quot;Descrição da imagem&quot;>`,
+      type: 'html_img_alt',
+      autoFix: false
+    });
+  }
+}
+
+function displayResults() {
+  const critical = projectData.fixes.filter(f => f.severity === 'critical').length;
+  const error = projectData.fixes.filter(f => f.severity === 'error').length;
+  const warning = projectData.fixes.filter(f => f.severity === 'warning').length;
+  const info = projectData.fixes.filter(f => f.severity === 'info').length;
+  
+  let html = `
+    <div class=&quot;tabs&quot;>
+      <button class=&quot;tab active&quot; onclick=&quot;switchTab('overview')&quot;>📊 Visão Geral</button>
+      <button class=&quot;tab&quot; onclick=&quot;switchTab('fixes')&quot;>🔧 Correções</button>
+      <button class=&quot;tab&quot; onclick=&quot;switchTab('apply')&quot;>✅ Aplicar Fixes</button>
+      <button class=&quot;tab&quot; onclick=&quot;switchTab('preview')&quot;>👁️ Pré-visualização</button>
+    </div>
+    
+    <!-- TAB: VISÃO GERAL -->
+    <div id=&quot;tab-overview&quot; class=&quot;tab-content active&quot;>
+      <div class=&quot;results&quot;>
+        <h2>📊 Resumo de Correções</h2>
+        <div class=&quot;stats-grid&quot;>
+          <div class=&quot;stat-box&quot;>
+            <strong>${projectData.fixes.length}</strong>
+            <span>Total de Fixes</span>
+          </div>
+          <div class=&quot;stat-box&quot;>
+            <strong style=&quot;color: #ef4444;&quot;>${critical}</strong>
+            <span>Críticos</span>
+          </div>
+          <div class=&quot;stat-box&quot;>
+            <strong style=&quot;color: #f87171;&quot;>${error}</strong>
+            <span>Erros</span>
+          </div>
+          <div class=&quot;stat-box&quot;>
+            <strong style=&quot;color: #fbbf24;&quot;>${warning}</strong>
+            <span>Avisos</span>
+          </div>
+          <div class=&quot;stat-box&quot;>
+            <strong style=&quot;color: #60a5fa;&quot;>${info}</strong>
+            <span>Informações</span>
+          </div>
+          <div class=&quot;stat-box&quot;>
+            <strong>${projectData.fixes.filter(f => f.autoFix).length}</strong>
+            <span>Auto-fix</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class=&quot;results&quot;>
+        <h2>🎯 Prioridade de Correção</h2>
+        <div class=&quot;summary-box&quot;>
+          <strong>1️⃣ Críticos (${critical})</strong> - Devem ser corrigidos imediatamente
+        </div>
+        <div class=&quot;summary-box&quot;>
+          <strong>2️⃣ Erros (${error})</strong> - Podem quebrar o código
+        </div>
+        <div class=&quot;summary-box&quot;>
+          <strong>3️⃣ Avisos (${warning})</strong> - Melhoram qualidade e segurança
+        </div>
+        <div class=&quot;summary-box&quot;>
+          <strong>4️⃣ Informações (${info})</strong> - Sugestões de melhoria
+        </div>
+      </div>
+    </div>
+    
+    <!-- TAB: CORREÇÕES -->
+    <div id=&quot;tab-fixes&quot; class=&quot;tab-content&quot;>
+      <div class=&quot;results&quot;>
+        <h2>🔧 Todas as Correções Sugeridas</h2>
+        <div id=&quot;fixesList&quot;>
+          ${projectData.fixes.length > 0 ? projectData.fixes.map(fix => `
+            <div class=&quot;fix-item&quot;>
+              <div class=&quot;fix-header&quot;>
+                <div>
+                  <div class=&quot;fix-title&quot;>${fix.title}</div>
+                  <div class=&quot;fix-detail&quot;>${fix.detail}</div>
+                  <div class=&quot;fix-detail&quot;>📄 ${fix.file}</div>
+                </div>
+                <span class=&quot;fix-severity ${fix.severity}&quot;>${fix.severity.toUpperCase()}</span>
+              </div>
+              
+              <div class=&quot;code-comparison&quot;>
+                <div>
+                  <div class=&quot;code-label&quot;>❌ Antes</div>
+                  <div class=&quot;code-block code-before&quot;>${escapeHtml(fix.before)}</div>
+                </div>
+                <div>
+                  <div class=&quot;code-label&quot;>✅ Depois</div>
+                  <div class=&quot;code-block code-after&quot;>${escapeHtml(fix.after)}</div>
+                </div>
+              </div>
+              
+              <div class=&quot;fix-actions&quot;>
+                <div class=&quot;fix-checkbox&quot;>
+                  <input type=&quot;checkbox&quot; id=&quot;fix-${fix.id}&quot; onchange=&quot;toggleFix('${fix.id}')&quot;>
+                  <label for=&quot;fix-${fix.id}&quot;>Selecionar para aplicar</label>
+                </div>
+                ${fix.autoFix ? '<span style=&quot;color: #4ade80; font-size: 11px;&quot;>🤖 Auto-fix disponível</span>' : ''}
+              </div>
+            </div>
+          `).join('') : '<p style=&quot;color: #4ade80;&quot;>✅ Nenhuma correção necessária!</p>'}
+        </div>
+      </div>
+    </div>
+    
+    <!-- TAB: APLICAR FIXES -->
+    <div id=&quot;tab-apply&quot; class=&quot;tab-content&quot;>
+      <div class=&quot;results&quot;>
+        <h2>✅ Aplicar Correções</h2>
+        
+        <div class=&quot;summary-box&quot;>
+          <strong>Correções Selecionadas:</strong> <span id=&quot;selectedCount&quot;>0</span>
+        </div>
+        
+        <div style=&quot;display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;&quot;>
+          <button class=&quot;btn btn-success&quot; onclick=&quot;selectAllFixes()&quot;>✅ Selecionar Tudo</button>
+          <button class=&quot;btn btn-danger&quot; onclick=&quot;deselectAllFixes()&quot;>❌ Desselecionar Tudo</button>
+          <button class=&quot;btn btn-warning&quot; onclick=&quot;selectAutoFixes()&quot;>🤖 Apenas Auto-fix</button>
+          <button class=&quot;btn btn-secondary&quot; onclick=&quot;applySelectedFixes()&quot;>🚀 Aplicar Selecionadas</button>
+        </div>
+        
+        <div id=&quot;applyResults&quot;></div>
+      </div>
+    </div>
+    
+    <!-- TAB: PRÉ-VISUALIZAÇÃO -->
+    <div id=&quot;tab-preview&quot; class=&quot;tab-content&quot;>
+      <div class=&quot;results&quot;>
+        <h2>👁️ Pré-visualização de Arquivos Corrigidos</h2>
+        
+        <div class=&quot;file-list&quot; id=&quot;filePreviewList&quot;>
+          ${Object.keys(projectData.files).map(file => `
+            <div class=&quot;file-item&quot; onclick=&quot;previewFile('${escapeHtml(file)}')&quot;>
+              <div class=&quot;file-name&quot;>${file}</div>
+              <div class=&quot;file-status&quot;>Visualizar</div>
+            </div>
+          `).join('')}
+        </div>
+        
+        <div id=&quot;filePreview&quot; style=&quot;margin-top: 20px;&quot;></div>
+      </div>
+    </div>
+  `;
+  
+  resultsDiv.innerHTML = html;
+}
+
+function switchTab(tabName) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  
+  event.target.classList.add('active');
+  document.getElementById(`tab-${tabName}`).classList.add('active');
+}
+
+function toggleFix(fixId) {
+  const checkbox = document.getElementById(`fix-${fixId}`);
+  if (checkbox.checked) {
+    projectData.applied.add(fixId);
+  } else {
+    projectData.applied.delete(fixId);
+  }
+  updateSelectedCount();
+}
+
+function updateSelectedCount() {
+  document.getElementById('selectedCount').textContent = projectData.applied.size;
+}
+
+function selectAllFixes() {
+  projectData.fixes.forEach(fix => {
+    projectData.applied.add(fix.id);
+    const checkbox = document.getElementById(`fix-${fix.id}`);
+    if (checkbox) checkbox.checked = true;
+  });
+  updateSelectedCount();
+}
+
+function deselectAllFixes() {
+  projectData.applied.clear();
+  document.querySelectorAll('input[type=&quot;checkbox&quot;]').forEach(cb => cb.checked = false);
+  updateSelectedCount();
+}
+
+function selectAutoFixes() {
+  projectData.applied.clear();
+  projectData.fixes.forEach(fix => {
+    if (fix.autoFix) {
+      projectData.applied.add(fix.id);
+      const checkbox = document.getElementById(`fix-${fix.id}`);
+      if (checkbox) checkbox.checked = true;
+    }
+  });
+  updateSelectedCount();
+}
+
+function applySelectedFixes() {
+  const selectedFixes = projectData.fixes.filter(f => projectData.applied.has(f.id));
+  
+  if (selectedFixes.length === 0) {
+    alert('❌ Selecione pelo menos uma correção!');
+    return;
+  }
+  
+  projectData.correctedFiles = JSON.parse(JSON.stringify(projectData.files));
+  
+  selectedFixes.forEach(fix => {
+    if (fix.file in projectData.correctedFiles) {
+      let content = projectData.correctedFiles[fix.file];
+      
+      // Aplica a correção baseada no tipo
+      switch (fix.type) {
+        case 'promise_catch':
+          content = content.replace(/\.then\s*\(([^)]+)\)(?!\s*\.catch)/g, '.then($1).catch(error => console.error(error))');
+          break;
+        case 'console_removal':
+          content = content.replace(/console\.(log|error|warn|info|debug)\s*\(/g, '// console.$1(');
+          break;
+        case 'html_charset':
+          content = content.replace(/<head>/i, '<head>\n  <meta charset=&quot;UTF-8&quot;>');
+          break;
+        case 'html_viewport':
+          content = content.replace(/<head>/i, '<head>\n  <meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;>');
+          break;
+      }
+      
+      projectData.correctedFiles[fix.file] = content;
+    }
+  });
+  
+  displayApplyResults(selectedFixes);
+}
+
+function displayApplyResults(applied) {
+  let html = `
+    <div class=&quot;card card-success&quot;>
+      <div class=&quot;card-title&quot;>✅ Correções Aplicadas!</div>
+      <div class=&quot;card-content&quot;>
+        <strong>${applied.length} correção(ões) aplicada(s)</strong><br>
+        <br>
+        Arquivos afetados:
+        <ul style=&quot;margin-left: 20px; margin-top: 8px;&quot;>
+  `;
+  
+  const affectedFiles = new Set(applied.map(f => f.file));
+  affectedFiles.forEach(file => {
+    html += `<li>${file}</li>`;
+  });
+  
+  html += `
+        </ul>
+      </div>
+    </div>
+    
+    <div class=&quot;results&quot; style=&quot;margin-top: 20px;&quot;>
+      <h3>📥 Baixar Arquivos Corrigidos</h3>
+      <button class=&quot;btn btn-success&quot; onclick=&quot;downloadCorrectedFiles()&quot;>
+        ⬇️ Baixar ZIP com Correções
+      </button>
+      <button class=&quot;btn btn-secondary&quot; onclick=&quot;downloadCorrectionReport()&quot;>
+        📋 Relatório de Correções
+      </button>
+    </div>
+  `;
+  
+  document.getElementById('applyResults').innerHTML = html;
+}
+
+function downloadCorrectedFiles() {
+  const zip = new JSZip();
+  
+  Object.entries(projectData.correctedFiles).forEach(([path, content]) => {
+    zip.file(path, content);
+  });
+  
+  zip.generateAsync({ type: 'blob' }).then(blob => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `projeto-corrigido-${new Date().toISOString().split('T')[0]}.zip`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+}
+
+function downloadCorrectionReport() {
+  const applied = projectData.fixes.filter(f => projectData.applied.has(f.id));
+  
+  let md = `# Relatório de Correções Aplicadas\n\n`;
+  md += `**Data:** ${new Date().toLocaleString('pt-BR')}\n\n`;
+  md += `**Total de Correções:** ${applied.length}\n\n`;
+  
+  md += `## Correções Aplicadas\n\n`;
+  applied.forEach((fix, idx) => {
+    md += `### ${idx + 1}. ${fix.title}\n`;
+    md += `- **Arquivo:** ${fix.file}\n`;
+    md += `- **Severidade:** ${fix.severity}\n`;
+    md += `- **Detalhe:** ${fix.detail}\n\n`;
+  });
+  
+  const blob = new Blob([md], { type: 'text/markdown' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `relatorio-correcoes-${new Date().toISOString().split('T')[0]}.md`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function previewFile(filePath) {
+  const original = projectData.files[filePath];
+  const corrected = projectData.correctedFiles[filePath] || original;
+  
+  let html = `
+    <div class=&quot;results&quot;>
+      <h3>📄 ${filePath}</h3>
+      
+      <div class=&quot;code-comparison&quot;>
+        <div>
+          <div class=&quot;code-label&quot;>Original</div>
+          <div class=&quot;code-block code-before&quot; style=&quot;max-height: 400px;&quot;>
+            ${escapeHtml(original).substring(0, 1000)}
+          </div>
+        </div>
+        <div>
+          <div class=&quot;code-label&quot;>Corrigido</div>
+          <div class=&quot;code-block code-after&quot; style=&quot;max-height: 400px;&quot;>
+            ${escapeHtml(corrected).substring(0, 1000)}
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  document.getElementById('filePreview').innerHTML = html;
+}
+
+function escapeHtml(text) {
+  const map = {
+    '&amp;': '&amp;amp;',
+    '<': '&amp;lt;',
+    '>': '&amp;gt;',
+    '&quot;': '&amp;quot;',
+    &quot;'&quot;: '&amp;#039;'
+  };
+  return text.replace(/[&amp;<>&quot;']/g, m => map[m]);
+}
+</script>
+
+</body>
+</html>
+" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"></iframe></div>
+<div class="projeto " id="p2"><iframe srcdoc="<!DOCTYPE html>
+<html lang=&quot;pt-BR&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;>
+<title>Analisador Automático + Debugger Visual</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', monospace;
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 20px;
+  min-height: 100vh;
+}
+.container { max-width: 1800px; margin: 0 auto; }
+h1 { color: #a3a082; margin-bottom: 10px; text-align: center; font-size: 24px; }
+.subtitle { text-align: center; color: #94a3b8; margin-bottom: 20px; font-size: 13px; }
+h2 { color: #4ade80; margin: 25px 0 15px 0; font-size: 16px; border-bottom: 2px solid #334155; padding-bottom: 8px; }
+h3 { color: #60a5fa; margin: 12px 0 8px 0; font-size: 13px; }
+
+.upload-area {
+  background: #1e293b;
+  border: 2px dashed #334155;
+  border-radius: 10px;
+  padding: 40px;
+  text-align: center;
+  margin-bottom: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.upload-area:hover { border-color: #a3a082; background: #334155; }
+.upload-area.dragover { border-color: #4ade80; background: rgba(74, 222, 128, 0.1); }
+
+input[type=&quot;file&quot;] { display: none; }
+
+.btn {
+  background: #a3a082;
+  color: #000;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  margin: 5px;
+  transition: all 0.2s;
+  font-size: 12px;
+}
+.btn:hover { background: #d4d0a8; transform: translateY(-2px); }
+.btn-secondary { background: #3b82f6; color: #fff; }
+.btn-secondary:hover { background: #2563eb; }
+.btn-danger { background: #f87171; color: #fff; }
+.btn-danger:hover { background: #dc2626; }
+.btn-success { background: #4ade80; color: #000; }
+.btn-success:hover { background: #22c55e; }
+.btn-small { padding: 6px 12px; font-size: 11px; }
+
+.loading {
+  text-align: center;
+  color: #94a3b8;
+  padding: 30px;
+  font-size: 14px;
+}
+.spinner {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border: 4px solid #334155;
+  border-top-color: #a3a082;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.tabs {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #334155;
+  flex-wrap: wrap;
+}
+
+.tab {
+  padding: 10px 15px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  font-size: 12px;
+}
+
+.tab:hover { color: #e2e8f0; }
+.tab.active { color: #a3a082; border-bottom-color: #a3a082; }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+.results {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: #0f172a;
+  border-left: 4px solid #a3a082;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+}
+
+.card-error { border-left-color: #f87171; }
+.card-warning { border-left-color: #fbbf24; }
+.card-success { border-left-color: #4ade80; }
+.card-info { border-left-color: #60a5fa; }
+.card-critical { border-left-color: #ef4444; background: rgba(239, 68, 68, 0.05); }
+
+.card-title {
+  color: #e2e8f0;
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.card-content {
+  font-size: 12px;
+  color: #94a3b8;
+  line-height: 1.6;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.stat-box {
+  background: #334155;
+  padding: 12px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.stat-box strong {
+  display: block;
+  color: #a3a082;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.stat-box span {
+  font-size: 10px;
+  color: #94a3b8;
+}
+
+.issue-list {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 15px;
+  margin: 10px 0;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.issue-item {
+  padding: 12px;
+  margin-bottom: 10px;
+  border: 1px solid #334155;
+  border-radius: 4px;
+  background: #1e293b;
+  border-left: 4px solid #fbbf24;
+}
+
+.issue-item.error { border-left-color: #f87171; }
+.issue-item.warning { border-left-color: #fbbf24; }
+.issue-item.critical { border-left-color: #ef4444; background: rgba(239, 68, 68, 0.05); }
+.issue-item.info { border-left-color: #60a5fa; }
+
+.issue-severity {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 2px;
+  font-size: 10px;
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.issue-severity.error { background: #f87171; color: #fff; }
+.issue-severity.warning { background: #fbbf24; color: #000; }
+.issue-severity.critical { background: #ef4444; color: #fff; }
+.issue-severity.info { background: #60a5fa; color: #fff; }
+
+.issue-title {
+  color: #e2e8f0;
+  font-weight: 600;
+  margin-bottom: 5px;
+}
+
+.issue-detail {
+  font-size: 11px;
+  color: #94a3b8;
+  margin: 5px 0;
+}
+
+.issue-file {
+  font-size: 11px;
+  color: #60a5fa;
+  margin-top: 8px;
+}
+
+.code-block {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 12px;
+  margin: 10px 0;
+  overflow-x: auto;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  line-height: 1.4;
+  max-height: 200px;
+  overflow-y: auto;
+  color: #60a5fa;
+}
+
+.debug-flow {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 15px;
+  margin: 15px 0;
+}
+
+.flow-item {
+  padding: 12px;
+  margin-bottom: 10px;
+  border-left: 4px solid #60a5fa;
+  background: #1e293b;
+  border-radius: 4px;
+  position: relative;
+}
+
+.flow-item.error { border-left-color: #f87171; }
+.flow-item.warning { border-left-color: #fbbf24; }
+.flow-item.success { border-left-color: #4ade80; }
+
+.flow-arrow {
+  text-align: center;
+  color: #60a5fa;
+  font-size: 14px;
+  margin: 5px 0;
+}
+
+.flow-label {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-bottom: 5px;
+}
+
+.flow-content {
+  color: #e2e8f0;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.dependency-graph {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 15px;
+  margin: 15px 0;
+  overflow-x: auto;
+}
+
+.dep-item {
+  display: inline-block;
+  background: #334155;
+  padding: 8px 12px;
+  border-radius: 4px;
+  margin: 5px;
+  font-size: 11px;
+  border: 1px solid #60a5fa;
+}
+
+.dep-item.missing { border-color: #f87171; background: rgba(248, 113, 113, 0.1); }
+.dep-item.ok { border-color: #4ade80; background: rgba(74, 222, 128, 0.1); }
+.dep-item.broken { border-color: #fbbf24; background: rgba(251, 191, 36, 0.1); }
+
+.export-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.progress-bar {
+  background: #334155;
+  border-radius: 4px;
+  height: 20px;
+  margin: 10px 0;
+  overflow: hidden;
+}
+
+.progress-fill {
+  background: linear-gradient(90deg, #4ade80, #60a5fa);
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #0f172a; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+
+@media (max-width: 1200px) {
+  .stats-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class=&quot;container&quot;>
+  <h1>🔍 Analisador Automático + Debugger Visual</h1>
+  <p class=&quot;subtitle&quot;>Análise completa sem modificar nada - Gera relatório detalhado de todos os problemas</p>
+
+  <div class=&quot;upload-area&quot; id=&quot;dropZone&quot;>
+    <p style=&quot;font-size: 18px; margin-bottom: 10px;&quot;>📦 Arraste seu ZIP da Replit aqui</p>
+    <p style=&quot;color: #94a3b8; font-size: 13px; margin-bottom: 15px;&quot;>Será analisado completamente e gerará relatório detalhado</p>
+    <button class=&quot;btn&quot; onclick=&quot;document.getElementById('fileInput').click()&quot;>Selecionar ZIP</button>
+    <input type=&quot;file&quot; id=&quot;fileInput&quot; accept=&quot;.zip&quot; />
+  </div>
+
+  <div id=&quot;loading&quot; class=&quot;loading&quot; style=&quot;display:none;&quot;>
+    <div class=&quot;spinner&quot;></div>
+    <p>Analisando projeto... Isso pode levar alguns segundos...</p>
+  </div>
+
+  <div id=&quot;results&quot;></div>
+</div>
+
+<script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js&quot;></script>
+
+<script>
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const resultsDiv = document.getElementById('results');
+const loadingDiv = document.getElementById('loading');
+
+let projectAnalysis = {
+  files: {},
+  issues: [],
+  endpoints: [],
+  dependencies: [],
+  replitBindings: [],
+  configFiles: {},
+  dataFlow: [],
+  warnings: []
+};
+
+dropZone.addEventListener('dragover', e => {
+  e.preventDefault();
+  dropZone.classList.add('dragover');
+});
+dropZone.addEventListener('dragleave', () => {
+  dropZone.classList.remove('dragover');
+});
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('dragover');
+  handleFile(e.dataTransfer.files[0]);
+});
+
+fileInput.addEventListener('change', e => {
+  handleFile(e.target.files[0]);
+});
+
+async function handleFile(file) {
+  if (!file) return;
+  
+  loadingDiv.style.display = 'block';
+  resultsDiv.innerHTML = '';
+  projectAnalysis = {
+    files: {},
+    issues: [],
+    endpoints: [],
+    dependencies: [],
+    replitBindings: [],
+    configFiles: {},
+    dataFlow: [],
+    warnings: []
+  };
+  
+  try {
+    const zip = new JSZip();
+    const content = await zip.loadAsync(file);
+    
+    // Extrai todos os arquivos
+    for (let [path, zipEntry] of Object.entries(content.files)) {
+      if (!zipEntry.dir) {
+        try {
+          const fileContent = await zipEntry.async('text');
+          projectAnalysis.files[path] = {
+            content: fileContent,
+            size: zipEntry._data.uncompressedSize,
+            ext: path.split('.').pop().toLowerCase()
+          };
+        } catch (e) {}
+      }
+    }
+    
+    // Executa análises
+    await analyzeProject();
+    
+    loadingDiv.style.display = 'none';
+    displayResults();
+    
+  } catch (err) {
+    loadingDiv.style.display = 'none';
+    resultsDiv.innerHTML = `<div class=&quot;card card-error&quot;>
+      <div class=&quot;card-title&quot;>❌ Erro ao processar</div>
+      <div class=&quot;card-content&quot;>${err.message}</div>
+    </div>`;
+  }
+}
+
+async function analyzeProject() {
+  // Análise de configuração
+  analyzeConfig();
+  
+  // Análise de dependências
+  analyzeDependencies();
+  
+  // Análise de endpoints
+  analyzeEndpoints();
+  
+  // Análise de vínculos Replit
+  analyzeReplitBindings();
+  
+  // Análise de erros
+  analyzeErrors();
+  
+  // Análise de fluxo de dados
+  analyzeDataFlow();
+  
+  // Análise de segurança
+  analyzeSecurity();
+}
+
+function analyzeConfig() {
+  const configFiles = ['package.json', '.replit', 'replit.nix', 'vite.config.js', 'webpack.config.js', '.env', '.env.local'];
+  
+  for (let [path, file] of Object.entries(projectAnalysis.files)) {
+    const fileName = path.split('/').pop();
+    
+    if (configFiles.includes(fileName)) {
+      projectAnalysis.configFiles[path] = file.content;
+      
+      if (fileName === 'package.json') {
+        try {
+          const pkg = JSON.parse(file.content);
+          
+          // Detecta problemas no package.json
+          if (!pkg.name) {
+            projectAnalysis.issues.push({
+              severity: 'warning',
+              type: 'config',
+              title: 'package.json sem nome',
+              detail: 'O arquivo package.json não tem um campo &quot;name&quot;',
+              file: path,
+              fix: 'Adicione um nome ao projeto'
+            });
+          }
+          
+          if (!pkg.scripts || !pkg.scripts.start) {
+            projectAnalysis.issues.push({
+              severity: 'warning',
+              type: 'config',
+              title: 'Script &quot;start&quot; não definido',
+              detail: 'Não há script de inicialização',
+              file: path,
+              fix: 'Adicione &quot;start&quot; em scripts'
+            });
+          }
+          
+          // Detecta dependências faltando
+          const allDeps = { ...pkg.dependencies, ...pkg.devDependencies };
+          Object.keys(allDeps).forEach(dep => {
+            projectAnalysis.dependencies.push({
+              name: dep,
+              version: allDeps[dep],
+              type: pkg.dependencies[dep] ? 'production' : 'development'
+            });
+          });
+          
+        } catch (e) {
+          projectAnalysis.issues.push({
+            severity: 'error',
+            type: 'config',
+            title: 'package.json inválido',
+            detail: 'JSON malformado: ' + e.message,
+            file: path,
+            fix: 'Corrija a sintaxe JSON'
+          });
+        }
+      }
+      
+      if (fileName === '.replit') {
+        projectAnalysis.issues.push({
+          severity: 'info',
+          type: 'replit',
+          title: 'Arquivo .replit detectado',
+          detail: 'Este arquivo contém configurações específicas da Replit',
+          file: path,
+          note: 'Pode precisar ser ajustado em outro ambiente'
+        });
+      }
+      
+      if (fileName === 'vite.config.js') {
+        projectAnalysis.issues.push({
+          severity: 'info',
+          type: 'build',
+          title: 'Vite detectado',
+          detail: 'Projeto usa Vite como bundler',
+          file: path
+        });
+      }
+    }
+  }
+}
+
+function analyzeDependencies() {
+  for (let [path, file] of Object.entries(projectAnalysis.files)) {
+    if (path.includes('package.json')) {
+      try {
+        const pkg = JSON.parse(file.content);
+        const allDeps = { ...pkg.dependencies, ...pkg.devDependencies };
+        
+        // Verifica dependências críticas
+        const criticalDeps = ['express', 'react', 'vue', 'angular', 'next', 'nuxt'];
+        
+        criticalDeps.forEach(dep => {
+          if (allDeps[dep]) {
+            projectAnalysis.dependencies.push({
+              name: dep,
+              version: allDeps[dep],
+              status: 'found'
+            });
+          }
+        });
+        
+      } catch (e) {}
+    }
+  }
+}
+
+function analyzeEndpoints() {
+  for (let [path, file] of Object.entries(projectAnalysis.files)) {
+    if (file.ext === 'js' || file.ext === 'ts') {
+      const content = file.content;
+      
+      // Detecta endpoints
+      const endpointPatterns = [
+        { regex: /app\.(get|post|put|delete|patch)\s*\(\s*['&quot;`]([^'&quot;`]+)['&quot;`]/g, type: 'express' },
+        { regex: /router\.(get|post|put|delete|patch)\s*\(\s*['&quot;`]([^'&quot;`]+)['&quot;`]/g, type: 'express' },
+        { regex: /fetch\s*\(\s*['&quot;`]([^'&quot;`]+)['&quot;`]/g, type: 'fetch' },
+        { regex: /axios\.(get|post|put|delete|patch)\s*\(\s*['&quot;`]([^'&quot;`]+)['&quot;`]/g, type: 'axios' }
+      ];
+      
+      endpointPatterns.forEach(pattern => {
+        let match;
+        const regex = new RegExp(pattern.regex.source, 'g');
+        
+        while ((match = regex.exec(content)) !== null) {
+          const method = match[1] || 'GET';
+          const endpoint = match[2] || match[1];
+          
+          projectAnalysis.endpoints.push({
+            method: method.toUpperCase(),
+            path: endpoint,
+            file: path,
+            type: pattern.type,
+            line: content.substring(0, match.index).split('\n').length
+          });
+          
+          // Detecta problemas em endpoints
+          if (!endpoint.startsWith('/') &amp;&amp; !endpoint.startsWith('http')) {
+            projectAnalysis.issues.push({
+              severity: 'warning',
+              type: 'endpoint',
+              title: 'Endpoint sem caminho claro',
+              detail: `Endpoint &quot;${endpoint}&quot; pode estar mal formatado`,
+              file: path,
+              line: content.substring(0, match.index).split('\n').length,
+              fix: 'Verifique se o caminho está correto'
+            });
+          }
+        }
+      });
+    }
+  }
+}
+
+function analyzeReplitBindings() {
+  for (let [path, file] of Object.entries(projectAnalysis.files)) {
+    const content = file.content.toLowerCase();
+    
+    // Detecta referências a Replit
+    const replitPatterns = [
+      { pattern: 'process.env.replit', type: 'env_var' },
+      { pattern: 'replit_db', type: 'database' },
+      { pattern: 'replit_audio', type: 'audio' },
+      { pattern: 'replit_code', type: 'code_execution' },
+      { pattern: '.replit', type: 'config' },
+      { pattern: 'replit.com', type: 'url' }
+    ];
+    
+    replitPatterns.forEach(p => {
+      if (content.includes(p.pattern)) {
+        projectAnalysis.replitBindings.push({
+          type: p.type,
+          pattern: p.pattern,
+          file: path,
+          severity: 'warning'
+        });
+        
+        projectAnalysis.issues.push({
+          severity: 'warning',
+          type: 'replit_binding',
+          title: `Vínculo Replit detectado: ${p.type}`,
+          detail: `Arquivo contém referência a &quot;${p.pattern}&quot;`,
+          file: path,
+          note: 'Este código pode não funcionar fora da Replit',
+          fix: 'Considere abstrair em variáveis de ambiente'
+        });
+      }
+    });
+  }
+}
+
+function analyzeErrors() {
+  for (let [path, file] of Object.entries(projectAnalysis.files)) {
+    if (file.ext === 'js' || file.ext === 'ts' || file.ext === 'json') {
+      const content = file.content;
+      const lines = content.split('\n');
+      
+      // Detecta erros comuns
+      lines.forEach((line, idx) => {
+        // Chaves não fechadas
+        const opens = (line.match(/[\{\[\(]/g) || []).length;
+        const closes = (line.match(/[\}\]\)]/g) || []).length;
+        if (opens !== closes &amp;&amp; opens > 0) {
+          projectAnalysis.issues.push({
+            severity: 'error',
+            type: 'syntax',
+            title: 'Possível erro de sintaxe',
+            detail: 'Chaves/parênteses não balanceados',
+            file: path,
+            line: idx + 1,
+            code: line.trim(),
+            fix: 'Verifique se todas as chaves estão fechadas'
+          });
+        }
+        
+        // Variáveis não definidas
+        if (line.includes('undefined') &amp;&amp; !line.includes('typeof')) {
+          projectAnalysis.issues.push({
+            severity: 'warning',
+            type: 'reference',
+            title: 'Possível referência indefinida',
+            detail: 'Linha contém &quot;undefined&quot;',
+            file: path,
+            line: idx + 1,
+            code: line.trim()
+          });
+        }
+        
+        // Senhas/tokens
+        if (/(password|token|secret|apikey|api_key)\s*[:=]/i.test(line) &amp;&amp; !line.includes('//')) {
+          projectAnalysis.issues.push({
+            severity: 'critical',
+            type: 'security',
+            title: '🔐 CRÍTICO: Possível credencial exposta',
+            detail: 'Linha contém possível senha/token',
+            file: path,
+            line: idx + 1,
+            fix: 'Mova para variáveis de ambiente'
+          });
+        }
+      });
+    }
+  }
+}
+
+function analyzeDataFlow() {
+  // Rastreia fluxo de dados entre componentes
+  const flows = [];
+  
+  for (let [path, file] of Object.entries(projectAnalysis.files)) {
+    if (file.ext === 'js' || file.ext === 'ts') {
+      const content = file.content;
+      
+      // Detecta imports/exports
+      const imports = content.match(/import\s+.*from\s+['&quot;`]([^'&quot;`]+)['&quot;`]/g) || [];
+      const exports = content.match(/export\s+(default\s+)?(function|const|class|interface)\s+(\w+)/g) || [];
+      
+      imports.forEach(imp => {
+        flows.push({
+          type: 'import',
+          from: path,
+          source: imp,
+          status: 'detected'
+        });
+      });
+      
+      exports.forEach(exp => {
+        flows.push({
+          type: 'export',
+          from: path,
+          source: exp,
+          status: 'detected'
+        });
+      });
+    }
+  }
+  
+  projectAnalysis.dataFlow = flows;
+}
+
+function analyzeSecurity() {
+  for (let [path, file] of Object.entries(projectAnalysis.files)) {
+    const content = file.content;
+    
+    // Detecta problemas de segurança
+    const securityPatterns = [
+      { pattern: /eval\s*\(/g, issue: 'eval() detectado - RISCO DE SEGURANÇA' },
+      { pattern: /innerHTML\s*=/g, issue: 'innerHTML detectado - Risco de XSS' },
+      { pattern: /dangerouslySetInnerHTML/g, issue: 'dangerouslySetInnerHTML - Risco de XSS' },
+      { pattern: /localStorage\.setItem/g, issue: 'localStorage - Dados sensíveis podem ser expostos' },
+      { pattern: /document\.write/g, issue: 'document.write() - Método obsoleto' }
+    ];
+    
+    securityPatterns.forEach(p => {
+      if (p.pattern.test(content)) {
+        projectAnalysis.issues.push({
+          severity: 'warning',
+          type: 'security',
+          title: p.issue,
+          detail: `Detectado em ${path}`,
+          file: path,
+          fix: 'Revise o código para possíveis vulnerabilidades'
+        });
+      }
+    });
+  }
+}
+
+function displayResults() {
+  const criticalCount = projectAnalysis.issues.filter(i => i.severity === 'critical').length;
+  const errorCount = projectAnalysis.issues.filter(i => i.severity === 'error').length;
+  const warningCount = projectAnalysis.issues.filter(i => i.severity === 'warning').length;
+  const infoCount = projectAnalysis.issues.filter(i => i.severity === 'info').length;
+  
+  let html = `
+    <div class=&quot;tabs&quot;>
+      <button class=&quot;tab active&quot; onclick=&quot;switchTab('overview')&quot;>📊 Visão Geral</button>
+      <button class=&quot;tab&quot; onclick=&quot;switchTab('issues')&quot;>⚠️ Problemas</button>
+      <button class=&quot;tab&quot; onclick=&quot;switchTab('endpoints')&quot;>🔌 Endpoints</button>
+      <button class=&quot;tab&quot; onclick=&quot;switchTab('replit')&quot;>🔗 Vínculos Replit</button>
+      <button class=&quot;tab&quot; onclick=&quot;switchTab('debug')&quot;>🔍 Debugger Visual</button>
+      <button class=&quot;tab&quot; onclick=&quot;switchTab('report')&quot;>📋 Relatório</button>
+    </div>
+    
+    <!-- TAB: VISÃO GERAL -->
+    <div id=&quot;tab-overview&quot; class=&quot;tab-content active&quot;>
+      <div class=&quot;results&quot;>
+        <h2>📊 Resumo da Análise</h2>
+        <div class=&quot;stats-grid&quot;>
+          <div class=&quot;stat-box&quot;>
+            <strong>${Object.keys(projectAnalysis.files).length}</strong>
+            <span>Arquivos Analisados</span>
+          </div>
+          <div class=&quot;stat-box&quot;>
+            <strong style=&quot;color: #ef4444;&quot;>${criticalCount}</strong>
+            <span>Críticos</span>
+          </div>
+          <div class=&quot;stat-box&quot;>
+            <strong style=&quot;color: #f87171;&quot;>${errorCount}</strong>
+            <span>Erros</span>
+          </div>
+          <div class=&quot;stat-box&quot;>
+            <strong style=&quot;color: #fbbf24;&quot;>${warningCount}</strong>
+            <span>Avisos</span>
+          </div>
+          <div class=&quot;stat-box&quot;>
+            <strong style=&quot;color: #60a5fa;&quot;>${infoCount}</strong>
+            <span>Informações</span>
+          </div>
+          <div class=&quot;stat-box&quot;>
+            <strong>${projectAnalysis.endpoints.length}</strong>
+            <span>Endpoints</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class=&quot;results&quot;>
+        <h2>🎯 Problemas Críticos Encontrados</h2>
+        ${criticalCount > 0 ? `
+          <div class=&quot;issue-list&quot;>
+            ${projectAnalysis.issues.filter(i => i.severity === 'critical').map(issue => `
+              <div class=&quot;issue-item critical&quot;>
+                <span class=&quot;issue-severity critical&quot;>CRÍTICO</span>
+                <div class=&quot;issue-title&quot;>${issue.title}</div>
+                <div class=&quot;issue-detail&quot;>${issue.detail}</div>
+                <div class=&quot;issue-file&quot;>📄 ${issue.file}${issue.line ? ` (linha ${issue.line})` : ''}</div>
+              </div>
+            `).join('')}
+          </div>
+        ` : '<p style=&quot;color: #4ade80;&quot;>✅ Nenhum problema crítico detectado!</p>'}
+      </div>
+      
+      <div class=&quot;results&quot;>
+        <h2>📦 Dependências Detectadas</h2>
+        <div style=&quot;display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;&quot;>
+          ${projectAnalysis.dependencies.map(dep => `
+            <div class=&quot;dep-item ok&quot;>
+              <strong>${dep.name}</strong><br>
+              <span style=&quot;font-size: 10px; color: #94a3b8;&quot;>${dep.version}</span>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+    
+    <!-- TAB: PROBLEMAS -->
+    <div id=&quot;tab-issues&quot; class=&quot;tab-content&quot;>
+      <div class=&quot;results&quot;>
+        <h2>⚠️ Todos os Problemas Encontrados</h2>
+        <div class=&quot;issue-list&quot;>
+          ${projectAnalysis.issues.length > 0 ? projectAnalysis.issues.map(issue => `
+            <div class=&quot;issue-item ${issue.severity}&quot;>
+              <span class=&quot;issue-severity ${issue.severity}&quot;>
+                ${issue.severity.toUpperCase()}
+              </span>
+              <div class=&quot;issue-title&quot;>${issue.title}</div>
+              <div class=&quot;issue-detail&quot;>${issue.detail}</div>
+              ${issue.code ? `<div class=&quot;code-block&quot;>${escapeHtml(issue.code)}</div>` : ''}
+              <div class=&quot;issue-file&quot;>
+                📄 ${issue.file}${issue.line ? ` (linha ${issue.line})` : ''}
+              </div>
+              ${issue.fix ? `<div style=&quot;margin-top: 8px; padding: 8px; background: #334155; border-radius: 3px; font-size: 11px;&quot;>💡 <strong>Sugestão:</strong> ${issue.fix}</div>` : ''}
+            </div>
+          `).join('') : '<p style=&quot;color: #4ade80;&quot;>✅ Nenhum problema encontrado!</p>'}
+        </div>
+      </div>
+    </div>
+    
+    <!-- TAB: ENDPOINTS -->
+    <div id=&quot;tab-endpoints&quot; class=&quot;tab-content&quot;>
+      <div class=&quot;results&quot;>
+        <h2>🔌 Endpoints Detectados</h2>
+        <div class=&quot;issue-list&quot;>
+          ${projectAnalysis.endpoints.length > 0 ? projectAnalysis.endpoints.map(ep => `
+            <div class=&quot;issue-item info&quot;>
+              <span class=&quot;issue-severity info&quot;>${ep.method}</span>
+              <div class=&quot;issue-title&quot;>${ep.path}</div>
+              <div class=&quot;issue-detail&quot;>Tipo: ${ep.type}</div>
+              <div class=&quot;issue-file&quot;>📄 ${ep.file} (linha ${ep.line})</div>
+            </div>
+          `).join('') : '<p style=&quot;color: #94a3b8;&quot;>Nenhum endpoint detectado</p>'}
+        </div>
+      </div>
+    </div>
+    
+    <!-- TAB: VÍNCULOS REPLIT -->
+    <div id=&quot;tab-replit&quot; class=&quot;tab-content&quot;>
+      <div class=&quot;results&quot;>
+        <h2>🔗 Vínculos Replit Detectados</h2>
+        ${projectAnalysis.replitBindings.length > 0 ? `
+          <div class=&quot;issue-list&quot;>
+            ${projectAnalysis.replitBindings.map(binding => `
+              <div class=&quot;issue-item warning&quot;>
+                <span class=&quot;issue-severity warning&quot;>REPLIT</span>
+                <div class=&quot;issue-title&quot;>${binding.type.toUpperCase()}</div>
+                <div class=&quot;issue-detail&quot;>Padrão: <code>${binding.pattern}</code></div>
+                <div class=&quot;issue-file&quot;>📄 ${binding.file}</div>
+                <div style=&quot;margin-top: 8px; padding: 8px; background: #334155; border-radius: 3px; font-size: 11px;&quot;>
+                  ⚠️ Este código é específico da Replit e pode não funcionar em outro ambiente
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        ` : '<p style=&quot;color: #4ade80;&quot;>✅ Nenhum vínculo Replit detectado!</p>'}
+      </div>
+    </div>
+    
+    <!-- TAB: DEBUGGER VISUAL -->
+    <div id=&quot;tab-debug&quot; class=&quot;tab-content&quot;>
+      <div class=&quot;results&quot;>
+        <h2>🔍 Debugger Visual - Fluxo de Dados</h2>
+        <div class=&quot;debug-flow&quot;>
+          ${projectAnalysis.dataFlow.length > 0 ? projectAnalysis.dataFlow.slice(0, 20).map((flow, idx) => `
+            <div class=&quot;flow-item ${flow.status === 'error' ? 'error' : 'success'}&quot;>
+              <div class=&quot;flow-label&quot;>${flow.type.toUpperCase()}</div>
+              <div class=&quot;flow-content&quot;>${flow.source}</div>
+              <div style=&quot;font-size: 11px; color: #94a3b8; margin-top: 5px;&quot;>📄 ${flow.from}</div>
+            </div>
+            ${idx < projectAnalysis.dataFlow.length - 1 ? '<div class=&quot;flow-arrow&quot;>⬇️</div>' : ''}
+          `).join('') : '<p style=&quot;color: #94a3b8;&quot;>Nenhum fluxo de dados detectado</p>'}
+        </div>
+      </div>
+      
+      <div class=&quot;results&quot;>
+        <h2>📊 Gráfico de Dependências</h2>
+        <div class=&quot;dependency-graph&quot;>
+          ${projectAnalysis.dependencies.map(dep => `
+            <div class=&quot;dep-item ok&quot;>
+              ${dep.name}
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+    
+    <!-- TAB: RELATÓRIO -->
+    <div id=&quot;tab-report&quot; class=&quot;tab-content&quot;>
+      <div class=&quot;results&quot;>
+        <h2>📋 Relatório Completo</h2>
+        <div class=&quot;export-buttons&quot;>
+          <button class=&quot;btn btn-secondary&quot; onclick=&quot;exportReport('markdown')&quot;>📝 Markdown</button>
+          <button class=&quot;btn btn-secondary&quot; onclick=&quot;exportReport('json')&quot;>📊 JSON</button>
+          <button class=&quot;btn btn-secondary&quot; onclick=&quot;exportReport('html')&quot;>🌐 HTML</button>
+          <button class=&quot;btn btn-secondary&quot; onclick=&quot;exportReport('text')&quot;>📄 Texto</button>
+        </div>
+        
+        <div class=&quot;card card-info&quot; style=&quot;margin-top: 20px;&quot;>
+          <div class=&quot;card-title&quot;>📋 Resumo do Relatório</div>
+          <div class=&quot;card-content&quot;>
+            <strong>Total de Arquivos:</strong> ${Object.keys(projectAnalysis.files).length}<br>
+            <strong>Problemas Críticos:</strong> ${criticalCount}<br>
+            <strong>Erros:</strong> ${errorCount}<br>
+            <strong>Avisos:</strong> ${warningCount}<br>
+            <strong>Endpoints:</strong> ${projectAnalysis.endpoints.length}<br>
+            <strong>Vínculos Replit:</strong> ${projectAnalysis.replitBindings.length}<br>
+            <strong>Dependências:</strong> ${projectAnalysis.dependencies.length}<br>
+            <br>
+            <strong>Saúde do Projeto:</strong>
+            <div class=&quot;progress-bar&quot;>
+              <div class=&quot;progress-fill&quot; style=&quot;width: ${calculateHealth()}%&quot;>
+                ${calculateHealth()}%
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  resultsDiv.innerHTML = html;
+}
+
+function switchTab(tabName) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  
+  event.target.classList.add('active');
+  document.getElementById(`tab-${tabName}`).classList.add('active');
+}
+
+function calculateHealth() {
+  const total = projectAnalysis.issues.length;
+  if (total === 0) return 100;
+  
+  const critical = projectAnalysis.issues.filter(i => i.severity === 'critical').length * 10;
+  const errors = projectAnalysis.issues.filter(i => i.severity === 'error').length * 5;
+  const warnings = projectAnalysis.issues.filter(i => i.severity === 'warning').length * 2;
+  
+  const health = Math.max(0, 100 - (critical + errors + warnings));
+  return Math.round(health);
+}
+
+function exportReport(format) {
+  const criticalCount = projectAnalysis.issues.filter(i => i.severity === 'critical').length;
+  const errorCount = projectAnalysis.issues.filter(i => i.severity === 'error').length;
+  const warningCount = projectAnalysis.issues.filter(i => i.severity === 'warning').length;
+  
+  if (format === 'markdown') {
+    let md = `# Relatório de Análise do Projeto\n\n`;
+    md += `**Gerado em:** ${new Date().toLocaleString('pt-BR')}\n\n`;
+    
+    md += `## 📊 Resumo\n\n`;
+    md += `- **Arquivos Analisados:** ${Object.keys(projectAnalysis.files).length}\n`;
+    md += `- **Problemas Críticos:** ${criticalCount}\n`;
+    md += `- **Erros:** ${errorCount}\n`;
+    md += `- **Avisos:** ${warningCount}\n`;
+    md += `- **Endpoints:** ${projectAnalysis.endpoints.length}\n`;
+    md += `- **Vínculos Replit:** ${projectAnalysis.replitBindings.length}\n`;
+    md += `- **Saúde do Projeto:** ${calculateHealth()}%\n\n`;
+    
+    md += `## 🔴 Problemas Críticos\n\n`;
+    projectAnalysis.issues.filter(i => i.severity === 'critical').forEach(issue => {
+      md += `### ${issue.title}\n`;
+      md += `- **Arquivo:** ${issue.file}${issue.line ? ` (linha ${issue.line})` : ''}\n`;
+      md += `- **Detalhe:** ${issue.detail}\n`;
+      if (issue.fix) md += `- **Sugestão:** ${issue.fix}\n`;
+      md += '\n';
+    });
+    
+    md += `## 🟠 Erros\n\n`;
+    projectAnalysis.issues.filter(i => i.severity === 'error').forEach(issue => {
+      md += `### ${issue.title}\n`;
+      md += `- **Arquivo:** ${issue.file}${issue.line ? ` (linha ${issue.line})` : ''}\n`;
+      md += `- **Detalhe:** ${issue.detail}\n`;
+      if (issue.fix) md += `- **Sugestão:** ${issue.fix}\n`;
+      md += '\n';
+    });
+    
+    md += `## 🟡 Avisos\n\n`;
+    projectAnalysis.issues.filter(i => i.severity === 'warning').forEach(issue => {
+      md += `### ${issue.title}\n`;
+      md += `- **Arquivo:** ${issue.file}${issue.line ? ` (linha ${issue.line})` : ''}\n`;
+      md += `- **Detalhe:** ${issue.detail}\n`;
+      if (issue.fix) md += `- **Sugestão:** ${issue.fix}\n`;
+      md += '\n';
+    });
+    
+    md += `## 🔌 Endpoints Detectados\n\n`;
+    projectAnalysis.endpoints.forEach(ep => {
+      md += `- **${ep.method}** \`${ep.path}\` (${ep.file}:${ep.line})\n`;
+    });
+    
+    md += `\n## 🔗 Vínculos Replit\n\n`;
+    projectAnalysis.replitBindings.forEach(binding => {
+      md += `- **${binding.type}:** \`${binding.pattern}\` em ${binding.file}\n`;
+    });
+    
+    downloadFile(md, `relatorio-${new Date().toISOString().split('T')[0]}.md`, 'text/markdown');
+    
+  } else if (format === 'json') {
+    const json = JSON.stringify(projectAnalysis, null, 2);
+    downloadFile(json, `relatorio-${new Date().toISOString().split('T')[0]}.json`, 'application/json');
+    
+  } else if (format === 'html') {
+    let html = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset=&quot;UTF-8&quot;>
+  <title>Relatório de Análise</title>
+  <style>
+    body { font-family: Arial; background: #f5f5f5; padding: 20px; }
+    .container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; }
+    h1 { color: #333; }
+    .critical { color: #ef4444; }
+    .error { color: #f87171; }
+    .warning { color: #fbbf24; }
+    .issue { margin: 15px 0; padding: 15px; background: #f9f9f9; border-left: 4px solid #fbbf24; }
+    .stats { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin: 20px 0; }
+    .stat { padding: 15px; background: #f0f0f0; border-radius: 4px; text-align: center; }
+  </style>
+</head>
+<body>
+  <div class=&quot;container&quot;>
+    <h1>📋 Relatório de Análise do Projeto</h1>
+    <p><strong>Gerado em:</strong> ${new Date().toLocaleString('pt-BR')}</p>
+    
+    <h2>📊 Resumo</h2>
+    <div class=&quot;stats&quot;>
+      <div class=&quot;stat&quot;>
+        <strong>${Object.keys(projectAnalysis.files).length}</strong><br>
+        Arquivos
+      </div>
+      <div class=&quot;stat&quot;>
+        <strong class=&quot;critical&quot;>${criticalCount}</strong><br>
+        Críticos
+      </div>
+      <div class=&quot;stat&quot;>
+        <strong>${calculateHealth()}%</strong><br>
+        Saúde
+      </div>
+    </div>
+    
+    <h2>🔴 Problemas Críticos</h2>
+    ${projectAnalysis.issues.filter(i => i.severity === 'critical').map(issue => `
+      <div class=&quot;issue critical&quot;>
+        <strong>${issue.title}</strong><br>
+        ${issue.detail}<br>
+        <small>${issue.file}${issue.line ? ` (linha ${issue.line})` : ''}</small>
+      </div>
+    `).join('')}
+    
+    <h2>🔌 Endpoints</h2>
+    ${projectAnalysis.endpoints.map(ep => `
+      <div class=&quot;issue&quot;>
+        <strong>${ep.method} ${ep.path}</strong><br>
+        <small>${ep.file}:${ep.line}</small>
+      </div>
+    `).join('')}
+  </div>
+</body>
+</html>`;
+    downloadFile(html, `relatorio-${new Date().toISOString().split('T')[0]}.html`, 'text/html');
+    
+  } else if (format === 'text') {
+    let text = `RELATÓRIO DE ANÁLISE DO PROJETO\n`;
+    text += `${'='.repeat(50)}\n\n`;
+    text += `Gerado em: ${new Date().toLocaleString('pt-BR')}\n\n`;
+    
+    text += `RESUMO\n`;
+    text += `${'-'.repeat(50)}\n`;
+    text += `Arquivos Analisados: ${Object.keys(projectAnalysis.files).length}\n`;
+    text += `Problemas Críticos: ${criticalCount}\n`;
+    text += `Erros: ${errorCount}\n`;
+    text += `Avisos: ${warningCount}\n`;
+    text += `Endpoints: ${projectAnalysis.endpoints.length}\n`;
+    text += `Vínculos Replit: ${projectAnalysis.replitBindings.length}\n`;
+    text += `Saúde do Projeto: ${calculateHealth()}%\n\n`;
+    
+    text += `PROBLEMAS CRÍTICOS\n`;
+    text += `${'-'.repeat(50)}\n`;
+    projectAnalysis.issues.filter(i => i.severity === 'critical').forEach(issue => {
+      text += `${issue.title}\n`;
+      text += `  Arquivo: ${issue.file}${issue.line ? ` (linha ${issue.line})` : ''}\n`;
+      text += `  Detalhe: ${issue.detail}\n\n`;
+    });
+    
+    downloadFile(text, `relatorio-${new Date().toISOString().split('T')[0]}.txt`, 'text/plain');
+  }
+}
+
+function downloadFile(content, filename, type) {
+  const blob = new Blob([content], { type });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function escapeHtml(text) {
+  const map = {
+    '&amp;': '&amp;amp;',
+    '<': '&amp;lt;',
+    '>': '&amp;gt;',
+    '&quot;': '&amp;quot;',
+    &quot;'&quot;: '&amp;#039;'
+  };
+  return text.replace(/[&amp;<>&quot;']/g, m => map[m]);
+}
+</script>
+
+</body>
+</html>
+" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"></iframe></div>
+<div class="projeto " id="p3"><iframe srcdoc="<!DOCTYPE html>
+<html lang=&quot;pt-BR&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;>
+<title>Validador de Código + Testador de API</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', monospace;
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 20px;
+  min-height: 100vh;
+}
+.container { max-width: 1600px; margin: 0 auto; }
+h1 { color: #a3a082; margin-bottom: 10px; text-align: center; font-size: 24px; }
+.subtitle { text-align: center; color: #94a3b8; margin-bottom: 20px; font-size: 13px; }
+h2 { color: #4ade80; margin: 25px 0 15px 0; font-size: 16px; border-bottom: 2px solid #334155; padding-bottom: 8px; }
+h3 { color: #60a5fa; margin: 12px 0 8px 0; font-size: 13px; }
+
+.upload-area {
+  background: #1e293b;
+  border: 2px dashed #334155;
+  border-radius: 10px;
+  padding: 40px;
+  text-align: center;
+  margin-bottom: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.upload-area:hover { border-color: #a3a082; background: #334155; }
+.upload-area.dragover { border-color: #4ade80; background: rgba(74, 222, 128, 0.1); }
+
+input[type=&quot;file&quot;] { display: none; }
+
+.btn {
+  background: #a3a082;
+  color: #000;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  margin: 5px;
+  transition: all 0.2s;
+  font-size: 12px;
+}
+.btn:hover { background: #d4d0a8; transform: translateY(-2px); }
+.btn-secondary { background: #3b82f6; color: #fff; }
+.btn-secondary:hover { background: #2563eb; }
+.btn-danger { background: #f87171; color: #fff; }
+.btn-danger:hover { background: #dc2626; }
+.btn-success { background: #4ade80; color: #000; }
+.btn-success:hover { background: #22c55e; }
+.btn-small { padding: 6px 12px; font-size: 11px; }
+
+.loading {
+  text-align: center;
+  color: #94a3b8;
+  padding: 30px;
+  font-size: 14px;
+}
+.spinner {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border: 4px solid #334155;
+  border-top-color: #a3a082;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.tabs {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #334155;
+  flex-wrap: wrap;
+}
+
+.tab {
+  padding: 10px 15px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  font-size: 12px;
+}
+
+.tab:hover { color: #e2e8f0; }
+.tab.active { color: #a3a082; border-bottom-color: #a3a082; }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+.results {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: #0f172a;
+  border-left: 4px solid #a3a082;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+}
+
+.card-error { border-left-color: #f87171; }
+.card-warning { border-left-color: #fbbf24; }
+.card-success { border-left-color: #4ade80; }
+.card-info { border-left-color: #60a5fa; }
+
+.card-title {
+  color: #e2e8f0;
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.card-content {
+  font-size: 12px;
+  color: #94a3b8;
+  line-height: 1.6;
+}
+
+.code-block {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 12px;
+  margin: 10px 0;
+  overflow-x: auto;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  line-height: 1.4;
+  max-height: 200px;
+  overflow-y: auto;
+  color: #60a5fa;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.stat-box {
+  background: #334155;
+  padding: 12px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.stat-box strong {
+  display: block;
+  color: #a3a082;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.stat-box span {
+  font-size: 10px;
+  color: #94a3b8;
+}
+
+.api-list {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 15px;
+  margin: 10px 0;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.api-item {
+  padding: 12px;
+  margin-bottom: 10px;
+  border: 1px solid #334155;
+  border-radius: 4px;
+  background: #1e293b;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.api-item:hover {
+  background: #334155;
+  border-color: #a3a082;
+}
+
+.api-method {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-weight: 600;
+  margin-right: 8px;
+}
+
+.api-method.get { background: #60a5fa; color: #fff; }
+.api-method.post { background: #4ade80; color: #000; }
+.api-method.put { background: #fbbf24; color: #000; }
+.api-method.delete { background: #f87171; color: #fff; }
+.api-method.patch { background: #a78bfa; color: #fff; }
+
+.api-url {
+  color: #e2e8f0;
+  font-weight: 500;
+  font-size: 12px;
+  margin: 5px 0;
+  word-break: break-all;
+}
+
+.api-status {
+  font-size: 11px;
+  margin-top: 8px;
+  padding: 8px;
+  border-radius: 3px;
+  background: #0f172a;
+}
+
+.api-status.pending { color: #fbbf24; }
+.api-status.success { color: #4ade80; }
+.api-status.error { color: #f87171; }
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  background: #0f172a;
+  border: 1px solid #334155;
+  color: #e2e8f0;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-family: monospace;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #a3a082;
+}
+
+.response-box {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 15px;
+  margin: 15px 0;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  max-height: 300px;
+  overflow: auto;
+  color: #4ade80;
+  line-height: 1.4;
+}
+
+.response-header {
+  color: #60a5fa;
+  font-weight: 600;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #334155;
+}
+
+.error-line { color: #f87171; }
+.warning-line { color: #fbbf24; }
+.success-line { color: #4ade80; }
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal.open {
+  display: flex;
+}
+
+.modal-content {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 90%;
+  max-height: 90vh;
+  overflow: auto;
+  width: 900px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #334155;
+}
+
+.modal-close {
+  background: #f87171;
+  color: #fff;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #0f172a; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+
+@media (max-width: 1200px) {
+  .stats-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class=&quot;container&quot;>
+  <h1>🧪 Validador de Código + Testador de API</h1>
+  <p class=&quot;subtitle&quot;>Valida código, detecta APIs e testa chamadas em tempo real</p>
+
+  <div class=&quot;upload-area&quot; id=&quot;dropZone&quot;>
+    <p style=&quot;font-size: 18px; margin-bottom: 10px;&quot;>📦 Arraste seu ZIP da Replit aqui</p>
+    <p style=&quot;color: #94a3b8; font-size: 13px; margin-bottom: 15px;&quot;>Será analisado para validação e detecção de APIs</p>
+    <button class=&quot;btn&quot; onclick=&quot;document.getElementById('fileInput').click()&quot;>Selecionar ZIP</button>
+    <input type=&quot;file&quot; id=&quot;fileInput&quot; accept=&quot;.zip&quot; />
+  </div>
+
+  <div id=&quot;loading&quot; class=&quot;loading&quot; style=&quot;display:none;&quot;>
+    <div class=&quot;spinner&quot;></div>
+    <p>Analisando código e detectando APIs...</p>
+  </div>
+
+  <div id=&quot;results&quot;></div>
+</div>
+
+<!-- MODAL DE TESTE DE API -->
+<div class=&quot;modal&quot; id=&quot;apiTestModal&quot;>
+  <div class=&quot;modal-content&quot;>
+    <div class=&quot;modal-header&quot;>
+      <h2 id=&quot;apiTestTitle&quot;>Testar API</h2>
+      <button class=&quot;modal-close&quot; onclick=&quot;closeApiModal()&quot;>✕</button>
+    </div>
+    
+    <div id=&quot;apiTestContent&quot;></div>
+  </div>
+</div>
+
+<script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js&quot;></script>
+
+<script>
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const resultsDiv = document.getElementById('results');
+const loadingDiv = document.getElementById('loading');
+
+let allFiles = {};
+let detectedAPIs = [];
+let validationResults = {};
+
+dropZone.addEventListener('dragover', e => {
+  e.preventDefault();
+  dropZone.classList.add('dragover');
+});
+dropZone.addEventListener('dragleave', () => {
+  dropZone.classList.remove('dragover');
+});
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('dragover');
+  handleFile(e.dataTransfer.files[0]);
+});
+
+fileInput.addEventListener('change', e => {
+  handleFile(e.target.files[0]);
+});
+
+async function handleFile(file) {
+  if (!file) return;
+  
+  loadingDiv.style.display = 'block';
+  resultsDiv.innerHTML = '';
+  
+  try {
+    const zip = new JSZip();
+    const content = await zip.loadAsync(file);
+    
+    allFiles = {};
+    detectedAPIs = [];
+    validationResults = {};
+    
+    // Extrai arquivos JavaScript/TypeScript
+    for (let [path, zipEntry] of Object.entries(content.files)) {
+      if (!zipEntry.dir &amp;&amp; /\.(js|jsx|ts|tsx)$/.test(path)) {
+        try {
+          const fileContent = await zipEntry.async('text');
+          allFiles[path] = fileContent;
+          
+          // Valida código
+          validationResults[path] = validateCode(fileContent, path);
+          
+          // Detecta APIs
+          const apis = detectAPIs(fileContent, path);
+          detectedAPIs.push(...apis);
+        } catch (e) {}
+      }
+    }
+    
+    loadingDiv.style.display = 'none';
+    displayResults();
+    
+  } catch (err) {
+    loadingDiv.style.display = 'none';
+    resultsDiv.innerHTML = `<div class=&quot;card card-error&quot;>
+      <div class=&quot;card-title&quot;>❌ Erro ao processar</div>
+      <div class=&quot;card-content&quot;>${err.message}</div>
+    </div>`;
+  }
+}
+
+function validateCode(code, filePath) {
+  const issues = [];
+  const lines = code.split('\n');
+  
+  // Verifica sintaxe básica
+  const checks = [
+    {
+      name: 'Chaves não fechadas',
+      regex: /(\{|\[|\()/g,
+      test: (code) => {
+        const opens = (code.match(/[\{\[\(]/g) || []).length;
+        const closes = (code.match(/[\}\]\)]/g) || []).length;
+        return opens !== closes;
+      },
+      severity: 'error'
+    },
+    {
+      name: 'Variáveis não declaradas',
+      regex: /(?:^|\s)([a-zA-Z_$][a-zA-Z0-9_$]*)\s*=/,
+      test: (code) => {
+        const vars = new Set();
+        const declared = new Set();
+        
+        (code.match(/(?:const|let|var)\s+([a-zA-Z_$][a-zA-Z0-9_$]*)/g) || []).forEach(m => {
+          declared.add(m.replace(/(?:const|let|var)\s+/, ''));
+        });
+        
+        return false; // Simplificado
+      },
+      severity: 'warning'
+    },
+    {
+      name: 'Console.log em produção',
+      regex: /console\.(log|error|warn)/g,
+      test: (code) => /console\.(log|error|warn)/.test(code),
+      severity: 'warning'
+    },
+    {
+      name: 'Try-catch ausente em promises',
+      regex: /\.then\(/g,
+      test: (code) => {
+        const thens = (code.match(/\.then\(/g) || []).length;
+        const catches = (code.match(/\.catch\(/g) || []).length;
+        return thens > catches;
+      },
+      severity: 'warning'
+    },
+    {
+      name: 'Async sem await',
+      regex: /async\s+function/g,
+      test: (code) => {
+        const asyncFuncs = (code.match(/async\s+function/g) || []).length;
+        const awaits = (code.match(/await\s+/g) || []).length;
+        return asyncFuncs > 0 &amp;&amp; awaits === 0;
+      },
+      severity: 'warning'
+    },
+    {
+      name: 'URLs hardcoded',
+      regex: /https?:\/\/[^\s&quot;']+/g,
+      test: (code) => /https?:\/\/[^\s&quot;']+/.test(code),
+      severity: 'info'
+    },
+    {
+      name: 'Senhas/tokens expostos',
+      regex: /(password|token|secret|apikey)\s*[:=]/gi,
+      test: (code) => /(password|token|secret|apikey)\s*[:=]/i.test(code),
+      severity: 'error'
+    }
+  ];
+  
+  checks.forEach(check => {
+    if (check.test(code)) {
+      issues.push({
+        name: check.name,
+        severity: check.severity,
+        count: (code.match(check.regex) || []).length
+      });
+    }
+  });
+  
+  return {
+    filePath,
+    totalLines: lines.length,
+    issues,
+    hasErrors: issues.some(i => i.severity === 'error'),
+    hasWarnings: issues.some(i => i.severity === 'warning')
+  };
+}
+
+function detectAPIs(code, filePath) {
+  const apis = [];
+  
+  // Padrões de detecção de APIs
+  const patterns = [
+    {
+      name: 'fetch',
+      regex: /fetch\s*\(\s*['&quot;`]([^'&quot;`]+)['&quot;`]/g,
+      method: 'GET'
+    },
+    {
+      name: 'axios',
+      regex: /axios\.(get|post|put|delete|patch)\s*\(\s*['&quot;`]([^'&quot;`]+)['&quot;`]/g,
+      method: 'DYNAMIC'
+    },
+    {
+      name: 'XMLHttpRequest',
+      regex: /open\s*\(\s*['&quot;`](\w+)['&quot;`]\s*,\s*['&quot;`]([^'&quot;`]+)['&quot;`]/g,
+      method: 'DYNAMIC'
+    },
+    {
+      name: 'jQuery.ajax',
+      regex: /\$\.ajax\s*\(\s*\{[^}]*url\s*:\s*['&quot;`]([^'&quot;`]+)['&quot;`]/g,
+      method: 'GET'
+    },
+    {
+      name: 'WebSocket',
+      regex: /new\s+WebSocket\s*\(\s*['&quot;`]([^'&quot;`]+)['&quot;`]/g,
+      method: 'WS'
+    }
+  ];
+  
+  patterns.forEach(pattern => {
+    let match;
+    const regex = new RegExp(pattern.regex.source, 'g');
+    
+    while ((match = regex.exec(code)) !== null) {
+      const url = match[1] || match[2];
+      const method = pattern.method === 'DYNAMIC' ? (match[1] || 'GET').toUpperCase() : pattern.method;
+      
+      apis.push({
+        type: pattern.name,
+        url: url,
+        method: method,
+        filePath: filePath,
+        line: code.substring(0, match.index).split('\n').length,
+        fullMatch: match[0]
+      });
+    }
+  });
+  
+  return apis;
+}
+
+function displayResults() {
+  const validationIssues = Object.values(validationResults);
+  const totalErrors = validationIssues.reduce((sum, v) => sum + v.issues.filter(i => i.severity === 'error').length, 0);
+  const totalWarnings = validationIssues.reduce((sum, v) => sum + v.issues.filter(i => i.severity === 'warning').length, 0);
+  
+  let html = `
+    <div class=&quot;tabs&quot;>
+      <button class=&quot;tab active&quot; onclick=&quot;switchTab('validation')&quot;>✅ Validação</button>
+      <button class=&quot;tab&quot; onclick=&quot;switchTab('apis')&quot;>🔌 APIs Detectadas</button>
+      <button class=&quot;tab&quot; onclick=&quot;switchTab('test')&quot;>🧪 Testar APIs</button>
+    </div>
+    
+    <!-- TAB: VALIDAÇÃO -->
+    <div id=&quot;tab-validation&quot; class=&quot;tab-content active&quot;>
+      <div class=&quot;results&quot;>
+        <h2>✅ Validação de Código</h2>
+        <div class=&quot;stats-grid&quot;>
+          <div class=&quot;stat-box&quot;>
+            <strong>${validationIssues.length}</strong>
+            <span>Arquivos Analisados</span>
+          </div>
+          <div class=&quot;stat-box&quot;>
+            <strong>${totalErrors}</strong>
+            <span>Erros</span>
+          </div>
+          <div class=&quot;stat-box&quot;>
+            <strong>${totalWarnings}</strong>
+            <span>Avisos</span>
+          </div>
+          <div class=&quot;stat-box&quot;>
+            <strong>${validationIssues.filter(v => !v.hasErrors &amp;&amp; !v.hasWarnings).length}</strong>
+            <span>OK</span>
+          </div>
+        </div>
+      </div>
+  `;
+  
+  validationIssues.forEach(validation => {
+    const status = validation.hasErrors ? '❌' : validation.hasWarnings ? '⚠️' : '✅';
+    const cardClass = validation.hasErrors ? 'card-error' : validation.hasWarnings ? 'card-warning' : 'card-success';
+    
+    html += `
+      <div class=&quot;card ${cardClass}&quot;>
+        <div class=&quot;card-title&quot;>${status} ${validation.filePath}</div>
+        <div class=&quot;card-content&quot;>
+          <strong>Linhas:</strong> ${validation.totalLines}<br>
+          ${validation.issues.length > 0 ? `
+            <strong>Problemas encontrados:</strong>
+            <ul style=&quot;margin-left: 20px; margin-top: 8px;&quot;>
+              ${validation.issues.map(issue => `
+                <li>${issue.name} (${issue.severity}) - ${issue.count} ocorrência(s)</li>
+              `).join('')}
+            </ul>
+          ` : '<strong style=&quot;color: #4ade80;&quot;>Nenhum problema detectado!</strong>'}
+        </div>
+      </div>
+    `;
+  });
+  
+  html += `</div>`;
+  
+  // TAB: APIs DETECTADAS
+  html += `
+    <div id=&quot;tab-apis&quot; class=&quot;tab-content&quot;>
+      <div class=&quot;results&quot;>
+        <h2>🔌 APIs Detectadas</h2>
+        <div class=&quot;stats-grid&quot;>
+          <div class=&quot;stat-box&quot;>
+            <strong>${detectedAPIs.length}</strong>
+            <span>APIs Encontradas</span>
+          </div>
+          <div class=&quot;stat-box&quot;>
+            <strong>${new Set(detectedAPIs.map(a => a.url)).size}</strong>
+            <span>URLs Únicas</span>
+          </div>
+          <div class=&quot;stat-box&quot;>
+            <strong>${new Set(detectedAPIs.map(a => a.type)).size}</strong>
+            <span>Tipos de Chamada</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class=&quot;results&quot;>
+        <h2>📋 Lista de APIs</h2>
+        <div class=&quot;api-list&quot;>
+          ${detectedAPIs.length > 0 ? detectedAPIs.map((api, idx) => `
+            <div class=&quot;api-item&quot; onclick=&quot;openApiTest(${idx})&quot;>
+              <div>
+                <span class=&quot;api-method ${api.method.toLowerCase()}&quot;>${api.method}</span>
+                <span style=&quot;color: #a3a082; font-weight: 600;&quot;>${api.type}</span>
+              </div>
+              <div class=&quot;api-url&quot;>${api.url}</div>
+              <div style=&quot;font-size: 11px; color: #94a3b8; margin-top: 5px;&quot;>
+                📄 ${api.filePath} (linha ${api.line})
+              </div>
+              <button class=&quot;btn btn-small btn-secondary&quot; style=&quot;margin-top: 8px;&quot; onclick=&quot;event.stopPropagation(); openApiTest(${idx})&quot;>
+                🧪 Testar
+              </button>
+            </div>
+          `).join('') : '<div style=&quot;color: #94a3b8; padding: 20px; text-align: center;&quot;>Nenhuma API detectada</div>'}
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // TAB: TESTAR APIs
+  html += `
+    <div id=&quot;tab-test&quot; class=&quot;tab-content&quot;>
+      <div class=&quot;results&quot;>
+        <h2>🧪 Testar APIs</h2>
+        <p style=&quot;color: #94a3b8; margin-bottom: 15px;&quot;>Selecione uma API acima para testar, ou configure manualmente:</p>
+        
+        <div class=&quot;form-group&quot;>
+          <label>URL da API</label>
+          <input type=&quot;text&quot; id=&quot;testUrl&quot; placeholder=&quot;https://api.exemplo.com/dados&quot; value=&quot;&quot;>
+        </div>
+        
+        <div class=&quot;form-group&quot;>
+          <label>Método HTTP</label>
+          <select id=&quot;testMethod&quot;>
+            <option value=&quot;GET&quot;>GET</option>
+            <option value=&quot;POST&quot;>POST</option>
+            <option value=&quot;PUT&quot;>PUT</option>
+            <option value=&quot;DELETE&quot;>DELETE</option>
+            <option value=&quot;PATCH&quot;>PATCH</option>
+          </select>
+        </div>
+        
+        <div class=&quot;form-group&quot;>
+          <label>Headers (JSON)</label>
+          <textarea id=&quot;testHeaders&quot; style=&quot;height: 80px;&quot; placeholder='{&quot;Authorization&quot;: &quot;Bearer token&quot;, &quot;Content-Type&quot;: &quot;application/json&quot;}'></textarea>
+        </div>
+        
+        <div class=&quot;form-group&quot;>
+          <label>Body (JSON)</label>
+          <textarea id=&quot;testBody&quot; style=&quot;height: 80px;&quot; placeholder='{&quot;chave&quot;: &quot;valor&quot;}'></textarea>
+        </div>
+        
+        <button class=&quot;btn btn-success&quot; onclick=&quot;testAPI()&quot;>🚀 Executar Teste</button>
+        
+        <div id=&quot;testResults&quot; style=&quot;margin-top: 20px;&quot;></div>
+      </div>
+    </div>
+  `;
+  
+  resultsDiv.innerHTML = html;
+}
+
+function switchTab(tabName) {
+  // Remove active de todos
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  
+  // Adiciona active ao selecionado
+  event.target.classList.add('active');
+  document.getElementById(`tab-${tabName}`).classList.add('active');
+}
+
+function openApiTest(index) {
+  const api = detectedAPIs[index];
+  
+  document.getElementById('testUrl').value = api.url;
+  document.getElementById('testMethod').value = api.method;
+  
+  // Muda para tab de teste
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  
+  const tabs = document.querySelectorAll('.tab');
+  tabs[2].classList.add('active');
+  document.getElementById('tab-test').classList.add('active');
+  
+  // Scroll para o formulário
+  document.getElementById('tab-test').scrollIntoView({ behavior: 'smooth' });
+}
+
+async function testAPI() {
+  const url = document.getElementById('testUrl').value;
+  const method = document.getElementById('testMethod').value;
+  const headersStr = document.getElementById('testHeaders').value;
+  const bodyStr = document.getElementById('testBody').value;
+  
+  if (!url) {
+    alert('❌ Digite uma URL válida!');
+    return;
+  }
+  
+  const resultsDiv = document.getElementById('testResults');
+  resultsDiv.innerHTML = '<div class=&quot;loading&quot;><div class=&quot;spinner&quot;></div><p>Testando API...</p></div>';
+  
+  try {
+    let headers = {
+      'Content-Type': 'application/json'
+    };
+    
+    if (headersStr) {
+      try {
+        headers = { ...headers, ...JSON.parse(headersStr) };
+      } catch (e) {
+        throw new Error('Headers inválido: ' + e.message);
+      }
+    }
+    
+    let body = undefined;
+    if (bodyStr &amp;&amp; ['POST', 'PUT', 'PATCH'].includes(method)) {
+      try {
+        body = JSON.parse(bodyStr);
+      } catch (e) {
+        throw new Error('Body inválido: ' + e.message);
+      }
+    }
+    
+    const startTime = performance.now();
+    const response = await fetch(url, {
+      method: method,
+      headers: headers,
+      body: body ? JSON.stringify(body) : undefined
+    });
+    const endTime = performance.now();
+    
+    const responseText = await response.text();
+    let responseData;
+    
+    try {
+      responseData = JSON.parse(responseText);
+    } catch (e) {
+      responseData = responseText;
+    }
+    
+    const isSuccess = response.ok;
+    const statusClass = isSuccess ? 'success-line' : 'error-line';
+    
+    let html = `
+      <div class=&quot;card ${isSuccess ? 'card-success' : 'card-error'}&quot;>
+        <div class=&quot;card-title&quot;>${isSuccess ? '✅ Sucesso!' : '❌ Erro na Chamada'}</div>
+        <div class=&quot;card-content&quot;>
+          <strong>Status:</strong> ${response.status} ${response.statusText}<br>
+          <strong>Tempo de Resposta:</strong> ${(endTime - startTime).toFixed(2)}ms<br>
+          <strong>Content-Type:</strong> ${response.headers.get('content-type') || 'não especificado'}<br>
+          <strong>Tamanho:</strong> ${responseText.length} bytes
+        </div>
+      </div>
+      
+      <div class=&quot;response-box&quot;>
+        <div class=&quot;response-header&quot;>📨 Resposta da API</div>
+        <pre>${typeof responseData === 'object' ? JSON.stringify(responseData, null, 2) : escapeHtml(responseData)}</pre>
+      </div>
+      
+      <div class=&quot;card card-info&quot;>
+        <div class=&quot;card-title&quot;>📊 Análise da Resposta</div>
+        <div class=&quot;card-content&quot;>
+          ${analyzeResponse(responseData, response.status)}
+        </div>
+      </div>
+    `;
+    
+    resultsDiv.innerHTML = html;
+    
+  } catch (err) {
+    resultsDiv.innerHTML = `
+      <div class=&quot;card card-error&quot;>
+        <div class=&quot;card-title&quot;>❌ Erro na Requisição</div>
+        <div class=&quot;card-content&quot;>
+          <strong>Tipo de Erro:</strong> ${err.name}<br>
+          <strong>Mensagem:</strong> ${err.message}<br>
+          <br>
+          <strong>Possíveis Causas:</strong>
+          <ul style=&quot;margin-left: 20px; margin-top: 8px;&quot;>
+            <li>URL inválida ou inacessível</li>
+            <li>CORS bloqueado (Cross-Origin)</li>
+            <li>Servidor fora do ar</li>
+            <li>Timeout na conexão</li>
+            <li>Certificado SSL inválido</li>
+          </ul>
+        </div>
+      </div>
+    `;
+  }
+}
+
+function analyzeResponse(data, status) {
+  let analysis = '';
+  
+  if (status >= 200 &amp;&amp; status < 300) {
+    analysis += '<span class=&quot;success-line&quot;>✅ Status de sucesso (2xx)</span><br>';
+  } else if (status >= 300 &amp;&amp; status < 400) {
+    analysis += '<span class=&quot;warning-line&quot;>⚠️ Redirecionamento (3xx)</span><br>';
+  } else if (status >= 400 &amp;&amp; status < 500) {
+    analysis += '<span class=&quot;error-line&quot;>❌ Erro do cliente (4xx)</span><br>';
+  } else if (status >= 500) {
+    analysis += '<span class=&quot;error-line&quot;>❌ Erro do servidor (5xx)</span><br>';
+  }
+  
+  if (typeof data === 'object' &amp;&amp; data !== null) {
+    analysis += '<strong>Tipo:</strong> JSON<br>';
+    
+    if (data.error || data.erro) {
+      analysis += '<span class=&quot;error-line&quot;>⚠️ Campo de erro detectado</span><br>';
+    }
+    
+    if (data.data || data.resultado || data.result) {
+      analysis += '<span class=&quot;success-line&quot;>✅ Campo de dados detectado</span><br>';
+    }
+    
+    if (data.message || data.mensagem) {
+      analysis += `<strong>Mensagem:</strong> ${data.message || data.mensagem}<br>`;
+    }
+    
+    const keys = Object.keys(data);
+    analysis += `<strong>Campos na resposta:</strong> ${keys.join(', ')}<br>`;
+  } else {
+    analysis += '<strong>Tipo:</strong> Texto/HTML<br>';
+  }
+  
+  return analysis;
+}
+
+function closeApiModal() {
+  document.getElementById('apiTestModal').classList.remove('open');
+}
+
+function escapeHtml(text) {
+  const map = {
+    '&amp;': '&amp;amp;',
+    '<': '&amp;lt;',
+    '>': '&amp;gt;',
+    '&quot;': '&amp;quot;',
+    &quot;'&quot;: '&amp;#039;'
+  };
+  return text.replace(/[&amp;<>&quot;']/g, m => map[m]);
+}
+</script>
+
+</body>
+</html>
+" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"></iframe></div>
+<div class="projeto " id="p4"><iframe srcdoc="<!DOCTYPE html>
+<html lang=&quot;pt-BR&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;>
+<title>Gerador de Relatório + Extrator de Arquivos</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', monospace;
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 20px;
+  min-height: 100vh;
+}
+.container { max-width: 1600px; margin: 0 auto; }
+h1 { color: #a3a082; margin-bottom: 10px; text-align: center; font-size: 24px; }
+.subtitle { text-align: center; color: #94a3b8; margin-bottom: 20px; font-size: 13px; }
+h2 { color: #4ade80; margin: 25px 0 15px 0; font-size: 16px; border-bottom: 2px solid #334155; padding-bottom: 8px; }
+h3 { color: #60a5fa; margin: 12px 0 8px 0; font-size: 13px; }
+
+.upload-area {
+  background: #1e293b;
+  border: 2px dashed #334155;
+  border-radius: 10px;
+  padding: 40px;
+  text-align: center;
+  margin-bottom: 20px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.upload-area:hover { border-color: #a3a082; background: #334155; }
+.upload-area.dragover { border-color: #4ade80; background: rgba(74, 222, 128, 0.1); }
+
+input[type=&quot;file&quot;] { display: none; }
+
+.btn {
+  background: #a3a082;
+  color: #000;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  margin: 5px;
+  transition: all 0.2s;
+  font-size: 12px;
+}
+.btn:hover { background: #d4d0a8; transform: translateY(-2px); }
+.btn-secondary { background: #3b82f6; color: #fff; }
+.btn-secondary:hover { background: #2563eb; }
+.btn-danger { background: #f87171; color: #fff; }
+.btn-danger:hover { background: #dc2626; }
+.btn-small { padding: 6px 12px; font-size: 11px; }
+
+.loading {
+  text-align: center;
+  color: #94a3b8;
+  padding: 30px;
+  font-size: 14px;
+}
+.spinner {
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  border: 4px solid #334155;
+  border-top-color: #a3a082;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 15px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.filters {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.filter-group label {
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 600;
+}
+
+.filter-group input,
+.filter-group select {
+  background: #0f172a;
+  border: 1px solid #334155;
+  color: #e2e8f0;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.filter-group input:focus,
+.filter-group select:focus {
+  outline: none;
+  border-color: #a3a082;
+}
+
+.checkbox-group {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.checkbox-group label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.checkbox-group input[type=&quot;checkbox&quot;] {
+  cursor: pointer;
+  width: 14px;
+  height: 14px;
+}
+
+.results {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.card {
+  background: #0f172a;
+  border-left: 4px solid #a3a082;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 4px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.card-title {
+  color: #e2e8f0;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.card-meta {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 5px;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 10px;
+  margin: 15px 0;
+}
+
+.stat-box {
+  background: #334155;
+  padding: 12px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+.stat-box strong {
+  display: block;
+  color: #a3a082;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+.stat-box span {
+  font-size: 10px;
+  color: #94a3b8;
+}
+
+.file-list {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 15px;
+  margin: 10px 0;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.file-item {
+  padding: 10px;
+  margin-bottom: 8px;
+  border: 1px solid #334155;
+  border-radius: 4px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.file-item:hover {
+  background: #334155;
+  border-color: #a3a082;
+}
+
+.file-item.js { border-left: 4px solid #60a5fa; }
+.file-item.html { border-left: 4px solid #f87171; }
+.file-item.css { border-left: 4px solid #fbbf24; }
+.file-item.json { border-left: 4px solid #4ade80; }
+.file-item.other { border-left: 4px solid #94a3b8; }
+
+.file-name {
+  flex: 1;
+  color: #e2e8f0;
+  font-weight: 500;
+}
+
+.file-size {
+  color: #94a3b8;
+  font-size: 11px;
+  margin-right: 10px;
+}
+
+.file-actions {
+  display: flex;
+  gap: 5px;
+}
+
+.code-preview {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 6px;
+  padding: 15px;
+  margin: 15px 0;
+  font-family: 'Courier New', monospace;
+  font-size: 11px;
+  line-height: 1.5;
+  max-height: 300px;
+  overflow: auto;
+  color: #60a5fa;
+}
+
+.code-line {
+  padding: 2px 0;
+  display: flex;
+  gap: 10px;
+}
+
+.code-num {
+  color: #94a3b8;
+  min-width: 30px;
+  text-align: right;
+  user-select: none;
+}
+
+.code-content {
+  flex: 1;
+  word-break: break-all;
+}
+
+.tabs {
+  display: flex;
+  gap: 5px;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #334155;
+  flex-wrap: wrap;
+}
+
+.tab {
+  padding: 10px 15px;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  font-size: 12px;
+}
+
+.tab:hover { color: #e2e8f0; }
+.tab.active { color: #a3a082; border-bottom-color: #a3a082; }
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+.export-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.8);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal.open {
+  display: flex;
+}
+
+.modal-content {
+  background: #1e293b;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 90%;
+  max-height: 90vh;
+  overflow: auto;
+  width: 800px;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid #334155;
+}
+
+.modal-close {
+  background: #f87171;
+  color: #fff;
+  border: none;
+  width: 30px;
+  height: 30px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #0f172a; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+
+@media (max-width: 1200px) {
+  .filters { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class=&quot;container&quot;>
+  <h1>📋 Gerador de Relatório + Extrator de Arquivos</h1>
+  <p class=&quot;subtitle&quot;>Analisa, filtra e extrai arquivos individuais para edição segura</p>
+
+  <div class=&quot;upload-area&quot; id=&quot;dropZone&quot;>
+    <p style=&quot;font-size: 18px; margin-bottom: 10px;&quot;>📦 Arraste seu ZIP da Replit aqui</p>
+    <p style=&quot;color: #94a3b8; font-size: 13px; margin-bottom: 15px;&quot;>Será analisado para gerar relatório completo</p>
+    <button class=&quot;btn&quot; onclick=&quot;document.getElementById('fileInput').click()&quot;>Selecionar ZIP</button>
+    <input type=&quot;file&quot; id=&quot;fileInput&quot; accept=&quot;.zip&quot; />
+  </div>
+
+  <div id=&quot;loading&quot; class=&quot;loading&quot; style=&quot;display:none;&quot;>
+    <div class=&quot;spinner&quot;></div>
+    <p>Analisando e gerando relatório...</p>
+  </div>
+
+  <div id=&quot;results&quot;></div>
+</div>
+
+<!-- MODAL DE VISUALIZAÇÃO -->
+<div class=&quot;modal&quot; id=&quot;fileModal&quot;>
+  <div class=&quot;modal-content&quot;>
+    <div class=&quot;modal-header&quot;>
+      <h2 id=&quot;modalTitle&quot;>Arquivo</h2>
+      <button class=&quot;modal-close&quot; onclick=&quot;closeModal()&quot;>✕</button>
+    </div>
+    <div id=&quot;modalBody&quot;></div>
+    <div style=&quot;margin-top: 20px; display: flex; gap: 10px;&quot;>
+      <button class=&quot;btn btn-secondary&quot; onclick=&quot;downloadCurrentFile()&quot;>⬇️ Baixar Arquivo</button>
+      <button class=&quot;btn btn-secondary&quot; onclick=&quot;copyCurrentFile()&quot;>📋 Copiar Código</button>
+      <button class=&quot;btn&quot; onclick=&quot;closeModal()&quot;>Fechar</button>
+    </div>
+  </div>
+</div>
+
+<script src=&quot;https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js&quot;></script>
+
+<script>
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('fileInput');
+const resultsDiv = document.getElementById('results');
+const loadingDiv = document.getElementById('loading');
+
+let allFiles = {};
+let fileMetadata = {};
+let currentFileContent = '';
+let currentFileName = '';
+
+dropZone.addEventListener('dragover', e => {
+  e.preventDefault();
+  dropZone.classList.add('dragover');
+});
+dropZone.addEventListener('dragleave', () => {
+  dropZone.classList.remove('dragover');
+});
+dropZone.addEventListener('drop', e => {
+  e.preventDefault();
+  dropZone.classList.remove('dragover');
+  handleFile(e.dataTransfer.files[0]);
+});
+
+fileInput.addEventListener('change', e => {
+  handleFile(e.target.files[0]);
+});
+
+async function handleFile(file) {
+  if (!file) return;
+  
+  loadingDiv.style.display = 'block';
+  resultsDiv.innerHTML = '';
+  
+  try {
+    const zip = new JSZip();
+    const content = await zip.loadAsync(file);
+    
+    allFiles = {};
+    fileMetadata = {};
+    
+    // Extrai todos os arquivos
+    for (let [path, zipEntry] of Object.entries(content.files)) {
+      if (!zipEntry.dir) {
+        allFiles[path] = zipEntry;
+        
+        const ext = path.split('.').pop().toLowerCase();
+        const size = zipEntry._data.uncompressedSize;
+        
+        fileMetadata[path] = {
+          name: path.split('/').pop(),
+          path: path,
+          ext: ext,
+          size: size,
+          sizeKB: (size / 1024).toFixed(2),
+          type: getFileType(ext),
+          isHidden: path.includes('/.')
+        };
+      }
+    }
+    
+    loadingDiv.style.display = 'none';
+    displayReport();
+    
+  } catch (err) {
+    loadingDiv.style.display = 'none';
+    resultsDiv.innerHTML = `<div class=&quot;card&quot; style=&quot;border-left-color: #f87171;&quot;>
+      <h3>❌ Erro ao processar</h3>
+      <p style=&quot;color: #f87171;&quot;>${err.message}</p>
+    </div>`;
+  }
+}
+
+function getFileType(ext) {
+  if (['js', 'jsx', 'ts', 'tsx'].includes(ext)) return 'js';
+  if (['html', 'htm'].includes(ext)) return 'html';
+  if (['css', 'scss', 'sass'].includes(ext)) return 'css';
+  if (['json'].includes(ext)) return 'json';
+  return 'other';
+}
+
+function displayReport() {
+  const files = Object.values(fileMetadata);
+  
+  let html = `
+    <div class=&quot;filters&quot;>
+      <div class=&quot;filter-group&quot;>
+        <label>🔍 Buscar Arquivo</label>
+        <input type=&quot;text&quot; id=&quot;searchInput&quot; placeholder=&quot;Digite o nome...&quot; onkeyup=&quot;filterFiles()&quot;>
+      </div>
+      
+      <div class=&quot;filter-group&quot;>
+        <label>📝 Tipo de Arquivo</label>
+        <select id=&quot;typeFilter&quot; onchange=&quot;filterFiles()&quot;>
+          <option value=&quot;&quot;>-- Todos --</option>
+          <option value=&quot;js&quot;>JavaScript</option>
+          <option value=&quot;html&quot;>HTML</option>
+          <option value=&quot;css&quot;>CSS</option>
+          <option value=&quot;json&quot;>JSON</option>
+          <option value=&quot;other&quot;>Outros</option>
+        </select>
+      </div>
+      
+      <div class=&quot;filter-group&quot;>
+        <label>📊 Tamanho</label>
+        <select id=&quot;sizeFilter&quot; onchange=&quot;filterFiles()&quot;>
+          <option value=&quot;&quot;>-- Qualquer tamanho --</option>
+          <option value=&quot;small&quot;>Pequeno (&amp;lt;10KB)</option>
+          <option value=&quot;medium&quot;>Médio (10-100KB)</option>
+          <option value=&quot;large&quot;>Grande (&amp;gt;100KB)</option>
+        </select>
+      </div>
+      
+      <div class=&quot;filter-group&quot;>
+        <label>🏷️ Categoria</label>
+        <select id=&quot;categoryFilter&quot; onchange=&quot;filterFiles()&quot;>
+          <option value=&quot;&quot;>-- Todas --</option>
+          <option value=&quot;historico&quot;>Histórico da IA</option>
+          <option value=&quot;minuta&quot;>Minuta</option>
+          <option value=&quot;resumo&quot;>Resumo</option>
+          <option value=&quot;backend&quot;>Backend/API</option>
+          <option value=&quot;database&quot;>Banco de Dados</option>
+          <option value=&quot;ui&quot;>Interface</option>
+        </select>
+      </div>
+      
+      <div class=&quot;filter-group&quot;>
+        <label>Mostrar</label>
+        <div class=&quot;checkbox-group&quot;>
+          <label>
+            <input type=&quot;checkbox&quot; id=&quot;showHidden&quot; checked onchange=&quot;filterFiles()&quot;> Ocultos
+          </label>
+          <label>
+            <input type=&quot;checkbox&quot; id=&quot;showLarge&quot; checked onchange=&quot;filterFiles()&quot;> Grandes
+          </label>
+        </div>
+      </div>
+      
+      <div class=&quot;filter-group&quot;>
+        <label>&amp;nbsp;</label>
+        <button class=&quot;btn btn-secondary&quot; onclick=&quot;exportReport()&quot;>📊 Exportar Relatório</button>
+      </div>
+    </div>
+  `;
+  
+  // Estatísticas gerais
+  html += `
+    <div class=&quot;results&quot;>
+      <h2>📊 Estatísticas Gerais</h2>
+      <div class=&quot;stats-grid&quot;>
+        <div class=&quot;stat-box&quot;>
+          <strong>${files.length}</strong>
+          <span>Total de Arquivos</span>
+        </div>
+        <div class=&quot;stat-box&quot;>
+          <strong>${files.filter(f => f.type === 'js').length}</strong>
+          <span>JavaScript</span>
+        </div>
+        <div class=&quot;stat-box&quot;>
+          <strong>${files.filter(f => f.type === 'html').length}</strong>
+          <span>HTML</span>
+        </div>
+        <div class=&quot;stat-box&quot;>
+          <strong>${files.filter(f => f.type === 'css').length}</strong>
+          <span>CSS</span>
+        </div>
+        <div class=&quot;stat-box&quot;>
+          <strong>${(files.reduce((sum, f) => sum + f.size, 0) / 1024 / 1024).toFixed(2)}MB</strong>
+          <span>Tamanho Total</span>
+        </div>
+        <div class=&quot;stat-box&quot;>
+          <strong>${files.filter(f => f.isHidden).length}</strong>
+          <span>Arquivos Ocultos</span>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // Lista de arquivos
+  html += `
+    <div class=&quot;results&quot;>
+      <h2>📁 Arquivos</h2>
+      <div class=&quot;file-list&quot; id=&quot;fileList&quot;>
+        ${files.map(f => `
+          <div class=&quot;file-item ${f.type}&quot; data-file=&quot;${f.path}&quot; data-type=&quot;${f.type}&quot; data-size=&quot;${f.size}&quot; data-hidden=&quot;${f.isHidden}&quot;>
+            <div>
+              <div class=&quot;file-name&quot;>${f.name}</div>
+              <div class=&quot;file-size&quot;>${f.sizeKB}KB ${f.isHidden ? '(oculto)' : ''}</div>
+            </div>
+            <div class=&quot;file-actions&quot;>
+              <button class=&quot;btn btn-small btn-secondary&quot; onclick=&quot;viewFile('${f.path}')&quot;>👁️</button>
+              <button class=&quot;btn btn-small btn-secondary&quot; onclick=&quot;downloadFile('${f.path}')&quot;>⬇️</button>
+              <button class=&quot;btn btn-small&quot; onclick=&quot;analyzeFile('${f.path}')&quot;>🔍</button>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `;
+  
+  resultsDiv.innerHTML = html;
+}
+
+function filterFiles() {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const typeFilter = document.getElementById('typeFilter').value;
+  const sizeFilter = document.getElementById('sizeFilter').value;
+  const categoryFilter = document.getElementById('categoryFilter').value;
+  const showHidden = document.getElementById('showHidden').checked;
+  const showLarge = document.getElementById('showLarge').checked;
+  
+  const fileItems = document.querySelectorAll('.file-item');
+  
+  fileItems.forEach(item => {
+    const path = item.dataset.file;
+    const type = item.dataset.type;
+    const size = parseInt(item.dataset.size);
+    const isHidden = item.dataset.hidden === 'true';
+    
+    let show = true;
+    
+    // Filtro de busca
+    if (search &amp;&amp; !path.toLowerCase().includes(search)) show = false;
+    
+    // Filtro de tipo
+    if (typeFilter &amp;&amp; type !== typeFilter) show = false;
+    
+    // Filtro de tamanho
+    if (sizeFilter === 'small' &amp;&amp; size >= 10240) show = false;
+    if (sizeFilter === 'medium' &amp;&amp; (size < 10240 || size > 102400)) show = false;
+    if (sizeFilter === 'large' &amp;&amp; size <= 102400) show = false;
+    
+    // Filtro de ocultos
+    if (isHidden &amp;&amp; !showHidden) show = false;
+    
+    // Filtro de grandes
+    if (size > 1024 * 1024 &amp;&amp; !showLarge) show = false;
+    
+    // Filtro de categoria
+    if (categoryFilter) {
+      const pathLower = path.toLowerCase();
+      const categoryMatch = {
+        'historico': pathLower.includes('historico') || pathLower.includes('history'),
+        'minuta': pathLower.includes('minuta') || pathLower.includes('minute'),
+        'resumo': pathLower.includes('resumo') || pathLower.includes('summary'),
+        'backend': pathLower.includes('backend') || pathLower.includes('server') || pathLower.includes('api'),
+        'database': pathLower.includes('database') || pathLower.includes('db'),
+        'ui': pathLower.includes('ui') || pathLower.includes('component') || pathLower.includes('page')
+      };
+      
+      if (!categoryMatch[categoryFilter]) show = false;
+    }
+    
+    item.style.display = show ? 'flex' : 'none';
+  });
+}
+
+async function viewFile(filePath) {
+  try {
+    const content = await allFiles[filePath].async('text');
+    const meta = fileMetadata[filePath];
+    
+    currentFileContent = content;
+    currentFileName = meta.name;
+    
+    const lines = content.split('\n');
+    const preview = lines.slice(0, 50).map((line, i) => `
+      <div class=&quot;code-line&quot;>
+        <span class=&quot;code-num&quot;>${i + 1}</span>
+        <span class=&quot;code-content&quot;>${escapeHtml(line)}</span>
+      </div>
+    `).join('');
+    
+    document.getElementById('modalTitle').textContent = `📄 ${meta.name} (${meta.sizeKB}KB)`;
+    document.getElementById('modalBody').innerHTML = `
+      <div class=&quot;code-preview&quot;>
+        ${preview}
+        ${lines.length > 50 ? `<div style=&quot;color: #94a3b8; margin-top: 10px;&quot;>... ${lines.length - 50} linhas restantes</div>` : ''}
+      </div>
+    `;
+    
+    document.getElementById('fileModal').classList.add('open');
+  } catch (err) {
+    alert('Erro ao ler arquivo: ' + err.message);
+  }
+}
+
+async function analyzeFile(filePath) {
+  try {
+    const content = await allFiles[filePath].async('text');
+    const meta = fileMetadata[filePath];
+    
+    const analysis = {
+      linhas: content.split('\n').length,
+      caracteres: content.length,
+      funcoes: (content.match(/function\s+\w+|const\s+\w+\s*=/g) || []).length,
+      comentarios: (content.match(/\/\/|\/\*|\*\//g) || []).length,
+      imports: (content.match(/import\s+|require\s*\(/g) || []).length,
+      exports: (content.match(/export\s+|module\.exports/g) || []).length,
+      keywords: {
+        historico: content.toLowerCase().includes('historico') || content.toLowerCase().includes('history'),
+        minuta: content.toLowerCase().includes('minuta'),
+        resumo: content.toLowerCase().includes('resumo'),
+        api: content.toLowerCase().includes('fetch') || content.toLowerCase().includes('axios'),
+        database: content.toLowerCase().includes('database') || content.toLowerCase().includes('sql'),
+        auth: content.toLowerCase().includes('auth') || content.toLowerCase().includes('token')
+      }
+    };
+    
+    currentFileContent = content;
+    currentFileName = meta.name;
+    
+    let html = `
+      <div style=&quot;background: #0f172a; padding: 15px; border-radius: 6px;&quot;>
+        <h3>📊 Análise: ${meta.name}</h3>
+        <div class=&quot;stats-grid&quot; style=&quot;margin-top: 15px;&quot;>
+          <div class=&quot;stat-box&quot;>
+            <strong>${analysis.linhas}</strong>
+            <span>Linhas</span>
+          </div>
+          <div class=&quot;stat-box&quot;>
+            <strong>${analysis.funcoes}</strong>
+            <span>Funções</span>
+          </div>
+          <div class=&quot;stat-box&quot;>
+            <strong>${analysis.imports}</strong>
+            <span>Imports</span>
+          </div>
+          <div class=&quot;stat-box&quot;>
+            <strong>${analysis.comentarios}</strong>
+            <span>Comentários</span>
+          </div>
+        </div>
+        
+        <h3 style=&quot;margin-top: 20px;&quot;>🏷️ Palavras-chave Detectadas</h3>
+        <div style=&quot;margin-top: 10px;&quot;>
+          ${Object.entries(analysis.keywords).map(([key, found]) => `
+            <span style=&quot;display: inline-block; margin: 5px; padding: 5px 10px; background: ${found ? '#4ade80' : '#f87171'}; color: #000; border-radius: 4px; font-size: 11px;&quot;>
+              ${key}: ${found ? '✓' : '✗'}
+            </span>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    
+    document.getElementById('modalTitle').textContent = `🔍 Análise: ${meta.name}`;
+    document.getElementById('modalBody').innerHTML = html;
+    document.getElementById('fileModal').classList.add('open');
+  } catch (err) {
+    alert('Erro ao analisar arquivo: ' + err.message);
+  }
+}
+
+async function downloadFile(filePath) {
+  try {
+    const content = await allFiles[filePath].async('text');
+    const meta = fileMetadata[filePath];
+    
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = meta.name;
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch (err) {
+    alert('Erro ao baixar: ' + err.message);
+  }
+}
+
+function downloadCurrentFile() {
+  const blob = new Blob([currentFileContent], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = currentFileName;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function copyCurrentFile() {
+  navigator.clipboard.writeText(currentFileContent).then(() => {
+    alert('✅ Código copiado para a área de transferência!');
+  });
+}
+
+function closeModal() {
+  document.getElementById('fileModal').classList.remove('open');
+}
+
+function exportReport() {
+  const files = Object.values(fileMetadata);
+  
+  let md = `# Relatório de Arquivos — PWA Jurídico\n\n`;
+  md += `**Gerado em:** ${new Date().toLocaleString('pt-BR')}\n\n`;
+  
+  md += `## 📊 Resumo\n`;
+  md += `- Total de arquivos: ${files.length}\n`;
+  md += `- JavaScript: ${files.filter(f => f.type === 'js').length}\n`;
+  md += `- HTML: ${files.filter(f => f.type === 'html').length}\n`;
+  md += `- CSS: ${files.filter(f => f.type === 'css').length}\n`;
+  md += `- Tamanho total: ${(files.reduce((sum, f) => sum + f.size, 0) / 1024 / 1024).toFixed(2)}MB\n\n`;
+  
+  md += `## 📁 Arquivos\n\n`;
+  
+  const byType = {};
+  files.forEach(f => {
+    if (!byType[f.type]) byType[f.type] = [];
+    byType[f.type].push(f);
+  });
+  
+  Object.entries(byType).forEach(([type, typeFiles]) => {
+    md += `### ${type.toUpperCase()}\n`;
+    typeFiles.forEach(f => {
+      md += `- **${f.name}** (${f.sizeKB}KB)\n`;
+    });
+    md += '\n';
+  });
+  
+  const blob = new Blob([md], { type: 'text/markdown' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `relatorio-arquivos-${new Date().toISOString().split('T')[0]}.md`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function escapeHtml(text) {
+  const map = {
+    '&amp;': '&amp;amp;',
+    '<': '&amp;lt;',
+    '>': '&amp;gt;',
+    '&quot;': '&amp;quot;',
+    &quot;'&quot;: '&amp;#039;'
+  };
+  return text.replace(/[&amp;<>&quot;']/g, m => map[m]);
+}
+</script>
+
+</body>
+</html>
+" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"></iframe></div>
+
+<script>
+function trocar(i) {
+  document.querySelectorAll('.projeto').forEach(function(el){ el.classList.remove('ativo'); });
+  document.querySelectorAll('.nav-btn').forEach(function(el){ el.classList.remove('active'); });
+  document.getElementById('p'+i).classList.add('ativo');
+  document.querySelectorAll('.nav-btn')[i].classList.add('active');
+  localStorage.setItem('mc-ultimo', i);
+}
+window.onload = function() {
+  var u = localStorage.getItem('mc-ultimo');
+  if (u !== null) trocar(parseInt(u));
+};
+</script>
+</body>
+</html>
