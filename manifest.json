@@ -1,0 +1,82 @@
+{
+  "name": "Maikon Caldeira - Advocacia Digital",
+  "short_name": "MC Advocacia",
+  "description": "Sistema completo de ferramentas jurídicas e produtividade",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#0a0a0a",
+  "theme_color": "#5d5e53",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "1.playgrond",
+      "short_name": "1.playgrond",
+      "description": "Novo app",
+      "url": "./codigo1.html",
+      "icons": [
+        {
+          "src": "./icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "2.Filtrador",
+      "short_name": "2.Filtrador",
+      "description": "Novo app",
+      "url": "./codigo2.html",
+      "icons": [
+        {
+          "src": "./icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "3.Chat",
+      "short_name": "3.Chat",
+      "description": "Novo app",
+      "url": "./codigo3.html",
+      "icons": [
+        {
+          "src": "./icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    },
+    {
+      "name": "4.Cirurgiao",
+      "short_name": "4.Cirurgiao",
+      "description": "Novo app",
+      "url": "./codigo4.html",
+      "icons": [
+        {
+          "src": "./icon-192.png",
+          "sizes": "192x192"
+        }
+      ]
+    }
+  ],
+  "categories": [
+    "productivity",
+    "utilities",
+    "business"
+  ],
+  "lang": "pt-BR",
+  "dir": "ltr"
+}
