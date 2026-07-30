@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Assistente Jurídico</title>
+
+<!-- CDN: PDF.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<!-- CDN: Mammoth (DOCX) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<!-- CDN: Tesseract (OCR) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/4.1.1/tesseract.min.js"></script>
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:       #141c0d;
+  --bg2:      #1c2714;
+  --bg3:      #252f1a;
+  --border:   #2a3a1a;
+  --amber:    #d97706;
+  --amber2:   #fbbf24;
+  --text:     #e5e7eb;
+  --muted:    #6b7280;
+  --green:    #4ade80;
+  --red:      #f87171;
+  --purple:   #a78bfa;
+  --blue:     #60a5fa;
+}
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: Arial, sans-serif; overflow: hidden; }
+
+/* ── LAYOUT ── */
+.app { display: flex; flex-direction: column; height: 100dvh; }
+
+/* ── HEADER ── */
+.header {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 14px;
+  display: flex; align-items: center; gap: 10px;
+  flex-shrink: 0;
+}
+.header-title { font-size: 13px; font-weight: 700; color: var(--amber2); display: flex; align-items: center; gap: 6px; flex: 1; }
+.badge { font-size: 10px; padding: 2px 8px; border-radius: 20px; border: 1px solid; white-space: nowrap; }
+.badge-demo  { background: #78350f33; color: #fbbf24; border-color: #92400e55; }
+.badge-ok    { background: #14532d33; color: #4ade80; border-color: #16653355; }
+.btn-icon { background: none; border: none; cursor: pointer; padding: 6px; border-radius: 8px; color: var(--muted); display: flex; align-items: center; }
+.btn-icon:hover { background: #ffffff10; color: var(--text); }
+.btn-icon.ativo { background: #ffffff15; color: var(--text); }
+
+/* ── PAINEL CONFIG ── */
+.config-panel {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 12px 14px;
+  display: none; flex-direction: column; gap: 10px;
+  flex-shrink: 0; max-height: 60vh; overflow-y: auto;
+}
+.config-panel.aberto { display: flex; }
+.config-label { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 4px; }
+.config-row { display: flex; gap: 6px; align-items: center; }
+.inp {
+  flex: 1; height: 32px; padding: 0 10px;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 8px; color: var(--text); font-size: 11px; outline: none;
+  font-family: monospace;
+}
+.inp:focus { border-color: var(--amber); }
+.inp-sm { width: 130px; flex: none; }
+.provider-tag { font-size: 10px; color: var(--amber2); white-space: nowrap; }
+
+/* ── ABAS ── */
+.tabs {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  display: flex; flex-shrink: 0;
+}
+.tab-btn {
+  flex: 1; padding: 9px 4px; font-size: 11px; font-weight: 600;
+  background: none; border: none; border-bottom: 2px solid transparent;
+  color: var(--muted); cursor: pointer; transition: all .15s;
+}
+.tab-btn.ativo { border-bottom-color: var(--amber); color: var(--amber2); }
+
+/* ── CONTEÚDO ── */
+.content { flex: 1; overflow-y: auto; }
+.tab-pane { display: none; padding: 12px 14px; }
+.tab-pane.ativo { display: block; }
+
+/* ── BARRA ESFORÇO ── */
+.effort-bar {
+  display: flex; align-items: center; gap: 8px;
+  padding: 6px 14px; background: #1a2411;
+  border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.effort-label { font-size: 10px; font-weight: 700; white-space: nowrap; }
+.effort-bar input[type=range] { flex: 1; accent-color: var(--amber); height: 3px; }
+.verbosity-btn {
+  font-size: 10px; padding: 3px 10px; border-radius: 20px;
+  border: 1px solid; cursor: pointer; background: none; white-space: nowrap;
+}
+
+/* ── TEXTAREA ── */
+textarea {
+  width: 100%; resize: none;
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 10px; color: var(--text); font-size: 12px;
+  padding: 10px 12px; outline: none; line-height: 1.6; font-family: Arial;
+}
+textarea:focus { border-color: var(--amber); }
+
+/* ── BOTÕES ── */
+.btn {
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 7px 14px; border-radius: 8px; border: 1px solid;
+  font-size: 11px; font-weight: 600; cursor: pointer; transition: all .15s;
+  white-space: nowrap;
+}
+.btn:disabled { opacity: .4; cursor: not-allowed; }
+.btn-amber  { background: #92400e33; border-color: #d9770655; color: var(--amber2); }
+.btn-amber:hover:not(:disabled)  { background: #92400e55; }
+.btn-ghost  { background: none; border-color: var(--border); color: var(--muted); }
+.btn-ghost:hover:not(:disabled)  { color: var(--text); border-color: #4b5563; }
+.btn-red    { background: #7f1d1d33; border-color: #ef444433; color: var(--red); }
+.btn-red:hover:not(:disabled)    { background: #7f1d1d55; }
+.btn-green  { background: #14532d33; border-color: #22c55e33; color: var(--green); }
+.btn-green:hover:not(:disabled)  { background: #14532d55; }
+.btn-purple { background: #4c1d9533; border-color: #8b5cf633; color: var(--purple); }
+.btn-purple:hover:not(:disabled) { background: #4c1d9555; }
+.btn-blue   { background: #1e3a5f33; border-color: #3b82f633; color: var(--blue); }
+.btn-blue:hover:not(:disabled)   { background: #1e3a5f55; }
+.btn-full { width: 100%; justify-content: center; }
+
+/* ── GRID AÇÕES ── */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+.grid3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+.action-btn {
+  padding: 10px 6px; border-radius: 10px; border: 1px solid;
+  font-size: 11px; font-weight: 600; cursor: pointer; transition: all .15s;
+  text-align: center; background: var(--bg2);
+}
+.action-btn:hover:not(:disabled) { filter: brightness(1.2); }
+.action-btn:disabled { opacity: .4; cursor: not-allowed; }
+.action-btn.ativo { filter: brightness(1.3); }
+
+/* ── RESULTADO ── */
+.resultado-box {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px;
+  font-family: 'Times New Roman', Georgia, serif;
+  font-size: 13px; line-height: 1.9; color: var(--text);
+  min-height: 80px; white-space: pre-wrap;
+  overflow-x: auto;
+}
+.resultado-box p { margin: 0; text-align: justify; }
+.resultado-box .titulo-peca { font-weight: bold; text-indent: 0 !important; }
+.resultado-box .item-lista  { padding-left: 1cm; text-indent: 0 !important; }
+.resultado-box .citacao     { padding-left: 4cm; font-size: 12px; text-indent: 0 !important; }
+.resultado-box .paragrafo   { text-indent: 4cm; }
+
+/* ── CHAT ── */
+.chat-msgs { display: flex; flex-direction: column; gap: 8px; max-height: 240px; overflow-y: auto; padding: 4px 0; }
+.msg-user { background: #78350f33; border: 1px solid #92400e44; border-radius: 10px; padding: 8px 12px; font-size: 12px; margin-left: 20px; }
+.msg-ia   { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 8px 12px; font-size: 12px; margin-right: 20px; }
+.msg-role { font-size: 10px; font-weight: 700; opacity: .5; margin-bottom: 3px; }
+
+/* ── CARDS ── */
+.card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 12px; margin-bottom: 8px; }
+.card-title { font-size: 12px; font-weight: 700; color: var(--amber2); margin-bottom: 4px; }
+.card-sub   { font-size: 11px; color: var(--muted); }
+.card-selected { border-color: #22c55e55; background: #14532d22; }
+
+/* ── MISC ── */
+.section-title { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 8px; margin-top: 14px; }
+.section-title:first-child { margin-top: 0; }
+.row { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.spacer { height: 10px; }
+.divider { border: none; border-top: 1px solid var(--border); margin: 10px 0; }
+.spinner { width: 14px; height: 14px; border: 2px solid #ffffff22; border-top-color: var(--amber); border-radius: 50%; animation: spin .7s linear infinite; display: inline-block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.hidden { display: none !important; }
+.text-green  { color: var(--green); }
+.text-red    { color: var(--red); }
+.text-amber  { color: var(--amber2); }
+.text-muted  { color: var(--muted); }
+.text-purple { color: var(--purple); }
+.text-blue   { color: var(--blue); }
+.fs10 { font-size: 10px; }
+.fs11 { font-size: 11px; }
+.fs12 { font-size: 12px; }
+
+/* ── EMENTA CHECK ── */
+.ementa-check { width: 16px; height: 16px; border: 1px solid var(--border); border-radius: 4px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; margin-top: 2px; }
+.ementa-check.marcado { background: #22c55e; border-color: #22c55e; }
+
+/* ── STOP BAR ── */
+.stop-bar { padding: 8px 14px; flex-shrink: 0; }
+
+/* scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ══ HEADER ══ -->
+<header class="header">
+  <div class="header-title">⚖️ Assistente Jurídico</div>
+  <span class="badge badge-demo" id="badge-status">Demo</span>
+  <button class="btn-icon" id="btn-config" onclick="toggleConfig()" title="Configurações">⚙️</button>
+</header>
+
+<!-- ══ CONFIG PANEL ══ -->
+<div class="config-panel" id="config-panel">
+
+  <div>
+    <div class="config-label">Chave de Resumo / Limpeza (Gemini Flash — gratuito)</div>
+    <div class="config-row">
+      <input class="inp" type="password" id="key-resumo" placeholder="AIza... (Gemini)" oninput="salvarChaves()">
+      <span class="provider-tag" id="tag-resumo"></span>
+    </div>
+    <div class="fs10 text-muted" style="margin-top:4px">Usada para extrair e limpar o texto antes de gerar a peça. Gemini Flash tem tier gratuito.</div>
+  </div>
+
+  <div>
+    <div class="config-label">Chave de Geração da Peça (Claude / OpenAI / Groq)</div>
+    <div class="config-row">
+      <input class="inp" type="password" id="key-geracao" placeholder="sk-ant... / sk-... / gsk_..." oninput="salvarChaves()">
+      <span class="provider-tag" id="tag-geracao"></span>
+    </div>
+    <div class="config-row" style="margin-top:4px">
+      <input class="inp" type="text" id="modelo-geracao" placeholder="Modelo (ex: claude-opus-4-5, gpt-4o)" oninput="salvarChaves()">
+    </div>
+    <div class="fs10 text-muted" style="margin-top:4px">Usada para redigir a peça final com qualidade máxima.</div>
+  </div>
+
+  <div class="row">
+    <button class="btn btn-blue" onclick="testarChaves()"><span id="test-spinner" class="spinner hidden"></span> Testar Chaves</button>
+    <button class="btn btn-ghost" onclick="limparChaves()">🗑 Remover</button>
+    <span id="test-result" class="fs11"></span>
+  </div>
+
+</div>
+
+<!-- ══ BARRA ESFORÇO ══ -->
+<div class="effort-bar">
+  <span class="effort-label text-amber" id="effort-label">⚡ Detalhado</span>
+  <input type="range" min="1" max="5" value="3" id="effort-range" oninput="atualizarEsforco()">
+  <button class="verbosity-btn" id="verbosity-btn"
+    style="border-color:#92400e55;color:var(--amber2)"
+    onclick="toggleVerbosity()">📄 Completa</button>
+</div>
+
+<!-- ══ ABAS ══ -->
+<div class="tabs">
+  <button class="tab-btn ativo" onclick="mudarAba('processar',this)">⚡ Processar</button>
+  <button class="tab-btn" onclick="mudarAba('ementas',this)" id="tab-ementas-btn">📚 Ementas</button>
+  <button class="tab-btn" onclick="mudarAba('historico',this)" id="tab-hist-btn">🕐 Histórico</button>
+  <button class="tab-btn" onclick="mudarAba('acoes',this)" id="tab-acoes-btn">🪄 Ações</button>
+</div>
+
+<!-- ══ STOP BAR ══ -->
+<div class="stop-bar hidden" id="stop-bar">
+  <button class="btn btn-red btn-full" onclick="pararTudo()">⏹ Parar geração</button>
+</div>
+
+<!-- ══ CONTEÚDO ══ -->
+<div class="content">
+
+  <!-- ─── ABA PROCESSAR ─── -->
+  <div class="tab-pane ativo" id="pane-processar">
+
+    <!-- Entrada -->
+    <div class="section-title">Texto do processo / documento</div>
+    <div class="row" style="margin-bottom:6px">
+      <button class="btn btn-ghost" onclick="document.getElementById('file-input').click()">
+        <span id="import-spinner" class="spinner hidden"></span>
+        📄 PDF / DOCX / TXT
+      </button>
+      <button class="btn btn-ghost" onclick="document.getElementById('img-input').click()">
+        🖼 Imagem (OCR)
+      </button>
+      <button class="btn btn-ghost" id="btn-voz" onclick="toggleVoz()">🎤 Ditar</button>
+      <button class="btn btn-ghost" onclick="document.getElementById('txt-processo').value=''; textoResumido=''">🗑</button>
+    </div>
+    <input type="file" id="file-input" class="hidden" accept=".pdf,.docx,.doc,.txt,.rtf,.md" onchange="importarArquivo(this)">
+    <input type="file" id="img-input"  class="hidden" accept="image/*" onchange="importarImagem(this)">
+    <textarea id="txt-processo" rows="6" placeholder="Cole o texto, importe PDF/DOCX, imagem (OCR) ou dite por voz..."></textarea>
+
+    <!-- Jurisprudência -->
+    <div style="margin-top:8px">
+      <button class="btn btn-ghost fs10" onclick="toggleJuris()">📖 Jurisprudência manual (opcional) <span id="juris-arrow">▼</span></button>
+      <div id="juris-area" class="hidden" style="margin-top:6px">
+        <textarea id="txt-juris" rows="4" placeholder="Cole ementas ou precedentes — serão citados literalmente na peça..."></textarea>
+        <div class="row" style="margin-top:4px">
+          <span class="fs10 text-muted" id="ementas-sel-info"></span>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- Modos -->
+    <div class="section-title">Modos</div>
+    <div class="grid3" style="margin-bottom:10px">
+      <button class="action-btn" style="border-color:#3b82f633;color:var(--blue)"
+        onclick="executar('modo-estrito')" id="btn-modo-estrito">Corrigir Texto</button>
+      <button class="action-btn" style="border-color:#8b5cf633;color:var(--purple)"
+        onclick="executar('modo-redacao')" id="btn-modo-redacao">Redação Jurídica</button>
+      <button class="action-btn" style="border-color:#d9770633;color:var(--amber2)"
+        onclick="executar('modo-interativo')" id="btn-modo-interativo">Verificar Lacunas</button>
+    </div>
+
+    <!-- Ações -->
+    <div class="section-title">Ações</div>
+    <div class="grid2" style="margin-bottom:10px" id="grid-acoes">
+      <button class="action-btn" style="border-color:var(--border);color:var(--text)" onclick="executar('resumir')"      id="btn-resumir">Resumir</button>
+      <button class="action-btn" style="border-color:var(--border);color:var(--text)" onclick="executar('revisar')"      id="btn-revisar">Revisar</button>
+      <button class="action-btn" style="border-color:var(--border);color:var(--text)" onclick="executar('refinar')"      id="btn-refinar">Refinar</button>
+      <button class="action-btn" style="border-color:var(--border);color:var(--text)" onclick="executar('simplificar')"  id="btn-simplificar">Linguagem Simples</button>
+      <button class="action-btn" style="border-color:var(--border);color:var(--text)" onclick="executar('minuta')"       id="btn-minuta">Gerar Minuta</button>
+      <button class="action-btn" style="border-color:var(--border);color:var(--text)" onclick="executar('analisar')"     id="btn-analisar">Analisar</button>
+    </div>
+
+    <!-- Ações custom (aparece se houver) -->
+    <div id="secao-acoes-custom" class="hidden">
+      <div class="section-title">Ações Personalizadas</div>
+      <div class="grid2" id="grid-acoes-custom" style="margin-bottom:10px"></div>
+    </div>
+
+    <!-- Resultado -->
+    <div id="secao-resultado" class="hidden">
+      <div class="section-title" style="margin-top:14px">Resultado</div>
+      <div class="row" style="margin-bottom:6px">
+        <button class="btn btn-ghost" onclick="copiarResultado()" id="btn-copiar">📋 Copiar</button>
+        <button class="btn btn-ghost" onclick="baixarTxt()">⬇ TXT</button>
+        <button class="btn btn-ghost" onclick="baixarRtf()">⬇ RTF</button>
+        <span class="badge badge-demo hidden" id="badge-demo">Demo</span>
+      </div>
+      <div class="resultado-box" id="resultado-box"></div>
+
+      <!-- Chat refinamento -->
+      <div style="margin-top:10px">
+        <button class="btn btn-ghost fs11" onclick="toggleChat()">💬 Refinar com IA <span id="chat-arrow">▼</span></button>
+        <div id="chat-area" class="hidden" style="margin-top:8px">
+          <div class="chat-msgs" id="chat-msgs"></div>
+          <div class="row" style="margin-top:6px">
+            <textarea id="chat-input" rows="2" placeholder="Ex: Adicione tutela de urgência... / Reformule o início..." style="flex:1"></textarea>
+            <button class="btn btn-amber" onclick="enviarChat()" style="align-self:flex-end">Enviar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:30px"></div>
+  </div>
+
+  <!-- ─── ABA EMENTAS ─── -->
+  <div class="tab-pane" id="pane-ementas">
+    <div class="row" style="margin-bottom:10px">
+      <div class="section-title" style="margin:0;flex:1">📚 Biblioteca de Ementas</div>
+      <button class="btn btn-amber" onclick="abrirFormEmenta()">+ Nova</button>
+    </div>
+
+    <div id="form-ementa" class="hidden" style="background:var(--bg2);border:1px solid #d9770633;border-radius:10px;padding:12px;margin-bottom:10px">
+      <div class="config-label" id="form-ementa-titulo">Nova Ementa</div>
+      <input class="inp" type="text" id="e-titulo" placeholder="Título (ex: STJ — Responsabilidade civil)" style="width:100%;margin-bottom:6px;height:32px">
+      <input class="inp" type="text" id="e-categoria" placeholder="Categoria (STJ, STF, TRF1...)" list="cats-list" style="width:100%;margin-bottom:6px;height:32px">
+      <datalist id="cats-list">
+        <option value="STF"><option value="STJ"><option value="TRF1"><option value="TRF2">
+        <option value="TRF3"><option value="TRF4"><option value="TJMG"><option value="TJSP">
+        <option value="TRT"><option value="Súmula"><option value="Doutrina">
+      </datalist>
+      <textarea id="e-texto" rows="5" placeholder="Cole a ementa completa..."></textarea>
+      <div class="row" style="margin-top:6px;justify-content:flex-end">
+        <button class="btn btn-ghost" onclick="fecharFormEmenta()">Cancelar</button>
+        <button class="btn btn-amber" onclick="salvarEmenta()">💾 Salvar</button>
+      </div>
+    </div>
+
+    <input class="inp" type="text" id="busca-ementa" placeholder="🔍 Buscar ementas..." style="width:100%;margin-bottom:8px" oninput="renderEmentas()">
+
+    <div id="lista-ementas"></div>
+    <div style="height:20px"></div>
+  </div>
+
+  <!-- ─── ABA HISTÓRICO ─── -->
+  <div class="tab-pane" id="pane-historico">
+    <div class="row" style="margin-bottom:10px">
+      <div class="section-title" style="margin:0;flex:1">🕐 Histórico</div>
+      <button class="btn btn-ghost fs11" onclick="limparHistorico()">🗑 Limpar</button>
+    </div>
+    <div id="lista-historico"></div>
+    <div style="height:20px"></div>
+  </div>
+
+  <!-- ─── ABA AÇÕES ─── -->
+  <div class="tab-pane" id="pane-acoes">
+    <div class="row" style="margin-bottom:10px">
+      <div class="section-title" style="margin:0;flex:1">🪄 Ações Personalizadas</div>
+      <button class="btn btn-purple" onclick="abrirFormAcao()">+ Nova</button>
+    </div>
+    <div class="fs11 text-muted" style="margin-bottom:10px">Crie instruções personalizadas. Aparecem na aba Processar.</div>
+
+    <div id="form-acao" class="hidden" style="background:var(--bg2);border:1px solid #8b5cf633;border-radius:10px;padding:12px;margin-bottom:10px">
+      <div class="config-label" id="form-acao-titulo">Nova Ação</div>
+      <input class="inp" type="text" id="ca-label" placeholder="Nome (ex: Petição Inicial Trabalhista)" style="width:100%;margin-bottom:6px;height:32px">
+      <input class="inp" type="text" id="ca-desc"  placeholder="Descrição curta (opcional)" style="width:100%;margin-bottom:6px;height:32px">
+      <textarea id="ca-prompt" rows="5" placeholder="Instrução para a IA. O texto do documento será adicionado automaticamente após..."></textarea>
+      <div class="row" style="margin-top:6px;justify-content:flex-end">
+        <button class="btn btn-ghost" onclick="fecharFormAcao()">Cancelar</button>
+        <button class="btn btn-purple" onclick="salvarAcao()">💾 Salvar</button>
+      </div>
+    </div>
+
+    <div id="lista-acoes"></div>
+    <div style="height:20px"></div>
+  </div>
+
+</div><!-- /content -->
+</div><!-- /app -->
+
+<script>
+// ══════════════════════════════════════════════════════
+//  ESTADO GLOBAL
+// ══════════════════════════════════════════════════════
+let effortLevel  = parseInt(loadLS('aj_effort','3'));
+let verbosity    = loadLS('aj_verbosity','longa');
+let ementas      = loadLS('aj_ementas', []);
+let historico    = loadLS('aj_historico', []);
+let acoesCustom  = loadLS('aj_acoes_custom', []);
+let emsSelected  = new Set();
+let resultado    = '';
+let chatHistory  = [];
+let abortCtrl    = null;
+let chatAbort    = null;
+let editEmentaId = null;
+let editAcaoId   = null;
+let textoResumido = '';
+let isListening  = false;
+let recognition  = null;
+
+// ══════════════════════════════════════════════════════
+//  LOCALSTORAGE
+// ══════════════════════════════════════════════════════
+function loadLS(k, def) {
+  try { return JSON.parse(localStorage.getItem(k)) ?? def; } catch { return def; }
+}
+function saveLS(k, v) {
+  try { localStorage.setItem(k, JSON.stringify(v)); } catch {}
+}
+
+// ══════════════════════════════════════════════════════
+//  CHAVES
+// ══════════════════════════════════════════════════════
+const PROVIDERS = [
+  ['AIza',   'Gemini'],
+  ['gsk_',   'Groq'],
+  ['sk-ant', 'Claude'],
+  ['sk-or-', 'OpenRouter'],
+  ['pplx-',  'Perplexity'],
+  ['xai-',   'xAI/Grok'],
+  ['sk-',    'OpenAI'],
+];
+function detectProvider(k) {
+  for (const [p,n] of PROVIDERS) if ((k||'').startsWith(p)) return n;
+  return null;
+}
+function getChaveResumo()  { return (document.getElementById('key-resumo').value  || '').trim(); }
+function getChaveGeracao() { return (document.getElementById('key-geracao').value || '').trim(); }
+function getModelo()       { return (document.getElementById('modelo-geracao').value || '').trim(); }
+
+function salvarChaves() {
+  const kr = getChaveResumo(), kg = getChaveGeracao(), m = getModelo();
+  saveLS('aj_key_resumo',   kr);
+  saveLS('aj_key_geracao',  kg);
+  saveLS('aj_modelo',       m);
+  document.getElementById('tag-resumo').textContent  = detectProvider(kr) || '';
+  document.getElementById('tag-geracao').textContent = detectProvider(kg) || '';
+  atualizarBadge();
+}
+function limparChaves() {
+  ['key-resumo','key-geracao','modelo-geracao'].forEach(id => document.getElementById(id).value = '');
+  ['aj_key_resumo','aj_key_geracao','aj_modelo'].forEach(k => localStorage.removeItem(k));
+  salvarChaves();
+}
+function atualizarBadge() {
+  const kg = getChaveGeracao();
+  const badge = document.getElementById('badge-status');
+  if (kg) {
+    badge.textContent = detectProvider(kg) || 'Chave Própria';
+    badge.className = 'badge badge-ok';
+  } else {
+    badge.textContent = 'Demo';
+    badge.className = 'badge badge-demo';
+  }
+}
+
+// Carregar chaves salvas
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('key-resumo').value   = loadLS('aj_key_resumo','');
+  document.getElementById('key-geracao').value  = loadLS('aj_key_geracao','');
+  document.getElementById('modelo-geracao').value = loadLS('aj_modelo','');
+  salvarChaves();
+  atualizarEsforco();
+  atualizarVerbosity();
+  renderEmentas();
+  renderHistorico();
+  renderAcoes();
+  renderAcoesCustomGrid();
+  // PDF.js worker
+  if (window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc =
+    'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+});
+
+// ══════════════════════════════════════════════════════
+//  TESTAR CHAVES
+// ══════════════════════════════════════════════════════
+async function testarChaves() {
+  const kr = getChaveResumo(), kg = getChaveGeracao();
+  const sp = document.getElementById('test-spinner');
+  const rt = document.getElementById('test-result');
+  sp.classList.remove('hidden'); rt.textContent = '';
+  try {
+    if (kr) {
+      await chamarGemini(kr, [{ role:'user', content:'Responda apenas: OK' }], 'gemini-1.5-flash');
+      rt.textContent = '✅ Resumo OK';
+    }
+    if (kg) {
+      const prov = detectProvider(kg);
+      let r = '';
+      if (prov === 'Gemini')      r = await chamarGemini(kg, [{role:'user',content:'Responda apenas: OK'}]);
+      else if (prov === 'Claude') r = await chamarClaude(kg, [{role:'user',content:'Responda apenas: OK'}], getModelo()||'claude-haiku-3-5');
+      else                        r = await chamarOpenAI(kg, [{role:'user',content:'Responda apenas: OK'}], getModelo()||'gpt-4o-mini');
+      rt.textContent += (kr?' | ':'') + `✅ Geração OK (${prov||'Custom'})`;
+    }
+    if (!kr && !kg) rt.textContent = '⚠️ Insira ao menos uma chave.';
+  } catch(e) {
+    rt.textContent = '❌ ' + e.message.substring(0,100);
+    rt.className = 'fs11 text-red';
+  } finally { sp.classList.add('hidden'); }
+}
+
+// ══════════════════════════════════════════════════════
+//  ESFORÇO + VERBOSIDADE
+// ══════════════════════════════════════════════════════
+const EFFORT_INFO = {
+  1: { label:'⚡ Rápido',    color:'var(--blue)',   desc:'Resposta direta e concisa' },
+  2: { label:'⚡ Básico',    color:'#22d3ee',       desc:'Pontos principais' },
+  3: { label:'⚡ Detalhado', color:'var(--amber2)', desc:'Análise completa' },
+  4: { label:'⚡ Profundo',  color:'#fb923c',       desc:'Fundamentação robusta' },
+  5: { label:'⚡ Exaustivo', color:'var(--purple)', desc:'Máximo esforço possível' },
+};
+function atualizarEsforco() {
+  effortLevel = parseInt(document.getElementById('effort-range').value);
+  const info = EFFORT_INFO[effortLevel];
+  const el = document.getElementById('effort-label');
+  el.textContent = info.label;
+  el.style.color = info.color;
+  saveLS('aj_effort', effortLevel);
+}
+function atualizarVerbosity() {
+  const btn = document.getElementById('verbosity-btn');
+  if (verbosity === 'curta') {
+    btn.textContent = '📝 Concisa';
+    btn.style.borderColor = '#3b82f655';
+    btn.style.color = 'var(--blue)';
+  } else {
+    btn.textContent = '📄 Completa';
+    btn.style.borderColor = '#92400e55';
+    btn.style.color = 'var(--amber2)';
+  }
+}
+function toggleVerbosity() {
+  verbosity = verbosity === 'curta' ? 'longa' : 'curta';
+  saveLS('aj_verbosity', verbosity);
+  atualizarVerbosity();
+}
+
+// ══════════════════════════════════════════════════════
+//  CONFIG PANEL
+// ══════════════════════════════════════════════════════
+function toggleConfig() {
+  const p = document.getElementById('config-panel');
+  const b = document.getElementById('btn-config');
+  p.classList.toggle('aberto');
+  b.classList.toggle('ativo');
+}
+
+// ══════════════════════════════════════════════════════
+//  ABAS
+// ══════════════════════════════════════════════════════
+function mudarAba(id, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('ativo'));
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('ativo'));
+  btn.classList.add('ativo');
+  document.getElementById('pane-' + id).classList.add('ativo');
+}
+
+// ══════════════════════════════════════════════════════
+//  IMPORTAR ARQUIVO
+// ══════════════════════════════════════════════════════
+async function importarArquivo(input) {
+  const file = input.files[0]; input.value = '';
+  if (!file) return;
+  const sp = document.getElementById('import-spinner');
+  sp.classList.remove('hidden');
+  try {
+    const ext = file.name.split('.').pop().toLowerCase();
+    let texto = '';
+    if (ext === 'pdf') {
+      texto = await extrairPDF(file);
+    } else if (ext === 'docx' || ext === 'doc') {
+      texto = await extrairDOCX(file);
+    } else {
+      texto = await file.text();
+    }
+    if (!texto.trim()) throw new Error('Arquivo sem texto legível.');
+    const ta = document.getElementById('txt-processo');
+    ta.value = ta.value ? ta.value + '\n\n' + texto : texto;
+  } catch(e) { alert('Erro ao importar: ' + e.message); }
+  finally { sp.classList.add('hidden'); }
+}
+
+async function extrairPDF(file) {
+  const buf = await file.arrayBuffer();
+  const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+  let texto = '';
+  for (let i = 1; i <= pdf.numPages; i++) {
+    const page = await pdf.getPage(i);
+    const content = await page.getTextContent();
+    texto += content.items.map(it => it.str).join(' ') + '\n';
+  }
+  return texto;
+}
+
+async function extrairDOCX(file) {
+  const buf = await file.arrayBuffer();
+  const result = await mammoth.extractRawText({ arrayBuffer: buf });
+  return result.value;
+}
+
+// ══════════════════════════════════════════════════════
+//  OCR (IMAGEM)
+// ══════════════════════════════════════════════════════
+async function importarImagem(input) {
+  const file = input.files[0]; input.value = '';
+  if (!file) return;
+  const sp = document.getElementById('import-spinner');
+  sp.classList.remove('hidden');
+  try {
+    const worker = await Tesseract.createWorker('por');
+    const { data: { text } } = await worker.recognize(file);
+    await worker.terminate();
+    if (!text.trim()) throw new Error('Não foi possível extrair texto da imagem.');
+    const ta = document.getElementById('txt-processo');
+    ta.value = ta.value ? ta.value + '\n\n' + text : text;
+  } catch(e) { alert('Erro no OCR: ' + e.message); }
+  finally { sp.classList.add('hidden'); }
+}
+
+// ══════════════════════════════════════════════════════
+//  VOZ
+// ══════════════════════════════════════════════════════
+function toggleVoz() {
+  if (isListening) { recognition?.stop(); return; }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { alert('Use Chrome ou Edge para ditar por voz.'); return; }
+  recognition = new SR();
+  recognition.lang = 'pt-BR'; recognition.continuous = true; recognition.interimResults = true;
+  let fullText = ''; let timer = null;
+  const scheduleStop = () => {
+    if (timer) clearTimeout(timer);
+    timer = setTimeout(() => { try { recognition.stop(); } catch {} }, 1800);
+  };
+  recognition.onresult = e => {
+    let f = '', itr = '';
+    for (let i = 0; i < e.results.length; i++) {
+      if (e.results[i].isFinal) f += e.results[i][0].transcript;
+      else itr += e.results[i][0].transcript;
+    }
+    fullText = f || itr;
+    if (fullText) scheduleStop();
+  };
+  recognition.onend = () => {
+    if (timer) clearTimeout(timer);
+    isListening = false;
+    document.getElementById('btn-voz').textContent = '🎤 Ditar';
+    if (fullText.trim()) {
+      const ta = document.getElementById('txt-processo');
+      ta.value = ta.value ? ta.value.trimEnd() + '\n\n' + fullText.trim() : fullText.trim();
+    }
+  };
+  recognition.onerror = () => { isListening = false; document.getElementById('btn-voz').textContent = '🎤 Ditar'; };
+  recognition.start();
+  isListening = true;
+  document.getElementById('btn-voz').textContent = '🔴 Parar';
+}
+
+// ══════════════════════════════════════════════════════
+//  JURISPRUDÊNCIA
+// ══════════════════════════════════════════════════════
+function toggleJuris() {
+  const a = document.getElementById('juris-area');
+  const ar = document.getElementById('juris-arrow');
+  a.classList.toggle('hidden');
+  ar.textContent = a.classList.contains('hidden') ? '▼' : '▲';
+}
+
+// ══════════════════════════════════════════════════════
+//  PROMPTS
+// ══════════════════════════════════════════════════════
+function buildPromptSistema(acao, customPrompt) {
+  const base = 'Você é um advogado experiente de Minas Gerais. Escreva de forma formal, técnica e direta, sem introduções desnecessárias. Use linguagem jurídica precisa.';
+  const esforcoDesc = EFFORT_INFO[effortLevel]?.desc || '';
+  const verbDesc = verbosity === 'curta' ? 'Seja conciso.' : 'Seja completo e detalhado.';
+
+  if (customPrompt) return `${base}\n\nNível de esforço: ${esforcoDesc}. ${verbDesc}\n\n${customPrompt}`;
+
+  const acoes = {
+    'resumir':         'Resuma o documento abaixo de forma objetiva, mantendo todos os fatos relevantes, partes, pedidos e fundamentos legais. Elimine repetições e sujeiras de formatação.',
+    'revisar':         'Revise o texto jurídico abaixo, corrigindo erros gramaticais, de concordância, de técnica jurídica e de formatação. Mantenha o estilo original.',
+    'refinar':         'Refine o texto jurídico abaixo, melhorando a argumentação, a clareza e a força persuasiva, sem alterar os fatos ou pedidos.',
+    'simplificar':     'Reescreva o texto abaixo em linguagem simples e acessível, sem jargões jurídicos, mantendo o sentido original.',
+    'minuta':          'Com base no texto abaixo, gere uma minuta completa da peça jurídica cabível, com todos os elementos formais necessários.',
+    'analisar':        'Analise o documento jurídico abaixo, identificando: partes, pedidos, fundamentos, pontos fortes, pontos fracos e riscos processuais.',
+    'modo-estrito':    'Corrija o texto abaixo, mantendo estritamente o conteúdo original. Apenas ajuste gramática, pontuação e técnica jurídica.',
+    'modo-redacao':    'Redija uma peça jurídica completa com base no texto abaixo. Identifique automaticamente o tipo de peça necessária e a elabore com fundamentação legal sólida.',
+    'modo-interativo': 'Analise o texto abaixo e identifique lacunas, informações faltantes, contradições ou pontos que precisam de esclarecimento para elaborar uma peça jurídica completa.',
+  };
+  return `${base}\n\nNível de esforço: ${esforcoDesc}. ${verbDesc}\n\n${acoes[acao] || 'Analise e processe o texto jurídico abaixo.'}`;
+}
+
+// ══════════════════════════════════════════════════════
+//  CHAMADAS DE API
+// ══════════════════════════════════════════════════════
+async function chamarGemini(chave, msgs, modelo) {
+  modelo = modelo || 'gemini-1.5-flash';
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelo}:generateContent?key=${chave}`;
+  const system = msgs.find(m => m.role === 'system');
+  const contents = msgs.filter(m => m.role !== 'system').map(m => ({
+    role: m.role === 'assistant' ? 'model' : 'user',
+    parts: [{ text: m.content }]
+  }));
+  if (system && contents.length > 0) contents[0].parts[0].text = system.content + '\n\n' + contents[0].parts[0].text;
+  const resp = await fetch(url, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ contents, generationConfig: { temperature: 0.7 } })
+  });
+  if (!resp.ok) { const e = await resp.json().catch(()=>({})); throw new Error(e.error?.message || `Gemini erro ${resp.status}`); }
+  const d = await resp.json();
+  return d.candidates[0].content.parts[0].text;
+}
+
+async function chamarOpenAI(chave, msgs, modelo, baseUrl) {
+  modelo = modelo || 'gpt-4o';
+  baseUrl = baseUrl || 'https://api.openai.com/v1';
+  const resp = await fetch(`${baseUrl}/chat/completions`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${chave}` },
+    body: JSON.stringify({ model: modelo, messages: msgs, temperature: 0.7, stream: false })
+  });
+  if (!resp.ok) { const e = await resp.json().catch(()=>({})); throw new Error(e.error?.message || `OpenAI erro ${resp.status}`); }
+  const d = await resp.json();
+  return d.choices[0].message.content;
+}
+
+async function chamarClaude(chave, msgs, modelo) {
+  modelo = modelo || 'claude-haiku-3-5';
+  const system = msgs.find(m => m.role === 'system');
+  const messages = msgs.filter(m => m.role !== 'system');
+  const body = { model: modelo, max_tokens: 8192, messages, temperature: 0.7 };
+  if (system) body.system = system.content;
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': chave,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify(body)
+  });
+  if (!resp.ok) { const e = await resp.json().catch(()=>({})); throw new Error(e.error?.message || `Claude erro ${resp.status}`); }
+  const d = await resp.json();
+  return d.content[0].text;
+}
+
+async function chamarGroq(chave, msgs, modelo) {
+  modelo = modelo || 'llama-3.3-70b-versatile';
+  return chamarOpenAI(chave, msgs, modelo, 'https://api.groq.com/openai/v1');
+}
+
+async function chamarIA(chave, msgs, modeloOverride) {
+  const prov = detectProvider(chave);
+  const modelo = modeloOverride || getModelo() || '';
+  if (prov === 'Gemini')  return chamarGemini(chave, msgs, modelo || 'gemini-1.5-pro');
+  if (prov === 'Claude')  return chamarClaude(chave, msgs, modelo || 'claude-haiku-3-5');
+  if (prov === 'Groq')    return chamarGroq(chave, msgs, modelo);
+  return chamarOpenAI(chave, msgs, modelo || 'gpt-4o');
+}
+
+// ══════════════════════════════════════════════════════
+//  EXECUTAR AÇÃO PRINCIPAL
+// ══════════════════════════════════════════════════════
+async function executar(acao, customPrompt) {
+  const texto = document.getElementById('txt-processo').value.trim();
+  if (!texto) { alert('Cole ou importe o texto do documento antes.'); return; }
+
+  const kr = getChaveResumo();
+  const kg = getChaveGeracao();
+
+  // Ementas selecionadas
+  const emsTexto = [...emsSelected].map(id => {
+    const em = ementas.find(e => e.id === id);
+    return em ? `[${em.titulo} — ${em.categoria}]\n${em.texto}` : '';
+  }).filter(Boolean).join('\n\n');
+
+  const jurisManual = document.getElementById('txt-juris').value.trim();
+  const jurisFull = [jurisManual, emsTexto].filter(Boolean).join('\n\n');
+
+  setLoading(true);
+  document.getElementById('badge-demo').classList.add('hidden');
+
+  try {
+    let textoFinal = texto;
+
+    // ── PASSO 1: Resumir/limpar com Gemini (se chave disponível e texto longo) ──
+    if (kr && texto.length > 1500) {
+      atualizarResultado('⏳ Limpando e resumindo o texto com Gemini...');
+      const resumoMsgs = [
+        { role: 'system', content: 'Você é um assistente jurídico. Resuma o texto abaixo de forma objetiva, mantendo todos os fatos relevantes, partes, pedidos, decisões e fundamentos legais. Elimine cabeçalhos de página, rodapés, certificados digitais e repetições.' },
+        { role: 'user', content: texto }
+      ];
+      textoFinal = await chamarGemini(kr, resumoMsgs, 'gemini-1.5-flash');
+      textoResumido = textoFinal;
+    }
+
+    // ── PASSO 2: Gerar peça com chave principal ──
+    const promptSistema = buildPromptSistema(acao, customPrompt);
+    const userContent = jurisFull
+      ? `${textoFinal}\n\n---\nJURISPRUDÊNCIA E EMENTAS PARA CITAR:\n${jurisFull}`
+      : textoFinal;
+
+    const msgs = [
+      { role: 'system', content: promptSistema },
+      { role: 'user', content: userContent }
+    ];
+
+    let resposta = '';
+    if (kg) {
+      atualizarResultado('⏳ Gerando peça...');
+      resposta = await chamarIA(kg, msgs);
+    } else {
+      // Demo: usa Gemini Flash gratuito se tiver chave de resumo, senão avisa
+      if (kr) {
+        atualizarResultado('⏳ Gerando (modo demo com Gemini)...');
+        resposta = await chamarGemini(kr, msgs, 'gemini-1.5-flash');
+        document.getElementById('badge-demo').classList.remove('hidden');
+      } else {
+        atualizarResultado('⚠️ Configure ao menos uma chave de API em ⚙️ Configurações.');
+        setLoading(false);
+        return;
+      }
+    }
+
+    // Salvar resultado
+    resultado = resposta;
+    renderResultado(resposta);
+    chatHistory = [
+      { role: 'system', content: 'Você é um advogado consultor jurídico experiente de Minas Gerais. Responda de forma direta e técnica.' },
+      { role: 'user', content: `O documento gerado foi:\n\n${resposta}` },
+      { role: 'assistant', content: 'Entendido. Estou pronto para refinar.' }
+    ];
+
+    // Salvar no histórico
+    const labelAcao = customPrompt
+      ? (acoesCustom.find(a => a.id === acao)?.label || 'Ação Custom')
+      : ({ resumir:'Resumir', revisar:'Revisar', refinar:'Refinar', simplificar:'Linguagem Simples', minuta:'Gerar Minuta', analisar:'Analisar', 'modo-estrito':'Corrigir Texto', 'modo-redacao':'Redação Jurídica', 'modo-interativo':'Verificar Lacunas' }[acao] || acao);
+    historico = [{ id: Date.now().toString(), acao: labelAcao, inputSnippet: texto.substring(0,120), resultado: resposta, timestamp: new Date().toLocaleString('pt-BR') }, ...historico].slice(0,15);
+    saveLS('aj_historico', historico);
+    renderHistorico();
+
+  } catch(e) {
+    if (e.name === 'AbortError') return;
+    atualizarResultado('❌ Erro: ' + e.message);
+  } finally {
+    setLoading(false);
+  }
+}
+
+// ══════════════════════════════════════════════════════
+//  RENDER RESULTADO
+// ══════════════════════════════════════════════════════
+function atualizarResultado(txt) {
+  document.getElementById('secao-resultado').classList.remove('hidden');
+  const box = document.getElementById('resultado-box');
+  box.innerHTML = '';
+  box.textContent = txt;
+}
+
+function renderResultado(txt) {
+  document.getElementById('secao-resultado').classList.remove('hidden');
+  const box = document.getElementById('resultado-box');
+  box.innerHTML = '';
+  const blocks = txt.split(/\n{2,}/);
+  blocks.forEach(block => {
+    const t = block.trim(); if (!t) return;
+    const p = document.createElement('p');
+    const lines = t.split('\n');
+    const isSingle = lines.length === 1;
+    const isTitulo = isSingle && t === t.toUpperCase() && t.length > 2 && /[A-ZÁÉÍÓÚÃÕ]/.test(t) && !/^\d+\./.test(t);
+    const isLista  = /^\d+[.)]\s/.test(t) || /^[a-z]\)/.test(t) || /^[-–]\s/.test(t);
+    const isCitacao = (t.startsWith('"') || t.startsWith('\u201c')) && t.length > 60;
+    if (isTitulo)  p.className = 'titulo-peca';
+    else if (isLista)   p.className = 'item-lista';
+    else if (isCitacao) p.className = 'citacao';
+    else p.className = 'paragrafo';
+    lines.forEach((l, i) => { if (i > 0) p.appendChild(document.createElement('br')); p.appendChild(document.createTextNode(l)); });
+    box.appendChild(p);
+  });
+  box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ══════════════════════════════════════════════════════
+//  LOADING
+// ══════════════════════════════════════════════════════
+function setLoading(on) {
+  document.getElementById('stop-bar').classList.toggle('hidden', !on);
+  document.querySelectorAll('.action-btn').forEach(b => b.disabled = on);
+}
+function pararTudo() {
+  abortCtrl?.abort(); chatAbort?.abort();
+  setLoading(false);
+}
+
+// ══════════════════════════════════════════════════════
+//  COPIAR / BAIXAR
+// ══════════════════════════════════════════════════════
+function copiarResultado() {
+  if (!resultado) return;
+  navigator.clipboard.writeText(resultado);
+  const b = document.getElementById('btn-copiar');
+  b.textContent = '✅ Copiado!';
+  setTimeout(() => b.textContent = '📋 Copiar', 2000);
+}
+function baixarTxt() {
+  if (!resultado) return;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([resultado], { type: 'text/plain;charset=utf-8' }));
+  a.download = `juridico-${Date.now()}.txt`; a.click();
+}
+function baixarRtf() {
+  if (!resultado) return;
+  const rtf = `{\\rtf1\\ansi\\deff0\n{\\fonttbl{\\f0 Times New Roman;}}\n{\\f0\\fs26\n${
+    resultado.split(/\n\n+/).map(block => {
+      const t = block.trim(); if (!t) return '';
+      if (t === t.toUpperCase() && t.length > 2 && /[A-Z]/.test(t) && !/^\d/.test(t))
+        return `\\pard\\qj\\b ${t.replace(/[\\{}]/g,'\\$&')}\\b0\\par\\par`;
+      if (/^\d+[.)]\s/.test(t) || /^[-–]\s/.test(t))
+        return `\\pard\\qj\\li720 ${t.replace(/[\\{}]/g,'\\$&')}\\par\\par`;
+      return `\\pard\\qj\\fi2268 ${t.replace(/[\\{}]/g,'\\$&')}\\par\\par`;
+    }).join('\n')
+  }\n}}`;
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([rtf], { type: 'application/rtf' }));
+  a.download = `juridico-${Date.now()}.rtf`; a.click();
+}
+
+// ══════════════════════════════════════════════════════
+//  CHAT DE REFINAMENTO
+// ══════════════════════════════════════════════════════
+function toggleChat() {
+  const a = document.getElementById('chat-area');
+  const ar = document.getElementById('chat-arrow');
+  a.classList.toggle('hidden');
+  ar.textContent = a.classList.contains('hidden') ? '▼' : '▲';
+}
+async function enviarChat() {
+  const input = document.getElementById('chat-input');
+  const msg = input.value.trim(); if (!msg || !resultado) return;
+  input.value = '';
+  chatHistory.push({ role: 'user', content: msg });
+  renderChat();
+  const kg = getChaveGeracao();
+  const kr = getChaveResumo();
+  const chave = kg || kr;
+  if (!chave) { chatHistory.push({ role:'assistant', content:'⚠️ Configure uma chave de API para usar o chat.' }); renderChat(); return; }
+  try {
+    const resposta = await chamarIA(chave, chatHistory);
+    chatHistory.push({ role:'assistant', content: resposta });
+    if (resposta.length > resultado.length * 0.5 && !resposta.toLowerCase().startsWith('para'))
+      resultado = resposta;
+    renderChat();
+    renderResultado(resultado);
+  } catch(e) {
+    chatHistory.push({ role:'assistant', content:'❌ Erro: ' + e.message });
+    renderChat();
+  }
+}
+document.getElementById('chat-input')?.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); enviarChat(); }
+});
+function renderChat() {
+  const container = document.getElementById('chat-msgs');
+  container.innerHTML = '';
+  chatHistory.filter(m => m.role !== 'system').forEach(m => {
+    const div = document.createElement('div');
+    div.className = m.role === 'user' ? 'msg-user' : 'msg-ia';
+    const role = document.createElement('div');
+    role.className = 'msg-role';
+    role.textContent = m.role === 'user' ? 'Você' : 'IA';
+    div.appendChild(role);
+    div.appendChild(document.createTextNode(m.content));
+    container.appendChild(div);
+  });
+  container.scrollTop = container.scrollHeight;
+}
+
+// ══════════════════════════════════════════════════════
+//  EMENTAS
+// ══════════════════════════════════════════════════════
+function abrirFormEmenta(id) {
+  editEmentaId = id || null;
+  const form = document.getElementById('form-ementa');
+  const titulo = document.getElementById('form-ementa-titulo');
+  if (id) {
+    const em = ementas.find(e => e.id === id);
+    document.getElementById('e-titulo').value    = em.titulo;
+    document.getElementById('e-categoria').value = em.categoria;
+    document.getElementById('e-texto').value     = em.texto;
+    titulo.textContent = 'Editar Ementa';
+  } else {
+    document.getElementById('e-titulo').value    = '';
+    document.getElementById('e-categoria').value = '';
+    document.getElementById('e-texto').value     = '';
+    titulo.textContent = 'Nova Ementa';
+  }
+  form.classList.remove('hidden');
+}
+function fecharFormEmenta() {
+  document.getElementById('form-ementa').classList.add('hidden');
+  editEmentaId = null;
+}
+function salvarEmenta() {
+  const titulo    = document.getElementById('e-titulo').value.trim();
+  const categoria = document.getElementById('e-categoria').value.trim();
+  const texto     = document.getElementById('e-texto').value.trim();
+  if (!titulo || !texto) { alert('Preencha título e texto.'); return; }
+  if (editEmentaId) {
+    ementas = ementas.map(e => e.id === editEmentaId ? { ...e, titulo, categoria, texto } : e);
+  } else {
+    ementas.push({ id: Date.now().toString(), titulo, categoria, texto, criadoEm: new Date().toLocaleString('pt-BR') });
+  }
+  saveLS('aj_ementas', ementas);
+  fecharFormEmenta();
+  renderEmentas();
+  atualizarTabEmentas();
+}
+function deletarEmenta(id) {
+  if (!confirm('Remover esta ementa?')) return;
+  ementas = ementas.filter(e => e.id !== id);
+  emsSelected.delete(id);
+  saveLS('aj_ementas', ementas);
+  renderEmentas();
+  atualizarTabEmentas();
+  atualizarInfoEmentas();
+}
+function toggleEmenta(id) {
+  emsSelected.has(id) ? emsSelected.delete(id) : emsSelected.add(id);
+  renderEmentas();
+  atualizarInfoEmentas();
+}
+function atualizarInfoEmentas() {
+  const info = document.getElementById('ementas-sel-info');
+  if (emsSelected.size > 0)
+    info.textContent = `${emsSelected.size} ementa(s) selecionada(s) — serão incluídas na próxima geração`;
+  else info.textContent = '';
+}
+function atualizarTabEmentas() {
+  document.getElementById('tab-ementas-btn').textContent =
+    `📚 Ementas${ementas.length ? ` (${ementas.length})` : ''}`;
+}
+function renderEmentas() {
+  const busca = (document.getElementById('busca-ementa')?.value || '').toLowerCase();
+  const lista = document.getElementById('lista-ementas');
+  lista.innerHTML = '';
+  const filtradas = ementas.filter(e =>
+    !busca || e.titulo.toLowerCase().includes(busca) ||
+    e.texto.toLowerCase().includes(busca) ||
+    e.categoria.toLowerCase().includes(busca)
+  );
+  if (!filtradas.length) {
+    lista.innerHTML = '<div class="text-muted fs12" style="text-align:center;padding:20px">' +
+      (ementas.length ? 'Nenhum resultado.' : 'Nenhuma ementa salva. Clique em "+ Nova" para começar.') + '</div>';
+    return;
+  }
+  filtradas.forEach(em => {
+    const sel = emsSelected.has(em.id);
+    const div = document.createElement('div');
+    div.className = 'card' + (sel ? ' card-selected' : '');
+    div.innerHTML = `
+      <div class="row" style="align-items:flex-start;gap:8px">
+        <div class="ementa-check ${sel ? 'marcado' : ''}" onclick="toggleEmenta('${em.id}')">
+          ${sel ? '✓' : ''}
+        </div>
+        <div style="flex:1;min-width:0">
+          <div class="row" style="gap:6px;flex-wrap:wrap">
+            <span class="card-title" style="margin:0">${em.titulo}</span>
+            ${em.categoria ? `<span class="badge" style="background:#1e3a5f33;color:var(--blue);border-color:#3b82f633">${em.categoria}</span>` : ''}
+          </div>
+          <div class="card-sub" style="margin-top:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${em.texto}</div>
+        </div>
+        <div class="row" style="gap:4px;flex-shrink:0">
+          <button class="btn-icon" onclick="abrirFormEmenta('${em.id}')" title="Editar">✏️</button>
+          <button class="btn-icon" onclick="deletarEmenta('${em.id}')" title="Remover">🗑</button>
+        </div>
+      </div>`;
+    lista.appendChild(div);
+  });
+  atualizarTabEmentas();
+}
+
+// ══════════════════════════════════════════════════════
+//  HISTÓRICO
+// ══════════════════════════════════════════════════════
+function limparHistorico() {
+  if (!confirm('Limpar todo o histórico?')) return;
+  historico = []; saveLS('aj_historico', historico);
+  renderHistorico();
+}
+function renderHistorico() {
+  const lista = document.getElementById('lista-historico');
+  lista.innerHTML = '';
+  document.getElementById('tab-hist-btn').textContent =
+    `🕐 Histórico${historico.length ? ` (${historico.length})` : ''}`;
+  if (!historico.length) {
+    lista.innerHTML = '<div class="text-muted fs12" style="text-align:center;padding:20px">Nenhum documento gerado ainda.</div>';
+    return;
+  }
+  historico.forEach(h => {
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `
+      <div class="row" style="justify-content:space-between;margin-bottom:4px">
+        <span class="card-title" style="margin:0">${h.acao}</span>
+        <span class="fs10 text-muted">${h.timestamp}</span>
+      </div>
+      <div class="card-sub" style="margin-bottom:8px">${h.inputSnippet}...</div>
+      <div class="row" style="gap:6px">
+        <button class="btn btn-amber" onclick="restaurarHistorico('${h.id}')">▶ Restaurar</button>
+        <button class="btn btn-ghost" onclick="copiarHistorico('${h.id}')">📋 Copiar</button>
+        <button class="btn btn-ghost" onclick="deletarHistorico('${h.id}')">🗑</button>
+      </div>
+      <details style="margin-top:8px">
+        <summary class="fs10 text-muted" style="cursor:pointer">Ver resultado...</summary>
+        <div class="fs11 text-muted" style="margin-top:6px;white-space:pre-wrap;max-height:120px;overflow-y:auto;border-top:1px solid var(--border);padding-top:6px">${h.resultado.substring(0,600)}${h.resultado.length>600?'...':''}</div>
+      </details>`;
+    lista.appendChild(div);
+  });
+}
+function restaurarHistorico(id) {
+  const h = historico.find(x => x.id === id); if (!h) return;
+  resultado = h.resultado;
+  renderResultado(h.resultado);
+  mudarAba('processar', document.querySelector('.tab-btn'));
+}
+function copiarHistorico(id) {
+  const h = historico.find(x => x.id === id); if (!h) return;
+  navigator.clipboard.writeText(h.resultado);
+}
+function deletarHistorico(id) {
+  historico = historico.filter(x => x.id !== id);
+  saveLS('aj_historico', historico);
+  renderHistorico();
+}
+
+// ══════════════════════════════════════════════════════
+//  AÇÕES CUSTOMIZADAS
+// ══════════════════════════════════════════════════════
+function abrirFormAcao(id) {
+  editAcaoId = id || null;
+  const form = document.getElementById('form-acao');
+  const titulo = document.getElementById('form-acao-titulo');
+  if (id) {
+    const a = acoesCustom.find(x => x.id === id);
+    document.getElementById('ca-label').value  = a.label;
+    document.getElementById('ca-desc').value   = a.descricao;
+    document.getElementById('ca-prompt').value = a.prompt;
+    titulo.textContent = 'Editar Ação';
+  } else {
+    document.getElementById('ca-label').value  = '';
+    document.getElementById('ca-desc').value   = '';
+    document.getElementById('ca-prompt').value = '';
+    titulo.textContent = 'Nova Ação';
+  }
+  form.classList.remove('hidden');
+}
+function fecharFormAcao() {
+  document.getElementById('form-acao').classList.add('hidden');
+  editAcaoId = null;
+}
+function salvarAcao() {
+  const label  = document.getElementById('ca-label').value.trim();
+  const desc   = document.getElementById('ca-desc').value.trim();
+  const prompt = document.getElementById('ca-prompt').value.trim();
+  if (!label || !prompt) { alert('Preencha nome e prompt.'); return; }
+  if (editAcaoId) {
+    acoesCustom = acoesCustom.map(a => a.id === editAcaoId ? { ...a, label, descricao:desc, prompt } : a);
+  } else {
+    acoesCustom.push({ id: Date.now().toString(), label, descricao:desc, prompt });
+  }
+  saveLS('aj_acoes_custom', acoesCustom);
+  fecharFormAcao();
+  renderAcoes();
+  renderAcoesCustomGrid();
+}
+function deletarAcao(id) {
+  if (!confirm('Remover esta ação?')) return;
+  acoesCustom = acoesCustom.filter(a => a.id !== id);
+  saveLS('aj_acoes_custom', acoesCustom);
+  renderAcoes();
+  renderAcoesCustomGrid();
+}
+function renderAcoes() {
+  const lista = document.getElementById('lista-acoes');
+  lista.innerHTML = '';
+  document.getElementById('tab-acoes-btn').textContent =
+    `🪄 Ações${acoesCustom.length ? ` (${acoesCustom.length})` : ''}`;
+  if (!acoesCustom.length) {
+    lista.innerHTML = '<div class="text-muted fs12" style="text-align:center;padding:20px">Nenhuma ação personalizada. Clique em "+ Nova" para criar.</div>';
+    return;
+  }
+  acoesCustom.forEach(a => {
+    const div = document.createElement('div');
+    div.className = 'card';
+    div.innerHTML = `
+      <div class="row" style="justify-content:space-between;margin-bottom:4px">
+        <span class="card-title text-purple" style="margin:0">🪄 ${a.label}</span>
+        <div class="row" style="gap:4px">
+          <button class="btn-icon" onclick="abrirFormAcao('${a.id}')">✏️</button>
+          <button class="btn-icon" onclick="deletarAcao('${a.id}')">🗑</button>
+        </div>
+      </div>
+      ${a.descricao ? `<div class="card-sub" style="margin-bottom:6px">${a.descricao}</div>` : ''}
+      <details>
+        <summary class="fs10 text-muted" style="cursor:pointer">Ver prompt...</summary>
+        <div class="fs11 text-muted" style="margin-top:6px;white-space:pre-wrap;border-top:1px solid var(--border);padding-top:6px">${a.prompt}</div>
+      </details>
+      <button class="btn btn-purple" style="margin-top:8px" onclick="executarAcaoCustom('${a.id}')">▶ Executar</button>`;
+    lista.appendChild(div);
+  });
+}
+function renderAcoesCustomGrid() {
+  const grid = document.getElementById('grid-acoes-custom');
+  const secao = document.getElementById('secao-acoes-custom');
+  grid.innerHTML = '';
+  if (!acoesCustom.length) { secao.classList.add('hidden'); return; }
+  secao.classList.remove('hidden');
+  acoesCustom.forEach(a => {
+    const btn = document.createElement('button');
+    btn.className = 'action-btn';
+    btn.style.cssText = 'border-color:#8b5cf633;color:var(--purple)';
+    btn.textContent = '🪄 ' + a.label;
+    btn.title = a.descricao || '';
+    btn.onclick = () => executarAcaoCustom(a.id);
+    grid.appendChild(btn);
+  });
+}
+function executarAcaoCustom(id) {
+  const a = acoesCustom.find(x => x.id === id); if (!a) return;
+  executar(id, a.prompt);
+}
+
+</script>
+</body>
+</html>
