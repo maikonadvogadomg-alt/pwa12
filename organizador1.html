@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Extrator Replit — Maikon</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; background: #f3f4f6; color: #1f2937; padding: 20px; }
+h1 { color: #111827; margin-bottom: 4px; }
+.sub { color: #6b7280; font-size: 13px; margin-bottom: 20px; }
+
+.painel { background: white; border: 1px solid #e5e7eb; border-radius: 12px; padding: 18px; margin-bottom: 18px; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+.painel h2 { color: #111827; margin-bottom: 14px; font-size: 16px; }
+
+.drop { border: 2px dashed #2563eb; background: #eff6ff; color: #1d4ed8; padding: 30px; border-radius: 10px; text-align: center; cursor: pointer; font-size: 15px; }
+.drop:hover { background: #dbeafe; }
+.drop input { display: none; }
+
+.barra { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 14px; }
+input[type="text"] { padding: 8px 12px; border: 1px solid #d1d5db; border-radius: 7px; font-size: 13px; flex: 1; min-width: 200px; }
+
+button { border: none; border-radius: 7px; padding: 9px 13px; cursor: pointer; font-size: 13px; font-weight: bold; color: white; }
+button:hover { opacity: 0.85; }
+.b-azul { background: #2563eb; }
+.b-verde { background: #15803d; }
+.b-roxo { background: #7c3aed; }
+.b-laranja { background: #d97706; }
+.b-escuro { background: #111827; }
+.b-vermelho { background: #dc2626; }
+.b-cinza { background: #6b7280; }
+
+.contador-geral { font-size: 13px; color: #6b7280; margin-bottom: 10px; }
+
+.grid { display: grid; grid-template-columns: 360px 1fr; gap: 18px; }
+@media(max-width:900px){ .grid { grid-template-columns: 1fr; } }
+
+.lista { display: flex; flex-direction: column; gap: 8px; max-height: 680px; overflow-y: auto; padding-right: 4px; }
+
+.card { border: 1px solid #e5e7eb; background: #f9fafb; border-radius: 10px; padding: 12px; cursor: pointer; transition: 0.15s; }
+.card:hover { border-color: #2563eb; background: #eff6ff; }
+.card.ativo { border-color: #2563eb; background: #eff6ff; }
+
+.card-topo { display: flex; gap: 8px; align-items: flex-start; }
+.icone { font-size: 22px; min-width: 28px; text-align: center; }
+.card-info { flex: 1; min-width: 0; }
+.card-titulo { font-weight: bold; color: #1f2937; font-size: 14px; word-break: break-word; }
+.card-meta { color: #6b7280; font-size: 11px; margin-top: 3px; }
+
+.tags { display: flex; gap: 4px; flex-wrap: wrap; margin-top: 6px; }
+.tag { font-size: 10px; font-weight: bold; padding: 2px 7px; border-radius: 999px; }
+.tag-html { background: #fef3c7; color: #92400e; }
+.tag-css  { background: #ede9fe; color: #5b21b6; }
+.tag-js   { background: #dcfce7; color: #14532d; }
+.tag-vazio{ background: #f3f4f6; color: #9ca3af; }
+
+.mini-acoes { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 8px; }
+.mini-acoes button { font-size: 11px; padding: 5px 8px; }
+
+/* PREVIEW */
+.preview-topo { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.preview-topo h2 { font-size: 15px; color: #111827; word-break: break-word; }
+
+.abas { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.aba { background: #e5e7eb; color: #374151; padding: 7px 12px; border-radius: 7px; cursor: pointer; font-weight: bold; font-size: 12px; }
+.aba.ativa { background: #2563eb; color: white; }
+
+.preview-box { border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; }
+iframe { width: 100%; height: 560px; border: none; background: white; display: block; }
+
+pre { background: #1e1e1e; color: #d4d4d4; padding: 16px; font-family: Consolas, monospace; font-size: 12px; white-space: pre-wrap; word-break: break-word; max-height: 560px; overflow-y: auto; margin: 0; }
+
+.vazio { color: #9ca3af; text-align: center; padding: 60px 20px; font-size: 14px; }
+.aviso { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; padding: 10px 12px; border-radius: 8px; font-size: 13px; margin-bottom: 10px; }
+.ok { background: #ecfdf5; color: #065f46; border: 1px solid #a7f3d0; padding: 10px 12px; border-radius: 8px; font-size: 13px; margin-bottom: 10px; }
+
+.progress { background: #e5e7eb; border-radius: 999px; height: 8px; margin: 10px 0; }
+.progress-bar { background: #2563eb; height: 8px; border-radius: 999px; transition: width 0.3s; }
+.progress-txt { font-size: 12px; color: #6b7280; margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<h1>🗂 Extrator de Projetos Replit</h1>
+<p class="sub">Importa seu CSV exportado do Replit · Visualiza · Renderiza · Baixa cada projeto separado</p>
+
+<div class="painel">
+  <h2>📥 Importar arquivo CSV</h2>
+  <div class="drop" id="drop" onclick="document.getElementById('inp').click()">
+    <div>Clique aqui ou arraste o arquivo <strong>snippets.csv</strong></div>
+    <div style="font-size:12px;margin-top:6px;color:#4b5563;">Suporta arquivos grandes · Processamento local · Nada é enviado para internet</div>
+    <input type="file" id="inp" accept=".csv" onchange="carregarCSV(event)">
+  </div>
+  <div id="progressArea" style="display:none;margin-top:12px;">
+    <div class="progress-txt" id="progressTxt">Carregando...</div>
+    <div class="progress"><div class="progress-bar" id="progressBar" style="width:0%"></div></div>
+  </div>
+</div>
+
+<div class="painel" id="painelPrincipal" style="display:none;">
+
+  <div class="barra">
+    <input type="text" id="busca" placeholder="🔎 Buscar por título..." oninput="filtrar()">
+    <button class="b-escuro" onclick="baixarTodos()">⬇ Baixar todos como HTML</button>
+    <button class="b-vermelho" onclick="limpar()">🗑 Limpar</button>
+  </div>
+
+  <div class="contador-geral" id="contadorGeral"></div>
+
+  <div class="grid">
+
+    <div>
+      <div class="lista" id="lista"></div>
+    </div>
+
+    <div>
+      <div class="preview-topo">
+        <h2 id="previewTitulo">👁 Selecione um projeto</h2>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;" id="previewAcoes"></div>
+      </div>
+      <div class="abas" id="abas"></div>
+      <div class="preview-box" id="previewBox">
+        <div class="vazio">Selecione um projeto na lista para visualizar.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+let projetos = [];
+let projetoAtivo = null;
+let abaAtiva = "render";
+let filtrados = [];
+
+// DRAG DROP
+const drop = document.getElementById("drop");
+drop.addEventListener("dragover", e => { e.preventDefault(); drop.style.background = "#dbeafe"; });
+drop.addEventListener("dragleave", () => { drop.style.background = "#eff6ff"; });
+drop.addEventListener("drop", e => {
+  e.preventDefault();
+  drop.style.background = "#eff6ff";
+  const f = e.dataTransfer.files[0];
+  if (f) processarArquivo(f);
+});
+
+function carregarCSV(e) {
+  const f = e.target.files[0];
+  if (f) processarArquivo(f);
+}
+
+function processarArquivo(file) {
+  document.getElementById("progressArea").style.display = "block";
+  document.getElementById("progressTxt").textContent = "Lendo arquivo...";
+  document.getElementById("progressBar").style.width = "10%";
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    document.getElementById("progressBar").style.width = "40%";
+    document.getElementById("progressTxt").textContent = "Processando linhas...";
+
+    setTimeout(() => {
+      try {
+        projetos = parseCSVCompleto(e.target.result);
+        document.getElementById("progressBar").style.width = "90%";
+        document.getElementById("progressTxt").textContent = projetos.length + " projetos encontrados!";
+
+        setTimeout(() => {
+          document.getElementById("progressArea").style.display = "none";
+          document.getElementById("painelPrincipal").style.display = "block";
+          filtrados = [...projetos];
+          renderizarLista();
+        }, 400);
+      } catch(err) {
+        alert("Erro ao processar CSV:\n" + err.message);
+        document.getElementById("progressArea").style.display = "none";
+      }
+    }, 50);
+  };
+  reader.readAsText(file, "UTF-8");
+}
+
+// PARSER CSV ROBUSTO — lida com campos gigantes com quebras de linha
+function parseCSVCompleto(texto) {
+  const resultado = [];
+  let i = 0;
+  const len = texto.length;
+
+  // Detectar separador
+  const primeiraLinha = texto.slice(0, 500);
+  const sep = primeiraLinha.includes("\t") ? "\t" : ",";
+
+  // Ler cabeçalho
+  const cabecalho = lerLinha(texto, 0, sep);
+  const colunas = cabecalho.valores.map(c => c.trim().toLowerCase());
+  i = cabecalho.proximo;
+
+  // Mapear índices
+  const iId    = colunas.findIndex(c => c === "id");
+  const iTitle = colunas.findIndex(c => c.includes("title") || c.includes("titulo") || c.includes("nome"));
+  const iHtml  = colunas.findIndex(c => c === "html");
+  const iCss   = colunas.findIndex(c => c === "css");
+  const iJs    = colunas.findIndex(c => c === "js" || c === "javascript");
+  const iMode  = colunas.findIndex(c => c === "mode" || c === "tipo" || c === "type");
+
+  let count = 0;
+  while (i < len) {
+    const linha = lerLinha(texto, i, sep);
+    if (!linha) break;
+    i = linha.proximo;
+
+    const v = linha.valores;
+    if (!v || v.length < 2) continue;
+
+    const proj = {
+      id:    iId    >= 0 ? v[iId]    || "" : String(count + 1),
+      title: iTitle >= 0 ? v[iTitle] || "" : "Projeto " + (count + 1),
+      html:  iHtml  >= 0 ? v[iHtml]  || "" : "",
+      css:   iCss   >= 0 ? v[iCss]   || "" : "",
+      js:    iJs    >= 0 ? v[iJs]    || "" : "",
+      mode:  iMode  >= 0 ? v[iMode]  || "" : "",
+    };
+
+    if (!proj.title.trim()) proj.title = "Projeto " + (count + 1);
+
+    resultado.push(proj);
+    count++;
+  }
+
+  return resultado;
+}
+
+function lerLinha(texto, inicio, sep) {
+  const valores = [];
+  let i = inicio;
+  const len = texto.length;
+  let campo = "";
+  let dentroAspas = false;
+
+  while (i < len) {
+    const c = texto[i];
+
+    if (c === '"') {
+      if (dentroAspas && texto[i+1] === '"') {
+        campo += '"';
+        i += 2;
+        continue;
+      }
+      dentroAspas = !dentroAspas;
+      i++;
+      continue;
+    }
+
+    if (c === sep && !dentroAspas) {
+      valores.push(campo);
+      campo = "";
+      i++;
+      continue;
+    }
+
+    if ((c === "\n" || (c === "\r" && texto[i+1] === "\n")) && !dentroAspas) {
+      valores.push(campo);
+      if (c === "\r") i++;
+      i++;
+      return { valores, proximo: i };
+    }
+
+    campo += c;
+    i++;
+  }
+
+  if (campo || valores.length) {
+    valores.push(campo);
+    return { valores, proximo: i };
+  }
+
+  return null;
+}
+
+// FILTRAR
+function filtrar() {
+  const termo = document.getElementById("busca").value.toLowerCase().trim();
+  filtrados = termo
+    ? projetos.filter(p => p.title.toLowerCase().includes(termo) || p.mode.toLowerCase().includes(termo))
+    : [...projetos];
+  renderizarLista();
+}
+
+// RENDERIZAR LISTA
+function renderizarLista() {
+  const lista = document.getElementById("lista");
+  const contador = document.getElementById("contadorGeral");
+  lista.innerHTML = "";
+
+  contador.textContent = filtrados.length + " de " + projetos.length + " projeto(s)";
+
+  if (!filtrados.length) {
+    lista.innerHTML = '<div class="vazio">Nenhum projeto encontrado.</div>';
+    return;
+  }
+
+  filtrados.forEach(p => {
+    const temHtml = p.html.trim().length > 0;
+    const temCss  = p.css.trim().length > 0;
+    const temJs   = p.js.trim().length > 0;
+
+    const tamanho = ((p.html.length + p.css.length + p.js.length) / 1024).toFixed(1);
+
+    const card = document.createElement("div");
+    card.className = "card" + (projetoAtivo?.id === p.id ? " ativo" : "");
+    card.innerHTML = `
+      <div class="card-topo">
+        <div class="icone">🌐</div>
+        <div class="card-info">
+          <div class="card-titulo">${esc(p.title)}</div>
+          <div class="card-meta">ID: ${esc(p.id)} · ${tamanho} KB ${p.mode ? "· " + esc(p.mode) : ""}</div>
+        </div>
+      </div>
+      <div class="tags">
+        ${temHtml ? '<span class="tag tag-html">HTML</span>' : '<span class="tag tag-vazio">sem HTML</span>'}
+        ${temCss  ? '<span class="tag tag-css">CSS</span>'   : ""}
+        ${temJs   ? '<span class="tag tag-js">JS</span>'     : ""}
+      </div>
+      <div class="mini-acoes">
+        <button class="b-azul"   onclick="abrirProjeto('${esc(p.id)}')">👁 Ver</button>
+        <button class="b-verde"  onclick="baixarProjeto('${esc(p.id)}')">⬇ HTML</button>
+        <button class="b-roxo"   onclick="copiarProjeto('${esc(p.id)}')">📋 Copiar</button>
+      </div>
+    `;
+
+    card.addEventListener("click", function(ev) {
+      if (ev.target.tagName === "BUTTON") return;
+      abrirProjeto(p.id);
+    });
+
+    lista.appendChild(card);
+  });
+}
+
+// ABRIR PROJETO
+function abrirProjeto(id) {
+  projetoAtivo = projetos.find(p => p.id === id) || filtrados.find(p => p.id === id);
+  if (!projetoAtivo) return;
+  abaAtiva = "render";
+  renderizarLista();
+  renderizarPreview();
+  document.getElementById("painelPrincipal").scrollIntoView({ behavior: "smooth" });
+}
+
+// RENDERIZAR PREVIEW
+function renderizarPreview() {
+  const p = projetoAtivo;
+  if (!p) return;
+
+  document.getElementById("previewTitulo").textContent = "👁 " + p.title;
+
+  // Ações
+  document.getElementById("previewAcoes").innerHTML = `
+    <button class="b-verde"  onclick="baixarProjeto('${esc(p.id)}')">⬇ Baixar HTML</button>
+    <button class="b-roxo"   onclick="copiarProjeto('${esc(p.id)}')">📋 Copiar</button>
+    <button class="b-laranja" onclick="abrirNovaAba('${esc(p.id)}')">🔗 Abrir em nova aba</button>
+  `;
+
+  // Abas
+  const abas = [
+    { id: "render", label: "🌐 Render" },
+    { id: "html",   label: "HTML" },
+    { id: "css",    label: "CSS" },
+    { id: "js",     label: "JS" },
+    { id: "tudo",   label: "📄 Código completo" },
+  ];
+
+  document.getElementById("abas").innerHTML = abas.map(a =>
+    `<div class="aba ${abaAtiva === a.id ? "ativa" : ""}" onclick="mudarAba('${a.id}')">${a.label}</div>`
+  ).join("");
+
+  // Conteúdo
+  const box = document.getElementById("previewBox");
+
+  if (abaAtiva === "render") {
+    const html = montarHTML(p);
+    box.innerHTML = `<iframe id="iframePreview" srcdoc="${escAttr(html)}"></iframe>`;
+  } else if (abaAtiva === "html") {
+    box.innerHTML = `<pre>${esc(p.html || "(vazio)")}</pre>`;
+  } else if (abaAtiva === "css") {
+    box.innerHTML = `<pre>${esc(p.css || "(vazio)")}</pre>`;
+  } else if (abaAtiva === "js") {
+    box.innerHTML = `<pre>${esc(p.js || "(vazio)")}</pre>`;
+  } else if (abaAtiva === "tudo") {
+    box.innerHTML = `<pre>${esc(montarHTML(p))}</pre>`;
+  }
+}
+
+function mudarAba(aba) {
+  abaAtiva = aba;
+  renderizarPreview();
+}
+
+// MONTAR HTML COMPLETO
+function montarHTML(p) {
+  // Se o HTML já é um documento completo
+  const htmlTrim = (p.html || "").trim();
+
+  if (htmlTrim.toLowerCase().includes("<!doctype") || htmlTrim.toLowerCase().startsWith("<html")) {
+    // Já é documento completo — injeta CSS e JS se existirem separados
+    let resultado = htmlTrim;
+
+    if (p.css && p.css.trim()) {
+      resultado = resultado.replace("</head>", `<style>\n${p.css}\n</style>\n</head>`);
+      if (!resultado.includes("</head>")) {
+        resultado = `<style>\n${p.css}\n</style>\n` + resultado;
+      }
+    }
+
+    if (p.js && p.js.trim()) {
+      resultado = resultado.replace("</body>", `<script>\n${p.js}\n<\/script>\n</body>`);
+      if (!resultado.includes("</body>")) {
+        resultado += `\n<script>\n${p.js}\n<\/script>`;
+      }
+    }
+
+    return resultado;
+  }
+
+  // Monta documento do zero
+  return `<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${esc(p.title)}</title>
+  <style>
+${p.css || ""}
+  </style>
+</head>
+<body>
+${p.html || ""}
+<script>
+${p.js || ""}
+<\/script>
+</body>
+</html>`;
+}
+
+// BAIXAR PROJETO
+function baixarProjeto(id) {
+  const p = projetos.find(x => x.id === id) || filtrados.find(x => x.id === id);
+  if (!p) return;
+
+  const html = montarHTML(p);
+  const nome = limparNome(p.title) + ".html";
+  baixarBlob(html, nome, "text/html;charset=utf-8");
+}
+
+// ABRIR EM NOVA ABA
+function abrirNovaAba(id) {
+  const p = projetos.find(x => x.id === id) || filtrados.find(x => x.id === id);
+  if (!p) return;
+
+  const html = montarHTML(p);
+  const blob = new Blob([html], { type: "text/html;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  window.open(url, "_blank");
+}
+
+// COPIAR
+function copiarProjeto(id) {
+  const p = projetos.find(x => x.id === id) || filtrados.find(x => x.id === id);
+  if (!p) return;
+
+  navigator.clipboard.writeText(montarHTML(p))
+    .then(() => alert("Código copiado! Cole no Bloco de Notas e salve como .html"))
+    .catch(() => alert("Não foi possível copiar automaticamente."));
+}
+
+// BAIXAR TODOS
+function baixarTodos() {
+  if (!filtrados.length) return;
+
+  if (!confirm("Baixar " + filtrados.length + " projetos? Serão baixados um por um.")) return;
+
+  let i = 0;
+  function proximo() {
+    if (i >= filtrados.length) {
+      alert("Todos os projetos foram baixados!");
+      return;
+    }
+    baixarProjeto(filtrados[i].id);
+    i++;
+    setTimeout(proximo, 600);
+  }
+  proximo();
+}
+
+// LIMPAR
+function limpar() {
+  if (!confirm("Limpar tudo?")) return;
+  projetos = [];
+  filtrados = [];
+  projetoAtivo = null;
+  document.getElementById("painelPrincipal").style.display = "none";
+  document.getElementById("inp").value = "";
+}
+
+// UTILITÁRIOS
+function limparNome(nome) {
+  return String(nome)
+    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^\w\s\-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "")
+    .toLowerCase()
+    .slice(0, 80) || "projeto";
+}
+
+function baixarBlob(conteudo, nome, tipo) {
+  const blob = new Blob([conteudo], { type: tipo });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = nome;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function esc(str) {
+  return String(str || "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function escAttr(str) {
+  return esc(str).replace(/\n/g, "&#10;").replace(/'/g, "&#039;");
+}
+</script>
+</body>
+</html>
