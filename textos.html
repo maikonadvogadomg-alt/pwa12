@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Filtrador Jurídico Avançado (Versão Mike)</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js"></script>
+    <script>
+        window.pdfjsLib && (pdfjsLib.GlobalWorkerOptions.workerSrc = 
+        "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.worker.min.js");
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <style>
+        :root {
+            --bg: #0f172a; --panel: #111827; --panel2: #0b1220; --txt: #e5e7eb; --muted: #9ca3af;
+            --accent: #f59e0b; --good: #22c55e; --bad: #ef4444; --info: #60a5fa;
+            --paper: #ffffff;
+        }
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Arial; background: #e5e7eb; }
+        .wrap { display: flex; height: 100vh; gap: 14px; padding: 14px; }
+        .left { width: 38%; min-width: 340px; background: var(--panel); color: var(--txt); border-radius: 12px; padding: 14px; overflow: auto; }
+        .right { flex: 1; background: #cbd5e1; border-radius: 12px; padding: 14px; overflow: auto; display: flex; flex-direction: column; }
+        h1 { font-size: 14px; margin: 0 0 10px; color: var(--accent); letter-spacing: .5px; text-transform: uppercase; }
+        h2 { font-size: 12px; margin: 14px 0 8px; color: var(--txt); text-transform: uppercase; letter-spacing: .5px; }
+        .hint { font-size: 12px; color: var(--muted); line-height: 1.35; background: rgba(96,165,250,.08); border-left: 3px solid var(--info); padding: 10px; border-radius: 8px; }
+        textarea, input[type="text"], input[type="number"] {
+            width: 100%; background: var(--panel2); color: var(--txt); border: 1px solid rgba(255,255,255,.14);
+            border-radius: 8px; padding: 10px; outline: none; transition: border 0.3s;
+        }
+        textarea:focus { border-color: var(--accent); }
+        textarea { min-height: 120px; resize: vertical; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+        label { font-size: 12px; color: var(--muted); display: block; margin: 8px 0 6px; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .btnrow { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .btnrow-export { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; margin-top: 10px; }
+        button {
+            border: 0; border-radius: 8px; padding: 11px 10px; font-weight: 700; cursor: pointer;
+            text-transform: uppercase; letter-spacing: .3px; font-size: 11px; transition: 0.2s;
+        }
+        button:hover { opacity: 0.8; transform: translateY(-1px); }
+        .b1 { background: var(--accent); color: #111827; }
+        .b2 { background: var(--bad); color: white; }
+        .b3 { background: var(--good); color: #052e16; }
+        .b4 { background: var(--info); color: #0b1220; }
+        .b-gmail { background: #ea4335; color: white; border: 1px solid #c5221f; }
+        .b-drive { background: #34a853; color: white; border: 1px solid #188038; }
+        .b-copy { background: #fff; color: #000; border: 1px solid #ccc; padding: 6px 10px; }
+        .box { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.10); border-radius: 10px; padding: 10px; }
+        .checks { display: grid; grid-template-columns: 1fr; gap: 8px; }
+        .checks label { margin: 0; color: var(--txt); font-size: 12px; cursor: pointer; }
+        .checks input { transform: translateY(2px); margin-right: 6px; }
+        .status { white-space: pre-wrap; font-size: 12px; color: var(--txt); background: rgba(0,0,0,.18); border: 1px solid rgba(255,255,255,.08); padding: 10px; border-radius: 10px; }
+        .paper { background: var(--paper); border-radius: 12px; padding: 18px; box-shadow: 0 10px 30px rgba(0,0,0,.18); display: flex; flex-direction: column; flex: 1; overflow: hidden; }
+        .paper h3 { margin: 0 0 10px; font-size: 14px; color: #111827; }
+        .out { white-space: pre-wrap; font-family: "Times New Roman", Times, serif; font-size: 12pt; line-height: 1.5; flex: 1; overflow: auto; border: 1px solid #ddd; padding: 15px; margin-top: 10px; background: #fafafa; color: #000; border-radius: 8px; }
+        .small { font-size: 11px; color: #475569; }
+        details { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.10); padding: 10px; border-radius: 10px; margin-top: 10px; }
+        summary { cursor: pointer; font-weight: 700; color: var(--txt); }
+        .removedItem { padding: 8px; border-left: 3px solid var(--bad); background: rgba(239,68,68,.08); border-radius: 8px; margin-top: 8px; color: var(--txt); font-size: 12px; }
+        .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); display: none; align-items: center; justify-content: center; z-index: 9999; }
+        .ovbox { background: white; border-radius: 12px; padding: 20px; min-width: 300px; box-shadow: 0 20px 60px rgba(0,0,0,.35); text-align: center; }
+        .spin { width: 24px; height: 24px; border: 4px solid #cbd5e1; border-top-color: var(--accent); border-radius: 50%; display: inline-block; animation: sp 1s linear infinite; vertical-align: middle; margin-right: 10px; }
+        .autosave-badge { font-size: 10px; color: var(--good); float: right; margin-top: -20px; display: none; }
+        @keyframes sp { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <div class="overlay" id="ov">
+        <div class="ovbox">
+            <div style="color: black;"><span class="spin"></span><b id="ovMsg">Processando…</b></div>
+            <div class="small" id="ovSub" style="margin-top:10px;color:#475569">Isso pode levar alguns segundos dependendo do tamanho do arquivo.</div>
+        </div>
+    </div>
+    <div class="wrap">
+        <div class="left">
+            <h1>Filtrador Jurídico Avançado <span id="autosaveBadge" class="autosave-badge">✓ Salvo</span></h1>
+            <div class="hint">
+                <b>Versão de Corte Cirúrgico + Autosave:</b> O texto será dividido por linhas. Se uma palavra for banida, apenas aquela linha específica será excluída. Tudo que você digita é salvo automaticamente no seu navegador.
+            </div>
+            
+            <h2>1) Importar Arquivos</h2>
+            <input id="files" type="file" multiple accept=".txt,.pdf,.docx,.json" style="background: white; color: black; padding: 5px; cursor: pointer;" />
+            
+            <h2>2) Texto Bruto (Editável)</h2>
+            <textarea id="raw" placeholder="O texto importado aparecerá aqui. Você também pode colar diretamente..."></textarea>
+            
+            <h2>3) Configurações de Limpeza</h2>
+            <div class="box">
+                <div class="checks">
+                    <label><input type="checkbox" id="cleanSymbols" checked> Limpar formatação excessiva (markdown, etc)</label>
+                    <label><input type="checkbox" id="removeOCRNoise" checked> Remover "sopa de letrinhas" (sujeira de OCR/Imagens)</label>
+                    <label><input type="checkbox" id="dedupeExact"> Remover parágrafos duplicados idênticos</label>
+                </div>
+            </div>
+
+            <h2>4) Regras de Exclusão (O que jogar no Lixo)</h2>
+            <div class="box">
+                <label>Excluir se contiver (1 palavra/frase por linha)</label>
+                <textarea id="banWords" placeholder="Ex.: Assinado digitalmente&#10;Este documento é cópia&#10;Tribunal de Justiça"></textarea>
+                <div class="row" style="margin-top:10px">
+                    <button class="b2" id="btnClearRules">Limpar Regras</button>
+                </div>
+            </div>
+
+            <div class="btnrow" style="margin-top: 20px;">
+                <button class="b1" id="btnRun" style="padding: 15px; font-size: 14px;">Filtrar Agora</button>
+                <button class="b2" id="btnClearAll">Resetar Tudo</button>
+            </div>
+
+            <h2>Status do Processamento</h2>
+            <div class="status" id="status">Aguardando arquivos...</div>
+            
+            <details>
+                <summary>Ver prévia dos Removidos</summary>
+                <div id="removedBox"></div>
+            </details>
+        </div>
+
+        <div class="right">
+            <div class="paper">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h3>Resultado Filtrado</h3>
+                    <button class="b-copy" id="btnCopyText" title="Copiar tudo">📋 Copiar Texto</button>
+                </div>
+                
+                <div class="small" style="margin-top: 5px;">1. Baixe os arquivos para o seu computador:</div>
+                <div class="btnrow-export">
+                    <button class="b3" id="btnExportWord">⬇️ Baixar Word</button>
+                    <button class="b3" id="btnExportTxt">⬇️ Baixar TXT</button>
+                    <button class="b2" id="btnExportLixo">🗑️ Baixar Lixo (Excluídos)</button>
+                </div>
+
+                <div class="small" style="margin-top: 15px;">2. Faça o backup seguro na nuvem (Arraste os arquivos baixados para lá):</div>
+                <div class="btnrow-export">
+                    <button class="b-gmail" onclick="window.open('https://mail.google.com/mail/u/0/?view=cm&fs=1', '_blank')">✉️ Rascunho Gmail</button>
+                    <button class="b-drive" onclick="window.open('https://drive.google.com/', '_blank')">☁️ Abrir Drive</button>
+                </div>
+
+                <hr style="margin:15px 0; border:0; border-top:1px solid #ddd;" />
+                <div id="out" class="out">[O texto filtrado aparecerá aqui, mantendo a numeração das páginas]</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== AUTOSAVE SYSTEM ==========
+        const STORAGE_KEY = "mike_filtrador_data";
+        window.dadosRemovidosGlobal = []; // Armazena o lixo globalmente
+
+        function saveState() {
+            const data = {
+                raw: document.getElementById("raw").value,
+                banWords: document.getElementById("banWords").value,
+                cleanSymbols: document.getElementById("cleanSymbols").checked,
+                removeOCRNoise: document.getElementById("removeOCRNoise").checked,
+                dedupeExact: document.getElementById("dedupeExact").checked,
+                outText: document.getElementById("out").textContent,
+                statusMsg: document.getElementById("status").textContent,
+                lixo: window.dadosRemovidosGlobal
+            };
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+            
+            // Pisca o "Salvo"
+            const badge = document.getElementById("autosaveBadge");
+            badge.style.display = "inline";
+            setTimeout(() => { badge.style.display = "none"; }, 1500);
+        }
+
+        function loadState() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    const data = JSON.parse(saved);
+                    if(data.raw) document.getElementById("raw").value = data.raw;
+                    if(data.banWords) document.getElementById("banWords").value = data.banWords;
+                    if(data.outText) document.getElementById("out").textContent = data.outText;
+                    if(data.statusMsg) document.getElementById("status").textContent = data.statusMsg;
+                    
+                    document.getElementById("cleanSymbols").checked = data.cleanSymbols !== false;
+                    document.getElementById("removeOCRNoise").checked = data.removeOCRNoise !== false;
+                    document.getElementById("dedupeExact").checked = data.dedupeExact === true;
+                    
+                    if(data.lixo) {
+                        window.dadosRemovidosGlobal = data.lixo;
+                        renderRemovedSample(data.lixo);
+                    }
+                }
+            } catch (e) {
+                console.error("Erro ao carregar Autosave", e);
+            }
+        }
+
+        // Detecta digitação para salvar automaticamente
+        ['raw', 'banWords'].forEach(id => {
+            document.getElementById(id).addEventListener('input', saveState);
+        });
+        ['cleanSymbols', 'removeOCRNoise', 'dedupeExact'].forEach(id => {
+            document.getElementById(id).addEventListener('change', saveState);
+        });
+
+        // ========== UI Helpers ==========
+        function setStatus(s) { 
+            document.getElementById("status").textContent = s; 
+            saveState();
+        }
+        function ov(on, msg, sub) {
+            const o = document.getElementById("ov");
+            o.style.display = on ? "flex" : "none";
+            if (msg) document.getElementById("ovMsg").textContent = msg;
+            if (sub) document.getElementById("ovSub").textContent = sub;
+        }
+        function download(filename, text, mime = "text/plain") {
+            const blob = new Blob([text], { type: mime });
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = filename;
+            a.click();
+            setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+        }
+
+        function renderRemovedSample(removedArray) {
+            const rb = document.getElementById("removedBox");
+            rb.innerHTML = "";
+            if(!removedArray || removedArray.length === 0) return;
+            
+            const sample = removedArray.slice(0, 50);
+            for (let i = 0; i < sample.length; i++) {
+                const r = sample[i];
+                const div = document.createElement("div");
+                div.className = "removedItem";
+                div.innerHTML = `<b>${i+1}. ${r.motivo}</b><br>${r.texto}`;
+                rb.appendChild(div);
+            }
+            if (removedArray.length > sample.length) {
+                const more = document.createElement("div");
+                more.className = "small";
+                more.style.marginTop = "10px";
+                more.textContent = `… (Total: ${removedArray.length} itens removidos. Baixe o Lixo para ver todos)`;
+                rb.appendChild(more);
+            }
+        }
+
+        // ========== Extratores de Texto ==========
+        async function extractTextFromPDF(file) {
+            const buf = await file.arrayBuffer();
+            const pdf = await pdfjsLib.getDocument({ data: buf }).promise;
+            let full = "";
+            for (let i = 1; i <= pdf.numPages; i++) {
+                const page = await pdf.getPage(i);
+                const content = await page.getTextContent();
+                full += `\n\n--- PÁGINA ${i} ---\n\n`;
+                let lastY = -1;
+                for (const item of content.items) {
+                    if (lastY !== -1 && Math.abs(item.transform[5] - lastY) > 5) {
+                        full += "\n"; 
+                    }
+                    full += item.str + " ";
+                    lastY = item.transform[5];
+                }
+            }
+            return full;
+        }
+
+        async function extractTextFromDOCX(file) {
+            const buf = await file.arrayBuffer();
+            const res = await mammoth.extractRawText({ arrayBuffer: buf });
+            return res.value || "";
+        }
+
+        // ========== Lógica de Corte Cirúrgico ==========
+        function splitParagraphs(t) {
+            return (t || "").split(/\n+/).map(p => p.trim()).filter(Boolean);
+        }
+
+        function isOcrNoise(text) {
+            const cleaned = text.replace(/\s/g, '');
+            if (cleaned.length < 5) return false;
+            const specialChars = (cleaned.match(/[^a-zA-Z0-9À-ÿ]/g) || []).length;
+            if (specialChars / cleaned.length > 0.4) return true;
+            return false;
+        }
+
+        function filterText(rawText, cfg) {
+            const removed = [];
+            let text = rawText || "";
+            
+            if (cfg.cleanSymbols) {
+                text = text.replace(/[#~_]{2,}/g, " ").replace(/[“”]/g, '"').replace(/[’]/g, "'");
+            }
+
+            const pars = splitParagraphs(text);
+            const exatos = new Set();
+            const out = [];
+
+            for (const p of pars) {
+                if (p.startsWith("--- PÁGINA") && p.endsWith("---")) {
+                    out.push(`\n${p}\n`);
+                    continue;
+                }
+                if (cfg.removeOCRNoise && isOcrNoise(p)) {
+                    removed.push({ motivo: "Sujeira de OCR/Imagem", texto: p });
+                    continue;
+                }
+                if (cfg.dedupeExact) {
+                    const norm = p.toLowerCase().replace(/\s+/g, "");
+                    if (exatos.has(norm) && norm.length > 15) {
+                        removed.push({ motivo: "Duplicata Exata", texto: p });
+                        continue;
+                    }
+                    exatos.add(norm);
+                }
+                let drop = false;
+                let razaoDrop = "";
+                const lowP = p.toLowerCase();
+                for (const w of cfg.banWords) {
+                    if (w && lowP.includes(w.toLowerCase())) {
+                        drop = true;
+                        razaoDrop = `Contém a palavra: "${w}"`;
+                        break;
+                    }
+                }
+                if (drop) {
+                    removed.push({ motivo: razaoDrop, texto: p });
+                    continue;
+                }
+                out.push(p);
+            }
+
+            window.dadosRemovidosGlobal = removed;
+
+            return {
+                outText: out.join("\n"),
+                removed: removed,
+                stats: { total: pars.length, kept: out.length, removed: removed.length }
+            };
+        }
+
+        // ========== Eventos de Botões ==========
+        document.getElementById("btnRun").addEventListener("click", () => {
+            const raw = document.getElementById("raw").value;
+            if (!raw.trim()) { alert("Cole o texto ou importe arquivos primeiro."); return; }
+            
+            const cfg = {
+                cleanSymbols: document.getElementById("cleanSymbols").checked,
+                removeOCRNoise: document.getElementById("removeOCRNoise").checked,
+                dedupeExact: document.getElementById("dedupeExact").checked,
+                banWords: (document.getElementById("banWords").value || "").split("\n").map(s => s.trim()).filter(Boolean)
+            };
+            
+            ov(true, "Filtrando…", "Analisando quebras de linha e regras.");
+            setTimeout(() => {
+                try {
+                    const res = filterText(raw, cfg);
+                    document.getElementById("out").textContent = res.outText || "";
+                    renderRemovedSample(res.removed);
+                    setStatus(`Concluído. Linhas mantidas: ${res.stats.kept} | Linhas removidas: ${res.stats.removed}`);
+                    saveState(); // Salva após o processamento
+                } catch (e) {
+                    console.error(e);
+                    alert("Erro: " + e.message);
+                } finally {
+                    ov(false);
+                }
+            }, 100);
+        });
+
+        // Exportação do Lixo
+        document.getElementById("btnExportLixo").addEventListener("click", () => {
+            if (!window.dadosRemovidosGlobal || window.dadosRemovidosGlobal.length === 0) {
+                alert("Nenhum lixo para exportar. Rode o filtro primeiro.");
+                return;
+            }
+            let textoLixo = "=== REGISTRO DE TEXTOS EXCLUÍDOS ===\n\n";
+            window.dadosRemovidosGlobal.forEach(item => {
+                textoLixo += `[Motivo do corte: ${item.motivo}]\nTEXTO: ${item.texto}\n\n`;
+            });
+            download("texto_excluido_lixo.txt", textoLixo, "text/plain;charset=utf-8");
+        });
+
+        // Demais exportações
+        document.getElementById("btnExportTxt").addEventListener("click", () => {
+            download("processo_limpo.txt", document.getElementById("out").textContent, "text/plain;charset=utf-8");
+        });
+        document.getElementById("btnExportWord").addEventListener("click", () => {
+            const content = document.getElementById("out").textContent || "";
+            const paragraphs = content.split(/\n/);
+            let htmlBody = "";
+            for (let p of paragraphs) {
+                if (!p.trim()) continue;
+                if (p.startsWith("--- PÁGINA")) {
+                    htmlBody += `<p style="margin-top:20pt; font-weight:bold; color:red; text-align:center;">${p}</p>`;
+                } else {
+                    htmlBody += `<p style="margin-bottom:6pt; font-family:'Times New Roman', serif; font-size:12pt;">${p}</p>`;
+                }
+            }
+            const htmlContent = `<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>Filtrado</title></head><body>${htmlBody}</body></html>`;
+            download("processo_limpo.doc", htmlContent, "application/msword");
+        });
+
+        document.getElementById("btnCopyText").addEventListener("click", async () => {
+            try {
+                await navigator.clipboard.writeText(document.getElementById("out").textContent);
+                const btn = document.getElementById("btnCopyText");
+                btn.textContent = "Copiado!";
+                setTimeout(() => btn.textContent = "📋 Copiar Texto", 2000);
+            } catch (err) { alert("Erro ao copiar."); }
+        });
+
+        document.getElementById("btnClearRules").addEventListener("click", () => {
+            document.getElementById("banWords").value = "";
+            saveState();
+        });
+
+        document.getElementById("btnClearAll").addEventListener("click", () => {
+            if (!confirm("Tem certeza que deseja apagar tudo?")) return;
+            document.getElementById("raw").value = "";
+            document.getElementById("banWords").value = "";
+            document.getElementById("out").textContent = "[O texto filtrado aparecerá aqui, mantendo a numeração das páginas]";
+            document.getElementById("removedBox").innerHTML = "";
+            window.dadosRemovidosGlobal = [];
+            setStatus("Aguardando arquivos...");
+            localStorage.removeItem(STORAGE_KEY); // Limpa o autosave também
+        });
+
+        // Importação de Arquivos
+        document.getElementById("files").addEventListener("change", async (e) => {
+            const files = Array.from(e.target.files || []);
+            if (!files.length) return;
+            ov(true, "Lendo Arquivos…", "Convertendo PDFs e documentos para texto.");
+            try {
+                let combined = document.getElementById("raw").value || "";
+                for (const f of files) {
+                    const name = (f.name || "").toLowerCase();
+                    let text = "";
+                    if (name.endsWith(".txt")) text = await f.text();
+                    else if (name.endsWith(".pdf")) text = await extractTextFromPDF(f);
+                    else if (name.endsWith(".docx")) text = await extractTextFromDOCX(f);
+                    else text = await f.text();
+                    combined += (combined.trim() ? "\n\n" : "") + `===============================\nARQUIVO: ${f.name}\n===============================\n\n` + text;
+                }
+                document.getElementById("raw").value = combined;
+                setStatus(`Importação concluída: ${files.length} arquivo(s). Pronto para filtrar.`);
+                saveState(); // Salva o texto novo importado
+            } catch (err) {
+                alert("Falha ao importar: " + err.message);
+            } finally {
+                ov(false);
+                e.target.value = "";
+            }
+        });
+
+        // Inicia o App carregando o que estava salvo
+        window.onload = loadState;
+    </script>
+</body>
+</html>
