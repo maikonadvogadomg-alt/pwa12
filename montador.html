@@ -1,0 +1,2614 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Painel Maikon Caldeira — Advocacia Digital</title>
+<style>
+* { box-sizing:border-box; margin:0; padding:0; }
+body { background:#0a0a0f; font-family:system-ui,sans-serif; }
+
+.nav {
+  position:fixed;
+  top:0; left:0; right:0;
+  background:#12121a;
+  border-bottom:2px solid #a3a082;
+  padding:10px 16px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  align-items:center;
+  z-index:9999;
+  box-shadow:0 3px 15px rgba(0,0,0,0.6);
+}
+
+.nav-titulo {
+  font-size:12px;
+  font-weight:700;
+  color:#a3a082;
+  letter-spacing:2px;
+  margin-right:8px;
+  white-space:nowrap;
+}
+
+.nav-btn {
+  padding:8px 16px;
+  background:#1a1a2e;
+  border:1px solid #2d2d3a;
+  border-radius:8px;
+  color:#94a3b8;
+  font-size:12px;
+  font-weight:600;
+  cursor:pointer;
+  transition:all 0.2s;
+  white-space:nowrap;
+}
+
+.nav-btn:hover { background:#a3a082; color:#000; border-color:#a3a082; }
+.nav-btn.active { background:#a3a082; color:#000; border-color:#d4d0a8; }
+
+.projeto { display:none; padding-top:110px; min-height:100vh; }
+.projeto.ativo { display:block; }
+
+.projeto iframe {
+  width:100%;
+  min-height:calc(100vh - 110px);
+  border:none;
+  display:block;
+}
+</style>
+</head>
+<body>
+
+<div class="nav">
+  <span class="nav-titulo">⚖️ MC</span>
+  <button class="nav-btn active" onclick="trocar(0)">🔷 1.montador</button>
+  <button class="nav-btn " onclick="trocar(1)">🔶 2.montador</button>
+  <button class="nav-btn " onclick="trocar(2)">🔸 3.montador</button>
+  <button class="nav-btn " onclick="trocar(3)">🟢 4.montador</button>
+</div>
+
+<div class="projeto ativo" id="p0"><iframe srcdoc="<!DOCTYPE html>
+<html lang=&quot;pt-BR&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;>
+<title>🧩 Montador Multi-Projetos — PWA Jurídico</title>
+<style>
+:root { --bg:#0a0a0f; --bg2:#12121a; --bg3:#1a1a2e; --text:#e2e8f0; --text2:#94a3b8; --accent:#a3a082; --accent2:#d4d0a8; --green:#4ade80; --blue:#60a5fa; --red:#f87171; --border:#2d2d3a; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+.header { background:var(--bg2); border-bottom:1px solid var(--border); padding:16px 24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+.header h1 { font-size:18px; color:var(--accent); }
+.header h1 small { display:block; font-size:10px; color:var(--text2); font-weight:400; letter-spacing:2px; }
+
+.container { max-width:1400px; margin:0 auto; padding:20px; }
+
+.workspace { background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:20px; margin-bottom:20px; }
+.workspace h2 { font-size:14px; color:var(--accent); margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+
+.btn { display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border:none; border-radius:8px; font-size:11px; font-weight:600; cursor:pointer; transition:all 0.15s; }
+.btn-sm { padding:5px 10px; font-size:10px; }
+.btn-primary { background:var(--accent); color:#000; }
+.btn-primary:hover { background:var(--accent2); }
+.btn-ghost { background:transparent; color:var(--text2); border:1px solid var(--border); }
+.btn-ghost:hover { background:var(--bg3); color:var(--text); }
+.btn-danger { background:rgba(239,68,68,0.2); color:var(--red); border:1px solid rgba(239,68,68,0.3); }
+
+.input { width:100%; padding:8px 12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:12px; margin-bottom:12px; }
+.input:focus { outline:none; border-color:var(--accent); }
+
+.code-area { width:100%; min-height:300px; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px; font-family:'Consolas','Fira Code',monospace; font-size:12px; color:var(--text); resize:vertical; line-height:1.6; }
+.code-area:focus { outline:none; border-color:var(--accent); }
+
+.project-card { background:var(--bg3); border:1px solid var(--border); border-radius:8px; padding:16px; margin-bottom:12px; }
+.project-card h3 { color:var(--accent2); font-size:14px; margin-bottom:8px; }
+.project-card .actions { display:flex; gap:6px; margin-top:10px; flex-wrap:wrap; }
+
+.status { padding:10px 14px; border-radius:8px; font-size:11px; font-weight:600; margin-bottom:12px; }
+.status-info { background:rgba(96,165,250,0.1); color:var(--blue); border:1px solid rgba(96,165,250,0.2); }
+
+.toast { position:fixed; bottom:20px; right:20px; background:var(--bg2); border:1px solid var(--accent); border-radius:10px; padding:12px 20px; font-size:12px; font-weight:600; color:var(--accent2); z-index:2000; transform:translateY(100px); opacity:0; transition:all 0.3s; }
+
+/* Cores dos projetos */
+.p1 { color:#60a5fa; }
+.p2 { color:#f59e0b; }
+.p3 { color:#f87171; }
+.p4 { color:#4ade80; }
+.p5 { color:#c084fc; }
+</style>
+</head>
+<body>
+
+<div class=&quot;header&quot;>
+  <h1>🧩 Montador Multi-Projetos <small>PWA JURÍDICO — MAIKON CALDEIRA</small></h1>
+  <div style=&quot;display:flex;gap:6px;flex-wrap:wrap;&quot;>
+    <button class=&quot;btn btn-primary&quot; onclick=&quot;gerarHtmlFinal()&quot;>📦 Gerar HTML Final</button>
+    <button class=&quot;btn btn-ghost&quot; onclick=&quot;exportarBackup()&quot;>💾 Backup</button>
+    <button class=&quot;btn btn-ghost&quot; onclick=&quot;importarBackup()&quot;>📂 Importar</button>
+  </div>
+</div>
+
+<div class=&quot;container&quot;>
+
+  <div class=&quot;status status-info&quot;>
+    💡 <strong>Como funciona:</strong> Cole até 5 códigos HTML completos. O arquivo gerado terá uma barra de navegação no topo para alternar entre os projetos, cada um isolado e funcionando de forma independente.
+  </div>
+
+  <!-- PROJETO 1 -->
+  <div class=&quot;workspace&quot;>
+    <h2><span class=&quot;p1&quot;>🔷</span> Projeto 1</h2>
+    <input type=&quot;text&quot; class=&quot;input&quot; id=&quot;nome1&quot; placeholder=&quot;Nome do projeto (ex: Sistema de Processos)&quot; />
+    <textarea class=&quot;code-area&quot; id=&quot;codigo1&quot; placeholder=&quot;Cole aqui o código HTML COMPLETO do projeto 1...&quot;></textarea>
+    <div style=&quot;display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;&quot;>
+      <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;testarProjeto(1)&quot;>👁️ Testar</button>
+      <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;limparProjeto(1)&quot;>🗑️ Limpar</button>
+      <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;importarArquivo(1)&quot;>📂 Importar Arquivo</button>
+    </div>
+  </div>
+
+  <!-- PROJETO 2 -->
+  <div class=&quot;workspace&quot;>
+    <h2><span class=&quot;p2&quot;>🔶</span> Projeto 2</h2>
+    <input type=&quot;text&quot; class=&quot;input&quot; id=&quot;nome2&quot; placeholder=&quot;Nome do projeto (ex: Gerador de Documentos)&quot; />
+    <textarea class=&quot;code-area&quot; id=&quot;codigo2&quot; placeholder=&quot;Cole aqui o código HTML COMPLETO do projeto 2...&quot;></textarea>
+    <div style=&quot;display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;&quot;>
+      <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;testarProjeto(2)&quot;>👁️ Testar</button>
+      <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;limparProjeto(2)&quot;>🗑️ Limpar</button>
+      <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;importarArquivo(2)&quot;>📂 Importar Arquivo</button>
+    </div>
+  </div>
+
+  <!-- PROJETO 3 -->
+  <div class=&quot;workspace&quot;>
+    <h2><span class=&quot;p3&quot;>🔸</span> Projeto 3</h2>
+    <input type=&quot;text&quot; class=&quot;input&quot; id=&quot;nome3&quot; placeholder=&quot;Nome do projeto (ex: Consulta Jurisprudência)&quot; />
+    <textarea class=&quot;code-area&quot; id=&quot;codigo3&quot; placeholder=&quot;Cole aqui o código HTML COMPLETO do projeto 3...&quot;></textarea>
+    <div style=&quot;display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;&quot;>
+      <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;testarProjeto(3)&quot;>👁️ Testar</button>
+      <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;limparProjeto(3)&quot;>🗑️ Limpar</button>
+      <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;importarArquivo(3)&quot;>📂 Importar Arquivo</button>
+    </div>
+  </div>
+
+  <!-- PROJETO 4 -->
+  <div class=&quot;workspace&quot;>
+    <h2><span class=&quot;p4&quot;>🟢</span> Projeto 4</h2>
+    <input type=&quot;text&quot; class=&quot;input&quot; id=&quot;nome4&quot; placeholder=&quot;Nome do projeto (ex: Calculadora Trabalhista)&quot; />
+    <textarea class=&quot;code-area&quot; id=&quot;codigo4&quot; placeholder=&quot;Cole aqui o código HTML COMPLETO do projeto 4...&quot;></textarea>
+    <div style=&quot;display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;&quot;>
+      <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;testarProjeto(4)&quot;>👁️ Testar</button>
+      <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;limparProjeto(4)&quot;>🗑️ Limpar</button>
+      <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;importarArquivo(4)&quot;>📂 Importar Arquivo</button>
+    </div>
+  </div>
+
+  <!-- PROJETO 5 -->
+  <div class=&quot;workspace&quot;>
+    <h2><span class=&quot;p5&quot;>🟣</span> Projeto 5</h2>
+    <input type=&quot;text&quot; class=&quot;input&quot; id=&quot;nome5&quot; placeholder=&quot;Nome do projeto (ex: Assistente Jurídico)&quot; />
+    <textarea class=&quot;code-area&quot; id=&quot;codigo5&quot; placeholder=&quot;Cole aqui o código HTML COMPLETO do projeto 5...&quot;></textarea>
+    <div style=&quot;display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;&quot;>
+      <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;testarProjeto(5)&quot;>👁️ Testar</button>
+      <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;limparProjeto(5)&quot;>🗑️ Limpar</button>
+      <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;importarArquivo(5)&quot;>📂 Importar Arquivo</button>
+    </div>
+  </div>
+
+  <!-- PROJETOS SALVOS -->
+  <div class=&quot;workspace&quot;>
+    <h2>💾 Projetos Salvos</h2>
+    <div id=&quot;projetosSalvos&quot;></div>
+  </div>
+
+</div>
+
+<!-- Hidden inputs -->
+<input type=&quot;file&quot; id=&quot;fileInput1&quot; style=&quot;display:none&quot; accept=&quot;.html,.htm&quot; />
+<input type=&quot;file&quot; id=&quot;fileInput2&quot; style=&quot;display:none&quot; accept=&quot;.html,.htm&quot; />
+<input type=&quot;file&quot; id=&quot;fileInput3&quot; style=&quot;display:none&quot; accept=&quot;.html,.htm&quot; />
+<input type=&quot;file&quot; id=&quot;fileInput4&quot; style=&quot;display:none&quot; accept=&quot;.html,.htm&quot; />
+<input type=&quot;file&quot; id=&quot;fileInput5&quot; style=&quot;display:none&quot; accept=&quot;.html,.htm&quot; />
+<input type=&quot;file&quot; id=&quot;backupInput&quot; style=&quot;display:none&quot; accept=&quot;.json&quot; />
+
+<div class=&quot;toast&quot; id=&quot;toast&quot;></div>
+
+<script>
+const LS_KEY = 'multiprojetos-v2';
+const TOTAL = 5;
+
+// ========== STORAGE ==========
+function salvarProjetos() {
+  const data = {};
+  for (let n = 1; n <= TOTAL; n++) {
+    data['p'+n] = {
+      nome: document.getElementById('nome'+n).value,
+      codigo: document.getElementById('codigo'+n).value
+    };
+  }
+  localStorage.setItem(LS_KEY, JSON.stringify(data));
+  mostrarToast('💾 Salvo automaticamente!');
+  renderizarSalvos();
+}
+
+function carregarProjetos() {
+  try {
+    const data = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
+    for (let n = 1; n <= TOTAL; n++) {
+      if (data['p'+n]) {
+        document.getElementById('nome'+n).value = data['p'+n].nome || '';
+        document.getElementById('codigo'+n).value = data['p'+n].codigo || '';
+      }
+    }
+    renderizarSalvos();
+  } catch(e) {}
+}
+
+function renderizarSalvos() {
+  const data = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
+  const container = document.getElementById('projetosSalvos');
+  const emojis = ['🔷','🔶','🔸','🟢','🟣'];
+
+  const projetos = [];
+  for (let n = 1; n <= TOTAL; n++) {
+    if (data['p'+n] &amp;&amp; data['p'+n].codigo &amp;&amp; data['p'+n].codigo.trim()) {
+      projetos.push({ n, nome: data['p'+n].nome, codigo: data['p'+n].codigo, emoji: emojis[n-1] });
+    }
+  }
+
+  if (projetos.length === 0) {
+    container.innerHTML = '<p style=&quot;color:var(--text2);font-size:12px;&quot;>Nenhum projeto salvo ainda.</p>';
+    return;
+  }
+
+  container.innerHTML = projetos.map(p => `
+    <div class=&quot;project-card&quot;>
+      <h3>${p.emoji} ${escHtml(p.nome || 'Projeto ' + p.n)}</h3>
+      <div style=&quot;font-size:11px;color:var(--text2);&quot;>${p.codigo.length.toLocaleString()} caracteres</div>
+      <div class=&quot;actions&quot;>
+        <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;testarProjeto(${p.n})&quot;>👁️ Testar</button>
+        <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;copiarCodigo(${p.n})&quot;>📋 Copiar</button>
+        <button class=&quot;btn btn-danger btn-sm&quot; onclick=&quot;limparProjeto(${p.n})&quot;>🗑️ Limpar</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ========== AÇÕES ==========
+function testarProjeto(n) {
+  const codigo = document.getElementById('codigo'+n).value;
+  if (!codigo.trim()) { mostrarToast('❌ Projeto ' + n + ' está vazio!'); return; }
+  const blob = new Blob([codigo], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank');
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+}
+
+function limparProjeto(n) {
+  if (!confirm('Limpar projeto ' + n + '?')) return;
+  document.getElementById('nome'+n).value = '';
+  document.getElementById('codigo'+n).value = '';
+  salvarProjetos();
+}
+
+function copiarCodigo(n) {
+  navigator.clipboard.writeText(document.getElementById('codigo'+n).value);
+  mostrarToast('📋 Código copiado!');
+}
+
+function importarArquivo(n) {
+  document.getElementById('fileInput'+n).click();
+}
+
+for (let n = 1; n <= TOTAL; n++) {
+  (function(num) {
+    document.getElementById('fileInput'+num).addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(ev) {
+        document.getElementById('codigo'+num).value = ev.target.result;
+        if (!document.getElementById('nome'+num).value) {
+          document.getElementById('nome'+num).value = file.name.replace(/\.[^.]+$/, '');
+        }
+        salvarProjetos();
+        mostrarToast('📂 Projeto ' + num + ' importado!');
+      };
+      reader.readAsText(file);
+      e.target.value = '';
+    });
+  })(n);
+}
+
+// ========== GERAR HTML FINAL (NAVEGAÇÃO MELHORADA) ==========
+function gerarHtmlFinal() {
+  const emojis = ['🔷','🔶','🔸','🟢','🟣'];
+  const projetos = [];
+  for (let n = 1; n <= TOTAL; n++) {
+    const nome = document.getElementById('nome'+n).value || 'Projeto ' + n;
+    const codigo = document.getElementById('codigo'+n).value;
+    if (codigo.trim()) projetos.push({ nome, codigo, emoji: emojis[n-1] });
+  }
+
+  if (projetos.length === 0) {
+    mostrarToast('❌ Adicione pelo menos um projeto!');
+    return;
+  }
+
+  // Calcula altura da nav baseado na quantidade de projetos
+  const navAltura = projetos.length > 3 ? '110px' : '65px';
+
+  const botoesNav = projetos.map((p, i) =>
+    `<button class=&quot;nav-btn ${i===0?'active':''}&quot; onclick=&quot;trocar(${i})&quot;>${p.emoji} ${p.nome}</button>`
+  ).join('\n  ');
+
+  const iframes = projetos.map((p, i) => {
+    const escapado = p.codigo.replace(/&amp;/g,'&amp;amp;').replace(/&quot;/g,'&amp;quot;');
+    return `<div class=&quot;projeto ${i===0?'ativo':''}&quot; id=&quot;p${i}&quot;><iframe srcdoc=&quot;${escapado}&quot; sandbox=&quot;allow-scripts allow-same-origin allow-forms allow-modals allow-popups&quot;></iframe></div>`;
+  }).join('\n');
+
+  const htmlFinal = `<!DOCTYPE html>
+<html lang=&quot;pt-BR&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;>
+<title>Painel Maikon Caldeira — Advocacia Digital</title>
+<style>
+* { box-sizing:border-box; margin:0; padding:0; }
+body { background:#0a0a0f; font-family:system-ui,sans-serif; }
+
+.nav {
+  position:fixed;
+  top:0; left:0; right:0;
+  background:#12121a;
+  border-bottom:2px solid #a3a082;
+  padding:10px 16px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  align-items:center;
+  z-index:9999;
+  box-shadow:0 3px 15px rgba(0,0,0,0.6);
+}
+
+.nav-titulo {
+  font-size:12px;
+  font-weight:700;
+  color:#a3a082;
+  letter-spacing:2px;
+  margin-right:8px;
+  white-space:nowrap;
+}
+
+.nav-btn {
+  padding:8px 16px;
+  background:#1a1a2e;
+  border:1px solid #2d2d3a;
+  border-radius:8px;
+  color:#94a3b8;
+  font-size:12px;
+  font-weight:600;
+  cursor:pointer;
+  transition:all 0.2s;
+  white-space:nowrap;
+}
+
+.nav-btn:hover { background:#a3a082; color:#000; border-color:#a3a082; }
+.nav-btn.active { background:#a3a082; color:#000; border-color:#d4d0a8; }
+
+.projeto { display:none; padding-top:${navAltura}; min-height:100vh; }
+.projeto.ativo { display:block; }
+
+.projeto iframe {
+  width:100%;
+  min-height:calc(100vh - ${navAltura});
+  border:none;
+  display:block;
+}
+</style>
+</head>
+<body>
+
+<div class=&quot;nav&quot;>
+  <span class=&quot;nav-titulo&quot;>⚖️ MC</span>
+  ${botoesNav}
+</div>
+
+${iframes}
+
+<script>
+function trocar(i) {
+  document.querySelectorAll('.projeto').forEach(function(el){ el.classList.remove('ativo'); });
+  document.querySelectorAll('.nav-btn').forEach(function(el){ el.classList.remove('active'); });
+  document.getElementById('p'+i).classList.add('ativo');
+  document.querySelectorAll('.nav-btn')[i].classList.add('active');
+  localStorage.setItem('mc-ultimo', i);
+}
+window.onload = function() {
+  var u = localStorage.getItem('mc-ultimo');
+  if (u !== null) trocar(parseInt(u));
+};
+<\/script>
+</body>
+</html>`;
+
+  const blob = new Blob([htmlFinal], { type:'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'painel-maikon-' + new Date().toISOString().slice(0,10) + '.html';
+  a.click();
+  URL.revokeObjectURL(url);
+  mostrarToast('✅ HTML com ' + projetos.length + ' projeto(s) gerado!');
+}
+
+// ========== BACKUP ==========
+function exportarBackup() {
+  const data = localStorage.getItem(LS_KEY);
+  if (!data) { mostrarToast('❌ Nada para exportar!'); return; }
+  const blob = new Blob([data], { type:'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'backup-projetos-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  mostrarToast('💾 Backup exportado!');
+}
+
+function importarBackup() {
+  document.getElementById('backupInput').click();
+}
+
+document.getElementById('backupInput').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    try {
+      localStorage.setItem(LS_KEY, ev.target.result);
+      carregarProjetos();
+      mostrarToast('📂 Backup importado com sucesso!');
+    } catch(err) {
+      mostrarToast('❌ Arquivo inválido!');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+
+// ========== UTILS ==========
+function escHtml(s) {
+  return String(s).replace(/&amp;/g,'&amp;amp;').replace(/</g,'&amp;lt;').replace(/>/g,'&amp;gt;');
+}
+
+function mostrarToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.transform = 'translateY(0)';
+  t.style.opacity = '1';
+  clearTimeout(window.toastTimer);
+  window.toastTimer = setTimeout(function() {
+    t.style.transform = 'translateY(100px)';
+    t.style.opacity = '0';
+  }, 2500);
+}
+
+// Auto-save com debounce
+for (let n = 1; n <= TOTAL; n++) {
+  ['nome'+n, 'codigo'+n].forEach(function(id) {
+    document.getElementById(id).addEventListener('input', function() {
+      clearTimeout(window.autoSaveTimer);
+      window.autoSaveTimer = setTimeout(salvarProjetos, 1200);
+    });
+  });
+}
+
+carregarProjetos();
+</script>
+</body>
+</html>
+" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"></iframe></div>
+<div class="projeto " id="p1"><iframe srcdoc="<!DOCTYPE html>
+<html lang=&quot;pt-BR&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;>
+<title>🧩 Montador Multi-Projetos — PWA Jurídico</title>
+<style>
+:root { --bg:#0a0a0f; --bg2:#12121a; --bg3:#1a1a2e; --text:#e2e8f0; --text2:#94a3b8; --accent:#a3a082; --accent2:#d4d0a8; --green:#4ade80; --blue:#60a5fa; --red:#f87171; --border:#2d2d3a; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+.header { background:var(--bg2); border-bottom:1px solid var(--border); padding:16px 24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+.header h1 { font-size:18px; color:var(--accent); }
+.header h1 small { display:block; font-size:10px; color:var(--text2); font-weight:400; letter-spacing:2px; }
+
+.container { max-width:1400px; margin:0 auto; padding:20px; }
+
+.workspace { background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:20px; margin-bottom:20px; }
+.workspace h2 { font-size:14px; color:var(--accent); margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+
+.btn { display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border:none; border-radius:8px; font-size:11px; font-weight:600; cursor:pointer; transition:all 0.15s; }
+.btn-sm { padding:5px 10px; font-size:10px; }
+.btn-primary { background:var(--accent); color:#000; }
+.btn-primary:hover { background:var(--accent2); }
+.btn-success { background:var(--green); color:#000; }
+.btn-danger { background:rgba(239,68,68,0.2); color:var(--red); border:1px solid rgba(239,68,68,0.3); }
+.btn-ghost { background:transparent; color:var(--text2); border:1px solid var(--border); }
+.btn-ghost:hover { background:var(--bg3); color:var(--text); }
+
+.input { width:100%; padding:8px 12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:12px; margin-bottom:12px; }
+.input:focus { outline:none; border-color:var(--accent); }
+
+.code-area { width:100%; min-height:300px; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px; font-family:'Consolas','Fira Code',monospace; font-size:12px; color:var(--text); resize:vertical; line-height:1.6; }
+.code-area:focus { outline:none; border-color:var(--accent); }
+
+.project-card { background:var(--bg3); border:1px solid var(--border); border-radius:8px; padding:16px; margin-bottom:12px; }
+.project-card h3 { color:var(--accent2); font-size:14px; margin-bottom:8px; }
+.project-card .actions { display:flex; gap:6px; margin-top:10px; }
+
+.tabs { display:flex; gap:4px; margin-bottom:16px; flex-wrap:wrap; background:var(--bg2); padding:4px; border-radius:10px; }
+.tab-btn { padding:10px 20px; border:none; background:transparent; color:var(--text2); border-radius:8px; font-size:12px; font-weight:600; cursor:pointer; transition:all 0.2s; }
+.tab-btn.active { background:var(--accent); color:#000; }
+.tab-btn:hover:not(.active) { background:var(--bg3); }
+
+/* NOVO: Navegação entre projetos no HTML final */
+.project-nav { position:fixed; top:0; left:0; right:0; background:var(--bg2); border-bottom:2px solid var(--accent); padding:12px 20px; display:flex; gap:8px; align-items:center; z-index:1000; box-shadow:0 2px 10px rgba(0,0,0,0.3); }
+.project-nav .nav-btn { padding:8px 16px; background:var(--bg3); border:1px solid var(--border); border-radius:6px; color:var(--text); font-size:12px; font-weight:600; cursor:pointer; transition:all 0.2s; }
+.project-nav .nav-btn:hover { background:var(--accent); color:#000; }
+.project-nav .nav-btn.active { background:var(--accent); color:#000; border-color:var(--accent); }
+
+.project-container { display:none; padding-top:60px; }
+.project-container.active { display:block; }
+
+.status { padding:10px 14px; border-radius:8px; font-size:11px; font-weight:600; margin-bottom:12px; }
+.status-info { background:rgba(96,165,250,0.1); color:var(--blue); border:1px solid rgba(96,165,250,0.2); }
+.status-success { background:rgba(74,222,128,0.1); color:var(--green); border:1px solid rgba(74,222,128,0.2); }
+
+.toast { position:fixed; bottom:20px; right:20px; background:var(--bg2); border:1px solid var(--accent); border-radius:10px; padding:12px 20px; font-size:12px; font-weight:600; color:var(--accent2); z-index:2000; transform:translateY(100px); opacity:0; transition:all 0.3s; }
+</style>
+</head>
+<body>
+
+<div class=&quot;header&quot;>
+  <h1>🧩 Montador Multi-Projetos <small>PWA JURÍDICO — MAIKON CALDEIRA</small></h1>
+  <div style=&quot;display:flex;gap:6px;flex-wrap:wrap;&quot;>
+    <button class=&quot;btn btn-primary&quot; onclick=&quot;gerarHtmlFinal()&quot;>📦 Gerar HTML com Todos os Projetos</button>
+    <button class=&quot;btn btn-ghost&quot; onclick=&quot;exportarBackup()&quot;>💾 Backup</button>
+    <button class=&quot;btn btn-ghost&quot; onclick=&quot;importarBackup()&quot;>📂 Importar</button>
+  </div>
+</div>
+
+<div class=&quot;container&quot;>
+
+  <div class=&quot;status status-info&quot;>
+    💡 <strong>Como funciona:</strong> Cole até 3 códigos HTML completos abaixo. Cada um será um &quot;projeto&quot; independente. 
+    Quando gerar o HTML final, você terá um arquivo com abas no topo para alternar entre os projetos — cada um isolado do outro!
+  </div>
+
+  <!-- PROJETO 1 -->
+  <div class=&quot;workspace&quot;>
+    <h2>🔷 Projeto 1</h2>
+    <input type=&quot;text&quot; class=&quot;input&quot; id=&quot;nome1&quot; placeholder=&quot;Nome do projeto (ex: Sistema de Processos)&quot; />
+    <textarea class=&quot;code-area&quot; id=&quot;codigo1&quot; placeholder=&quot;Cole aqui o código HTML COMPLETO do projeto 1...&quot;></textarea>
+    <div style=&quot;display:flex;gap:8px;margin-top:10px;&quot;>
+      <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;testarProjeto(1)&quot;>👁️ Testar</button>
+      <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;limparProjeto(1)&quot;>🗑️ Limpar</button>
+      <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;importarArquivo(1)&quot;>📂 Importar Arquivo</button>
+    </div>
+  </div>
+
+  <!-- PROJETO 2 -->
+  <div class=&quot;workspace&quot;>
+    <h2>🔶 Projeto 2</h2>
+    <input type=&quot;text&quot; class=&quot;input&quot; id=&quot;nome2&quot; placeholder=&quot;Nome do projeto (ex: Gerador de Documentos)&quot; />
+    <textarea class=&quot;code-area&quot; id=&quot;codigo2&quot; placeholder=&quot;Cole aqui o código HTML COMPLETO do projeto 2...&quot;></textarea>
+    <div style=&quot;display:flex;gap:8px;margin-top:10px;&quot;>
+      <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;testarProjeto(2)&quot;>👁️ Testar</button>
+      <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;limparProjeto(2)&quot;>🗑️ Limpar</button>
+      <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;importarArquivo(2)&quot;>📂 Importar Arquivo</button>
+    </div>
+  </div>
+
+  <!-- PROJETO 3 -->
+  <div class=&quot;workspace&quot;>
+    <h2>🔸 Projeto 3</h2>
+    <input type=&quot;text&quot; class=&quot;input&quot; id=&quot;nome3&quot; placeholder=&quot;Nome do projeto (ex: Consulta Jurisprudência)&quot; />
+    <textarea class=&quot;code-area&quot; id=&quot;codigo3&quot; placeholder=&quot;Cole aqui o código HTML COMPLETO do projeto 3...&quot;></textarea>
+    <div style=&quot;display:flex;gap:8px;margin-top:10px;&quot;>
+      <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;testarProjeto(3)&quot;>👁️ Testar</button>
+      <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;limparProjeto(3)&quot;>🗑️ Limpar</button>
+      <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;importarArquivo(3)&quot;>📂 Importar Arquivo</button>
+    </div>
+  </div>
+
+  <!-- PROJETOS SALVOS -->
+  <div class=&quot;workspace&quot;>
+    <h2>💾 Projetos Salvos</h2>
+    <div id=&quot;projetosSalvos&quot;></div>
+  </div>
+
+</div>
+
+<!-- Hidden inputs -->
+<input type=&quot;file&quot; id=&quot;fileInput1&quot; style=&quot;display:none&quot; accept=&quot;.html,.htm&quot; />
+<input type=&quot;file&quot; id=&quot;fileInput2&quot; style=&quot;display:none&quot; accept=&quot;.html,.htm&quot; />
+<input type=&quot;file&quot; id=&quot;fileInput3&quot; style=&quot;display:none&quot; accept=&quot;.html,.htm&quot; />
+<input type=&quot;file&quot; id=&quot;backupInput&quot; style=&quot;display:none&quot; accept=&quot;.json&quot; />
+
+<div class=&quot;toast&quot; id=&quot;toast&quot;></div>
+
+<script>
+const LS_KEY = 'multiprojetos-v1';
+
+// ========== STORAGE ==========
+function salvarProjetos() {
+  const projetos = {
+    p1: { nome: document.getElementById('nome1').value, codigo: document.getElementById('codigo1').value },
+    p2: { nome: document.getElementById('nome2').value, codigo: document.getElementById('codigo2').value },
+    p3: { nome: document.getElementById('nome3').value, codigo: document.getElementById('codigo3').value }
+  };
+  localStorage.setItem(LS_KEY, JSON.stringify(projetos));
+  mostrarToast('💾 Projetos salvos automaticamente!');
+  renderizarSalvos();
+}
+
+function carregarProjetos() {
+  try {
+    const data = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
+    if (data.p1) { document.getElementById('nome1').value = data.p1.nome || ''; document.getElementById('codigo1').value = data.p1.codigo || ''; }
+    if (data.p2) { document.getElementById('nome2').value = data.p2.nome || ''; document.getElementById('codigo2').value = data.p2.codigo || ''; }
+    if (data.p3) { document.getElementById('nome3').value = data.p3.nome || ''; document.getElementById('codigo3').value = data.p3.codigo || ''; }
+    renderizarSalvos();
+  } catch(e) {}
+}
+
+function renderizarSalvos() {
+  const data = JSON.parse(localStorage.getItem(LS_KEY) || '{}');
+  const container = document.getElementById('projetosSalvos');
+  const projetos = [
+    { n: 1, nome: data.p1?.nome, codigo: data.p1?.codigo },
+    { n: 2, nome: data.p2?.nome, codigo: data.p2?.codigo },
+    { n: 3, nome: data.p3?.nome, codigo: data.p3?.codigo }
+  ].filter(p => p.codigo &amp;&amp; p.codigo.trim());
+
+  if (projetos.length === 0) {
+    container.innerHTML = '<p style=&quot;color:var(--text2);font-size:12px;&quot;>Nenhum projeto salvo ainda.</p>';
+    return;
+  }
+
+  container.innerHTML = projetos.map(p => `
+    <div class=&quot;project-card&quot;>
+      <h3>🔷 ${escHtml(p.nome || 'Projeto ' + p.n)}</h3>
+      <div style=&quot;font-size:11px;color:var(--text2);&quot;>${p.codigo.length} caracteres</div>
+      <div class=&quot;actions&quot;>
+        <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;testarProjeto(${p.n})&quot;>👁️ Testar</button>
+        <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;copiarCodigo(${p.n})&quot;>📋 Copiar</button>
+        <button class=&quot;btn btn-danger btn-sm&quot; onclick=&quot;limparProjeto(${p.n})&quot;>🗑️ Limpar</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ========== AÇÕES ==========
+function testarProjeto(n) {
+  const codigo = document.getElementById('codigo' + n).value;
+  if (!codigo.trim()) { mostrarToast('❌ Projeto ' + n + ' está vazio!'); return; }
+  
+  const blob = new Blob([codigo], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank');
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+}
+
+function limparProjeto(n) {
+  if (!confirm('Limpar projeto ' + n + '?')) return;
+  document.getElementById('nome' + n).value = '';
+  document.getElementById('codigo' + n).value = '';
+  salvarProjetos();
+}
+
+function copiarCodigo(n) {
+  const codigo = document.getElementById('codigo' + n).value;
+  navigator.clipboard.writeText(codigo);
+  mostrarToast('📋 Código do projeto ' + n + ' copiado!');
+}
+
+function importarArquivo(n) {
+  document.getElementById('fileInput' + n).click();
+}
+
+[1,2,3].forEach(n => {
+  document.getElementById('fileInput' + n).addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      document.getElementById('codigo' + n).value = ev.target.result;
+      if (!document.getElementById('nome' + n).value) {
+        document.getElementById('nome' + n).value = file.name.replace(/\.[^.]+$/, '');
+      }
+      salvarProjetos();
+      mostrarToast('📂 Projeto ' + n + ' importado!');
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  });
+});
+
+// ========== GERAR HTML FINAL ==========
+function gerarHtmlFinal() {
+  const projetos = [
+    { nome: document.getElementById('nome1').value || 'Projeto 1', codigo: document.getElementById('codigo1').value },
+    { nome: document.getElementById('nome2').value || 'Projeto 2', codigo: document.getElementById('codigo2').value },
+    { nome: document.getElementById('nome3').value || 'Projeto 3', codigo: document.getElementById('codigo3').value }
+  ].filter(p => p.codigo.trim());
+
+  if (projetos.length === 0) {
+    mostrarToast('❌ Adicione pelo menos um projeto!');
+    return;
+  }
+
+  // Extrai só o conteúdo do <body> de cada projeto (se tiver)
+  const extrairConteudo = (html) => {
+    const match = html.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+    return match ? match[1] : html;
+  };
+
+  const htmlFinal = `<!DOCTYPE html>
+<html lang=&quot;pt-BR&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;>
+<title>Multi-Projetos PWA — Maikon Caldeira</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: system-ui, sans-serif; background: #0a0a0f; color: #e2e8f0; }
+
+.project-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: #12121a;
+  border-bottom: 2px solid #a3a082;
+  padding: 12px 20px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+  flex-wrap: wrap;
+}
+
+.nav-btn {
+  padding: 10px 18px;
+  background: #1a1a2e;
+  border: 1px solid #2d2d3a;
+  border-radius: 8px;
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.nav-btn:hover {
+  background: #a3a082;
+  color: #000;
+  border-color: #a3a082;
+}
+
+.nav-btn.active {
+  background: #a3a082;
+  color: #000;
+  border-color: #d4d0a8;
+}
+
+.project-container {
+  display: none;
+  padding-top: 70px;
+  min-height: 100vh;
+}
+
+.project-container.active {
+  display: block;
+}
+
+/* Isola estilos de cada projeto */
+.project-container iframe {
+  width: 100%;
+  min-height: calc(100vh - 70px);
+  border: none;
+}
+</style>
+</head>
+<body>
+
+<!-- Navegação -->
+<div class=&quot;project-nav&quot;>
+  <span style=&quot;font-size:14px;font-weight:700;color:#a3a082;margin-right:10px;&quot;>📂</span>
+  ${projetos.map((p, i) => `<button class=&quot;nav-btn ${i === 0 ? 'active' : ''}&quot; onclick=&quot;trocarProjeto(${i})&quot;>${escHtml(p.nome)}</button>`).join('')}
+</div>
+
+<!-- Projetos (cada um em iframe isolado) -->
+${projetos.map((p, i) => `
+<div class=&quot;project-container ${i === 0 ? 'active' : ''}&quot; id=&quot;projeto${i}&quot;>
+  <iframe srcdoc=&quot;${escHtml(p.codigo).replace(/&quot;/g, '&amp;quot;')}&quot;></iframe>
+</div>
+`).join('')}
+
+<script>
+function trocarProjeto(index) {
+  // Esconde todos
+  document.querySelectorAll('.project-container').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  
+  // Mostra o selecionado
+  document.getElementById('projeto' + index).classList.add('active');
+  document.querySelectorAll('.nav-btn')[index].classList.add('active');
+  
+  // Salva preferência
+  localStorage.setItem('ultimo-projeto', index);
+}
+
+// Restaura último projeto aberto
+window.onload = function() {
+  const ultimo = localStorage.getItem('ultimo-projeto');
+  if (ultimo !== null) trocarProjeto(parseInt(ultimo));
+};
+<\/script>
+</body>
+</html>`;
+
+  // Download
+  const blob = new Blob([htmlFinal], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'multiprojetos-pwa-' + new Date().toISOString().slice(0,10) + '.html';
+  a.click();
+  URL.revokeObjectURL(url);
+  mostrarToast('✅ HTML com ' + projetos.length + ' projetos gerado!');
+}
+
+// ========== BACKUP ==========
+function exportarBackup() {
+  const data = localStorage.getItem(LS_KEY);
+  if (!data) { mostrarToast('❌ Nada para exportar!'); return; }
+  
+  const blob = new Blob([data], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'backup-projetos-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  mostrarToast('💾 Backup exportado!');
+}
+
+function importarBackup() {
+  document.getElementById('backupInput').click();
+}
+
+document.getElementById('backupInput').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      localStorage.setItem(LS_KEY, ev.target.result);
+      carregarProjetos();
+      mostrarToast('📂 Backup importado!');
+    } catch(err) {
+      mostrarToast('❌ Arquivo inválido!');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+
+// ========== UTILS ==========
+function escHtml(s) { return String(s).replace(/&amp;/g,'&amp;amp;').replace(/</g,'&amp;lt;').replace(/>/g,'&amp;gt;'); }
+
+function mostrarToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.transform = 'translateY(0)';
+  t.style.opacity = '1';
+  setTimeout(() => { t.style.transform = 'translateY(100px)'; t.style.opacity = '0'; }, 2500);
+}
+
+// Auto-save
+['nome1','codigo1','nome2','codigo2','nome3','codigo3'].forEach(id => {
+  document.getElementById(id).addEventListener('input', () => {
+    clearTimeout(window.autoSaveTimer);
+    window.autoSaveTimer = setTimeout(salvarProjetos, 1000);
+  });
+});
+
+// Init
+carregarProjetos();
+</script>
+</body>
+</html>
+" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"></iframe></div>
+<div class="projeto " id="p2"><iframe srcdoc="<!DOCTYPE html>
+<html lang=&quot;pt-BR&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;>
+<title>🛠️ Workstation Completa — Maikon Caldeira</title>
+<style>
+:root {
+  --bg: #0a0a0f;
+  --bg2: #12121a;
+  --bg3: #1a1a2e;
+  --text: #e2e8f0;
+  --text2: #94a3b8;
+  --accent: #a3a082;
+  --accent2: #d4d0a8;
+  --green: #4ade80;
+  --blue: #60a5fa;
+  --red: #f87171;
+  --yellow: #fbbf24;
+  --border: #2d2d3a;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* === NAVEGAÇÃO PRINCIPAL === */
+.main-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: var(--bg2);
+  border-bottom: 2px solid var(--accent);
+  padding: 12px 20px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  z-index: 1000;
+  box-shadow: 0 2px 20px rgba(0,0,0,0.5);
+  flex-wrap: wrap;
+}
+
+.main-nav .logo {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nav-tab {
+  padding: 10px 18px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text2);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nav-tab:hover {
+  background: var(--bg3);
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+.nav-tab.active {
+  background: var(--accent);
+  color: #000;
+  border-color: var(--accent2);
+}
+
+/* === WORKSPACES === */
+.workspace {
+  display: none;
+  padding: 80px 20px 20px;
+  min-height: 100vh;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+.workspace.active {
+  display: block;
+}
+
+/* === COMPONENTES === */
+.panel {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.panel-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-primary { background: var(--accent); color: #000; }
+.btn-primary:hover { background: var(--accent2); }
+.btn-success { background: var(--green); color: #000; }
+.btn-success:hover { opacity: 0.9; }
+.btn-danger { background: rgba(248,113,113,0.2); color: var(--red); border: 1px solid rgba(248,113,113,0.3); }
+.btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--bg3); color: var(--text); }
+.btn-sm { padding: 6px 12px; font-size: 10px; }
+
+.input, .textarea {
+  width: 100%;
+  padding: 10px 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 12px;
+  font-family: inherit;
+  margin-bottom: 12px;
+}
+
+.input:focus, .textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.textarea {
+  font-family: 'Consolas', 'Fira Code', monospace;
+  min-height: 200px;
+  resize: vertical;
+  line-height: 1.6;
+}
+
+.code-display {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  font-family: 'Consolas', monospace;
+  font-size: 11px;
+  line-height: 1.6;
+  overflow-x: auto;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.split-view {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 1024px) {
+  .split-view { grid-template-columns: 1fr; }
+}
+
+.preview-frame {
+  width: 100%;
+  height: 500px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: white;
+}
+
+.status {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.status-info { background: rgba(96,165,250,0.1); color: var(--blue); border: 1px solid rgba(96,165,250,0.2); }
+.status-success { background: rgba(74,222,128,0.1); color: var(--green); border: 1px solid rgba(74,222,128,0.2); }
+.status-warning { background: rgba(251,191,36,0.1); color: var(--yellow); border: 1px solid rgba(251,191,36,0.2); }
+
+.file-item {
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.file-item:hover {
+  border-color: var(--accent);
+  background: var(--bg2);
+}
+
+.tag {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 9px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tag-html { background: rgba(239,68,68,0.2); color: var(--red); }
+.tag-css { background: rgba(59,130,246,0.2); color: var(--blue); }
+.tag-js { background: rgba(251,191,36,0.2); color: var(--yellow); }
+.tag-func { background: rgba(74,222,128,0.2); color: var(--green); }
+
+.toast {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: var(--bg2);
+  border: 2px solid var(--accent);
+  border-radius: 10px;
+  padding: 14px 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent2);
+  z-index: 2000;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.3s;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+.action-bar {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+</style>
+</head>
+<body>
+
+<!-- NAVEGAÇÃO PRINCIPAL -->
+<div class=&quot;main-nav&quot;>
+  <div class=&quot;logo&quot;>
+    <span>🛠️</span>
+    <span>WORKSTATION</span>
+  </div>
+  <button class=&quot;nav-tab active&quot; onclick=&quot;trocarAba('scanner')&quot;>
+    🔍 Scanner
+  </button>
+  <button class=&quot;nav-tab&quot; onclick=&quot;trocarAba('montador')&quot;>
+    🧩 Montador
+  </button>
+  <button class=&quot;nav-tab&quot; onclick=&quot;trocarAba('playground')&quot;>
+    ⚡ Playground
+  </button>
+  <button class=&quot;nav-tab&quot; onclick=&quot;trocarAba('arquivos')&quot;>
+    📂 Arquivos
+  </button>
+</div>
+
+<!-- ========================================
+     WORKSPACE 1: SCANNER
+     ======================================== -->
+<div id=&quot;ws-scanner&quot; class=&quot;workspace active&quot;>
+  <div class=&quot;status status-info&quot;>
+    🔍 <strong>Scanner:</strong> Cole um código HTML completo para analisar sua estrutura, extrair funções, estilos e elementos.
+  </div>
+
+  <div class=&quot;panel&quot;>
+    <div class=&quot;panel-header&quot;>
+      <div class=&quot;panel-title&quot;>📄 Código para Analisar</div>
+      <div style=&quot;display:flex;gap:6px;&quot;>
+        <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;importarParaScanner()&quot;>📂 Importar</button>
+        <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;limparScanner()&quot;>🗑️ Limpar</button>
+      </div>
+    </div>
+    <textarea class=&quot;textarea&quot; id=&quot;scannerInput&quot; placeholder=&quot;Cole aqui o código HTML completo...&quot; style=&quot;min-height:300px;&quot;></textarea>
+    <div class=&quot;action-bar&quot;>
+      <button class=&quot;btn btn-primary&quot; onclick=&quot;analisarCodigo()&quot;>🔍 Analisar Código</button>
+      <button class=&quot;btn btn-success&quot; onclick=&quot;extrairTudo()&quot;>📦 Extrair Tudo</button>
+    </div>
+  </div>
+
+  <div id=&quot;scannerResults&quot;></div>
+</div>
+
+<!-- ========================================
+     WORKSPACE 2: MONTADOR
+     ======================================== -->
+<div id=&quot;ws-montador&quot; class=&quot;workspace&quot;>
+  <div class=&quot;status status-info&quot;>
+    🧩 <strong>Montador:</strong> Adicione pedaços de código como módulos e monte seu projeto final.
+  </div>
+
+  <div class=&quot;split-view&quot;>
+    <!-- Adicionar Módulo -->
+    <div class=&quot;panel&quot;>
+      <div class=&quot;panel-header&quot;>
+        <div class=&quot;panel-title&quot;>➕ Adicionar Módulo</div>
+      </div>
+      <input type=&quot;text&quot; class=&quot;input&quot; id=&quot;modNome&quot; placeholder=&quot;Nome do módulo (ex: Botão Exportar PDF)&quot; />
+      <select class=&quot;input&quot; id=&quot;modTipo&quot;>
+        <option value=&quot;html&quot;>📄 HTML</option>
+        <option value=&quot;css&quot;>💅 CSS</option>
+        <option value=&quot;js&quot;>⚡ JavaScript</option>
+        <option value=&quot;funcao&quot;>🔧 Função</option>
+      </select>
+      <textarea class=&quot;textarea&quot; id=&quot;modCodigo&quot; placeholder=&quot;Cole o código do módulo...&quot;></textarea>
+      <div class=&quot;action-bar&quot;>
+        <button class=&quot;btn btn-primary&quot; onclick=&quot;salvarModulo()&quot;>💾 Salvar Módulo</button>
+        <button class=&quot;btn btn-ghost&quot; onclick=&quot;limparModulo()&quot;>🗑️ Limpar</button>
+      </div>
+    </div>
+
+    <!-- Lista de Módulos -->
+    <div class=&quot;panel&quot;>
+      <div class=&quot;panel-header&quot;>
+        <div class=&quot;panel-title&quot;>📦 Módulos Salvos (<span id=&quot;modCount&quot;>0</span>)</div>
+        <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;renderModulos()&quot;>🔄</button>
+      </div>
+      <div id=&quot;modulosList&quot;></div>
+    </div>
+  </div>
+
+  <!-- Gerar Projeto -->
+  <div class=&quot;panel&quot;>
+    <div class=&quot;panel-header&quot;>
+      <div class=&quot;panel-title&quot;>🔨 Montar Projeto Final</div>
+    </div>
+    <input type=&quot;text&quot; class=&quot;input&quot; id=&quot;projetoNome&quot; placeholder=&quot;Nome do projeto&quot; value=&quot;Meu Projeto PWA&quot; />
+    <div id=&quot;montadorChecklist&quot;></div>
+    <div class=&quot;action-bar&quot;>
+      <button class=&quot;btn btn-success&quot; onclick=&quot;gerarProjetoFinal()&quot;>📦 Gerar HTML Final</button>
+      <button class=&quot;btn btn-ghost&quot; onclick=&quot;selecionarTodos()&quot;>✅ Selecionar Todos</button>
+      <button class=&quot;btn btn-ghost&quot; onclick=&quot;desselecionarTodos()&quot;>⬜ Desmarcar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================
+     WORKSPACE 3: PLAYGROUND
+     ======================================== -->
+<div id=&quot;ws-playground&quot; class=&quot;workspace&quot;>
+  <div class=&quot;status status-info&quot;>
+    ⚡ <strong>Playground:</strong> Teste código em tempo real. Edite e veja o resultado instantaneamente.
+  </div>
+
+  <div class=&quot;split-view&quot;>
+    <!-- Editor -->
+    <div class=&quot;panel&quot;>
+      <div class=&quot;panel-header&quot;>
+        <div class=&quot;panel-title&quot;>✏️ Editor</div>
+        <div style=&quot;display:flex;gap:6px;&quot;>
+          <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;importarParaPlayground()&quot;>📂 Importar</button>
+          <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;limparPlayground()&quot;>🗑️ Limpar</button>
+        </div>
+      </div>
+      <textarea class=&quot;textarea&quot; id=&quot;playgroundCode&quot; placeholder=&quot;Cole ou escreva código HTML aqui...&quot; style=&quot;min-height:400px;&quot;></textarea>
+      <div class=&quot;action-bar&quot;>
+        <button class=&quot;btn btn-primary&quot; onclick=&quot;executarPlayground()&quot;>▶️ Executar</button>
+        <button class=&quot;btn btn-success&quot; onclick=&quot;salvarDePlayground()&quot;>💾 Salvar como Módulo</button>
+        <button class=&quot;btn btn-ghost&quot; onclick=&quot;copiarPlayground()&quot;>📋 Copiar</button>
+      </div>
+    </div>
+
+    <!-- Preview -->
+    <div class=&quot;panel&quot;>
+      <div class=&quot;panel-header&quot;>
+        <div class=&quot;panel-title&quot;>👁️ Preview</div>
+        <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;abrirPreviewNovo()&quot;>🔳 Nova Aba</button>
+      </div>
+      <iframe class=&quot;preview-frame&quot; id=&quot;playgroundPreview&quot;></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- ========================================
+     WORKSPACE 4: ARQUIVOS
+     ======================================== -->
+<div id=&quot;ws-arquivos&quot; class=&quot;workspace&quot;>
+  <div class=&quot;status status-info&quot;>
+    📂 <strong>Arquivos:</strong> Gerencie todos os códigos salvos. Exporte, importe e organize.
+  </div>
+
+  <div class=&quot;panel&quot;>
+    <div class=&quot;panel-header&quot;>
+      <div class=&quot;panel-title&quot;>💾 Backup &amp; Importação</div>
+    </div>
+    <div class=&quot;action-bar&quot;>
+      <button class=&quot;btn btn-primary&quot; onclick=&quot;exportarTudo()&quot;>📥 Exportar Tudo (JSON)</button>
+      <button class=&quot;btn btn-ghost&quot; onclick=&quot;importarTudo()&quot;>📤 Importar Backup</button>
+      <button class=&quot;btn btn-danger&quot; onclick=&quot;limparTudo()&quot;>🗑️ Limpar Tudo</button>
+    </div>
+  </div>
+
+  <div class=&quot;panel&quot;>
+    <div class=&quot;panel-header&quot;>
+      <div class=&quot;panel-title&quot;>📋 Módulos Salvos</div>
+      <input type=&quot;text&quot; class=&quot;input&quot; style=&quot;width:200px;margin:0;&quot; placeholder=&quot;🔍 Buscar...&quot; oninput=&quot;filtrarArquivos(this.value)&quot; />
+    </div>
+    <div id=&quot;arquivosList&quot;></div>
+  </div>
+</div>
+
+<!-- Hidden inputs -->
+<input type=&quot;file&quot; id=&quot;fileInput&quot; style=&quot;display:none&quot; accept=&quot;.html,.htm,.js,.css,.txt&quot; />
+<input type=&quot;file&quot; id=&quot;backupInput&quot; style=&quot;display:none&quot; accept=&quot;.json&quot; />
+
+<div class=&quot;toast&quot; id=&quot;toast&quot;></div>
+
+<script>
+// ========== STORAGE ==========
+const LS_MODULOS = 'workstation-modulos-v1';
+const LS_SELECTED = 'workstation-selected-v1';
+
+function getModulos() {
+  try { return JSON.parse(localStorage.getItem(LS_MODULOS) || '[]'); }
+  catch { return []; }
+}
+
+function setModulos(list) {
+  localStorage.setItem(LS_MODULOS, JSON.stringify(list));
+  atualizarContador();
+}
+
+function getSelected() {
+  try { return JSON.parse(localStorage.getItem(LS_SELECTED) || '[]'); }
+  catch { return []; }
+}
+
+function setSelected(list) {
+  localStorage.setItem(LS_SELECTED, JSON.stringify(list));
+}
+
+// ========== NAVEGAÇÃO ==========
+function trocarAba(nome) {
+  // Esconde todas
+  document.querySelectorAll('.workspace').forEach(w => w.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  
+  // Mostra a selecionada
+  document.getElementById('ws-' + nome).classList.add('active');
+  event.target.classList.add('active');
+  
+  // Atualiza conteúdo
+  if (nome === 'montador') renderModulos();
+  if (nome === 'arquivos') renderArquivos();
+}
+
+// ========== SCANNER ==========
+function analisarCodigo() {
+  const codigo = document.getElementById('scannerInput').value;
+  if (!codigo.trim()) {
+    toast('❌ Cole um código primeiro!');
+    return;
+  }
+
+  const analise = {
+    funcoes: extrairFuncoes(codigo),
+    estilos: extrairEstilos(codigo),
+    elementos: extrairElementos(codigo),
+    scripts: extrairScripts(codigo)
+  };
+
+  renderAnalise(analise);
+}
+
+function extrairFuncoes(codigo) {
+  const regex = /function\s+(\w+)\s*\([^)]*\)\s*\{/g;
+  const funcoes = [];
+  let match;
+  while ((match = regex.exec(codigo)) !== null) {
+    const inicio = match.index;
+    const fim = encontrarFimFuncao(codigo, inicio);
+    funcoes.push({
+      nome: match[1],
+      codigo: codigo.substring(inicio, fim)
+    });
+  }
+  return funcoes;
+}
+
+function encontrarFimFuncao(codigo, inicio) {
+  let nivel = 0;
+  for (let i = inicio; i < codigo.length; i++) {
+    if (codigo[i] === '{') nivel++;
+    if (codigo[i] === '}') {
+      nivel--;
+      if (nivel === 0) return i + 1;
+    }
+  }
+  return codigo.length;
+}
+
+function extrairEstilos(codigo) {
+  const regex = /<style[^>]*>([\s\S]*?)<\/style>/gi;
+  const estilos = [];
+  let match;
+  while ((match = regex.exec(codigo)) !== null) {
+    estilos.push(match[1].trim());
+  }
+  return estilos;
+}
+
+function extrairElementos(codigo) {
+  const regex = /<(\w+)[^>]*id=[&quot;']([^&quot;']+)[&quot;'][^>]*>/g;
+  const elementos = [];
+  let match;
+  while ((match = regex.exec(codigo)) !== null) {
+    elementos.push({ tag: match[1], id: match[2] });
+  }
+  return elementos;
+}
+
+function extrairScripts(codigo) {
+  const regex = /<script[^>]*>([\s\S]*?)<\/script>/gi;
+  const scripts = [];
+  let match;
+  while ((match = regex.exec(codigo)) !== null) {
+    scripts.push(match[1].trim());
+  }
+  return scripts;
+}
+
+function renderAnalise(analise) {
+  const container = document.getElementById('scannerResults');
+  
+  let html = '';
+  
+  // Funções
+  if (analise.funcoes.length > 0) {
+    html += `
+      <div class=&quot;panel&quot;>
+        <div class=&quot;panel-header&quot;>
+          <div class=&quot;panel-title&quot;>🔧 Funções Encontradas (${analise.funcoes.length})</div>
+        </div>
+        ${analise.funcoes.map((f, i) => `
+          <div class=&quot;file-item&quot;>
+            <div>
+              <strong style=&quot;color:var(--green);&quot;>${escHtml(f.nome)}()</strong>
+              <span class=&quot;tag tag-func&quot;>função</span>
+            </div>
+            <div style=&quot;display:flex;gap:4px;&quot;>
+              <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;verCodigo(${i}, 'funcao')&quot;>👁️</button>
+              <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;copiarParaPlayground('${escHtml(f.codigo).replace(/'/g, &quot;\\'&quot;)}')&quot;>⚡ Playground</button>
+              <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;salvarComoModulo('${escHtml(f.nome)}', 'funcao', \`${f.codigo.replace(/`/g, '\\`')}\`)&quot;>💾 Salvar</button>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+  
+  // Estilos
+  if (analise.estilos.length > 0) {
+    html += `
+      <div class=&quot;panel&quot;>
+        <div class=&quot;panel-header&quot;>
+          <div class=&quot;panel-title&quot;>💅 Estilos CSS (${analise.estilos.length})</div>
+        </div>
+        ${analise.estilos.map((css, i) => `
+          <div class=&quot;file-item&quot;>
+            <div>
+              <strong style=&quot;color:var(--blue);&quot;>Bloco CSS ${i + 1}</strong>
+              <span class=&quot;tag tag-css&quot;>css</span>
+            </div>
+            <div style=&quot;display:flex;gap:4px;&quot;>
+              <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;copiarParaPlayground(\`${css.replace(/`/g, '\\`')}\`)&quot;>⚡ Playground</button>
+              <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;salvarComoModulo('CSS_${i + 1}', 'css', \`${css.replace(/`/g, '\\`')}\`)&quot;>💾 Salvar</button>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+  }
+  
+  container.innerHTML = html || '<div class=&quot;status status-warning&quot;>⚠️ Nenhum elemento extraível encontrado</div>';
+  toast('✅ Análise concluída!');
+}
+
+function extrairTudo() {
+  const codigo = document.getElementById('scannerInput').value;
+  if (!codigo.trim()) {
+    toast('❌ Cole um código primeiro!');
+    return;
+  }
+
+  const analise = {
+    funcoes: extrairFuncoes(codigo),
+    estilos: extrairEstilos(codigo)
+  };
+
+  let contador = 0;
+  
+  analise.funcoes.forEach(f => {
+    salvarComoModulo(f.nome, 'funcao', f.codigo);
+    contador++;
+  });
+  
+  analise.estilos.forEach((css, i) => {
+    salvarComoModulo(`CSS_${i + 1}`, 'css', css);
+    contador++;
+  });
+
+  toast(`✅ ${contador} módulos extraídos e salvos!`);
+  renderModulos();
+}
+
+function copiarParaPlayground(codigo) {
+  document.getElementById('playgroundCode').value = codigo;
+  trocarAba('playground');
+  document.querySelectorAll('.nav-tab')[2].classList.add('active');
+  toast('✅ Código copiado para o Playground!');
+}
+
+function salvarComoModulo(nome, tipo, codigo) {
+  const modulos = getModulos();
+  modulos.push({
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+    nome,
+    tipo,
+    codigo,
+    data: new Date().toISOString()
+  });
+  setModulos(modulos);
+}
+
+// ========== MONTADOR ==========
+function salvarModulo() {
+  const nome = document.getElementById('modNome').value.trim();
+  const tipo = document.getElementById('modTipo').value;
+  const codigo = document.getElementById('modCodigo').value;
+
+  if (!nome || !codigo.trim()) {
+    toast('❌ Preencha nome e código!');
+    return;
+  }
+
+  salvarComoModulo(nome, tipo, codigo);
+  limparModulo();
+  renderModulos();
+  toast('✅ Módulo salvo!');
+}
+
+function limparModulo() {
+  document.getElementById('modNome').value = '';
+  document.getElementById('modCodigo').value = '';
+}
+
+function renderModulos() {
+  const modulos = getModulos();
+  const selected = getSelected();
+  const container = document.getElementById('modulosList');
+  const checklist = document.getElementById('montadorChecklist');
+
+  if (modulos.length === 0) {
+    container.innerHTML = '<p style=&quot;color:var(--text2);font-size:12px;text-align:center;padding:20px;&quot;>Nenhum módulo salvo</p>';
+    if (checklist) checklist.innerHTML = '';
+    return;
+  }
+
+  // Lista de módulos
+  container.innerHTML = modulos.slice(-10).reverse().map(m => `
+    <div class=&quot;file-item&quot;>
+      <div>
+        <strong>${escHtml(m.nome)}</strong>
+        <span class=&quot;tag tag-${m.tipo}&quot;>${m.tipo}</span>
+      </div>
+      <div style=&quot;display:flex;gap:4px;&quot;>
+        <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;editarModulo('${m.id}')&quot;>✏️</button>
+        <button class=&quot;btn btn-danger btn-sm&quot; onclick=&quot;deletarModulo('${m.id}')&quot;>🗑️</button>
+      </div>
+    </div>
+  `).join('');
+
+  // Checklist para montagem
+  if (checklist) {
+    checklist.innerHTML = '<div style=&quot;max-height:300px;overflow-y:auto;&quot;>' + modulos.map(m => `
+      <label style=&quot;display:flex;align-items:center;gap:8px;padding:8px;cursor:pointer;border-bottom:1px solid var(--border);&quot;>
+        <input type=&quot;checkbox&quot; ${selected.includes(m.id) ? 'checked' : ''} onchange=&quot;toggleModulo('${m.id}')&quot; />
+        <strong style=&quot;font-size:12px;&quot;>${escHtml(m.nome)}</strong>
+        <span class=&quot;tag tag-${m.tipo}&quot;>${m.tipo}</span>
+      </label>
+    `).join('') + '</div>';
+  }
+}
+
+function toggleModulo(id) {
+  let selected = getSelected();
+  if (selected.includes(id)) {
+    selected = selected.filter(x => x !== id);
+  } else {
+    selected.push(id);
+  }
+  setSelected(selected);
+}
+
+function selecionarTodos() {
+  setSelected(getModulos().map(m => m.id));
+  renderModulos();
+}
+
+function desselecionarTodos() {
+  setSelected([]);
+  renderModulos();
+}
+
+function deletarModulo(id) {
+  if (!confirm('Deletar este módulo?')) return;
+  setModulos(getModulos().filter(m => m.id !== id));
+  renderModulos();
+  toast('🗑️ Módulo deletado!');
+}
+
+function editarModulo(id) {
+  const modulo = getModulos().find(m => m.id === id);
+  if (!modulo) return;
+  
+  document.getElementById('modNome').value = modulo.nome;
+  document.getElementById('modTipo').value = modulo.tipo;
+  document.getElementById('modCodigo').value = modulo.codigo;
+  
+  deletarModulo(id);
+  toast('✏️ Editando módulo...');
+}
+
+function gerarProjetoFinal() {
+  const modulos = getModulos();
+  const selected = getSelected();
+  const escolhidos = modulos.filter(m => selected.includes(m.id));
+
+  if (escolhidos.length === 0) {
+    toast('❌ Selecione pelo menos um módulo!');
+    return;
+  }
+
+  const nome = document.getElementById('projetoNome').value || 'Projeto';
+  
+  const html = escolhidos.filter(m => m.tipo === 'html').map(m => m.codigo).join('\n\n');
+  const css = escolhidos.filter(m => m.tipo === 'css').map(m => m.codigo).join('\n\n');
+  const js = escolhidos.filter(m => m.tipo === 'js' || m.tipo === 'funcao').map(m => m.codigo).join('\n\n');
+
+  const projeto = `<!DOCTYPE html>
+<html lang=&quot;pt-BR&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;>
+<title>${escHtml(nome)}</title>
+<style>
+${css}
+</style>
+</head>
+<body>
+
+${html}
+
+<script>
+${js}
+<\/script>
+</body>
+</html>`;
+
+  baixarArquivo(projeto, nome.replace(/[^a-z0-9]/gi, '_') + '.html', 'text/html');
+  toast('✅ Projeto gerado!');
+}
+
+// ========== PLAYGROUND ==========
+function executarPlayground() {
+  const codigo = document.getElementById('playgroundCode').value;
+  const iframe = document.getElementById('playgroundPreview');
+  
+  const blob = new Blob([codigo], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  iframe.src = url;
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+  
+  toast('▶️ Executando...');
+}
+
+function salvarDePlayground() {
+  const codigo = document.getElementById('playgroundCode').value;
+  if (!codigo.trim()) {
+    toast('❌ Nada para salvar!');
+    return;
+  }
+  
+  const nome = prompt('Nome do módulo:');
+  if (!nome) return;
+  
+  salvarComoModulo(nome, 'html', codigo);
+  toast('✅ Salvo como módulo!');
+}
+
+function copiarPlayground() {
+  const codigo = document.getElementById('playgroundCode').value;
+  navigator.clipboard.writeText(codigo);
+  toast('📋 Código copiado!');
+}
+
+function abrirPreviewNovo() {
+  const codigo = document.getElementById('playgroundCode').value;
+  const blob = new Blob([codigo], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank');
+}
+
+function limparPlayground() {
+  document.getElementById('playgroundCode').value = '';
+  document.getElementById('playgroundPreview').src = '';
+}
+
+// ========== ARQUIVOS ==========
+function renderArquivos() {
+  const modulos = getModulos();
+  const container = document.getElementById('arquivosList');
+
+  if (modulos.length === 0) {
+    container.innerHTML = '<p style=&quot;color:var(--text2);text-align:center;padding:40px;&quot;>Nenhum arquivo salvo</p>';
+    return;
+  }
+
+  container.innerHTML = modulos.map(m => `
+    <div class=&quot;file-item&quot;>
+      <div>
+        <strong>${escHtml(m.nome)}</strong>
+        <span class=&quot;tag tag-${m.tipo}&quot;>${m.tipo}</span>
+        <span style=&quot;font-size:10px;color:var(--text2);margin-left:8px;&quot;>${new Date(m.data).toLocaleDateString('pt-BR')}</span>
+      </div>
+      <div style=&quot;display:flex;gap:4px;&quot;>
+        <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;copiarParaPlayground(\`${m.codigo.replace(/`/g, '\\`')}\`)&quot;>⚡</button>
+        <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;baixarModulo('${m.id}')&quot;>📥</button>
+        <button class=&quot;btn btn-danger btn-sm&quot; onclick=&quot;deletarModulo('${m.id}'); renderArquivos();&quot;>🗑️</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filtrarArquivos(busca) {
+  const modulos = getModulos().filter(m => 
+    m.nome.toLowerCase().includes(busca.toLowerCase())
+  );
+  
+  const container = document.getElementById('arquivosList');
+  container.innerHTML = modulos.map(m => `
+    <div class=&quot;file-item&quot;>
+      <div>
+        <strong>${escHtml(m.nome)}</strong>
+        <span class=&quot;tag tag-${m.tipo}&quot;>${m.tipo}</span>
+      </div>
+      <div style=&quot;display:flex;gap:4px;&quot;>
+        <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;copiarParaPlayground(\`${m.codigo.replace(/`/g, '\\`')}\`)&quot;>⚡</button>
+        <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;baixarModulo('${m.id}')&quot;>📥</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function baixarModulo(id) {
+  const modulo = getModulos().find(m => m.id === id);
+  if (!modulo) return;
+  
+  const ext = { html: '.html', css: '.css', js: '.js', funcao: '.js' }[modulo.tipo] || '.txt';
+  baixarArquivo(modulo.codigo, modulo.nome + ext, 'text/plain');
+}
+
+function exportarTudo() {
+  const data = {
+    modulos: getModulos(),
+    selected: getSelected(),
+    data: new Date().toISOString()
+  };
+  
+  baixarArquivo(JSON.stringify(data, null, 2), 'backup-workstation-' + new Date().toISOString().slice(0, 10) + '.json', 'application/json');
+  toast('💾 Backup exportado!');
+}
+
+function importarTudo() {
+  document.getElementById('backupInput').click();
+}
+
+document.getElementById('backupInput').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (data.modulos) {
+        setModulos(data.modulos);
+        if (data.selected) setSelected(data.selected);
+        toast('✅ Backup importado!');
+        renderModulos();
+        renderArquivos();
+      }
+    } catch (err) {
+      toast('❌ Arquivo inválido!');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+
+function limparTudo() {
+  if (!confirm('⚠️ ATENÇÃO: Isso vai apagar TUDO! Tem certeza?')) return;
+  if (!confirm('Última chance! Realmente deseja apagar tudo?')) return;
+  
+  localStorage.clear();
+  toast('🗑️ Tudo limpo!');
+  renderModulos();
+  renderArquivos();
+}
+
+// ========== IMPORT ==========
+function importarParaScanner() {
+  document.getElementById('fileInput').click();
+  document.getElementById('fileInput').onchange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      document.getElementById('scannerInput').value = ev.target.result;
+      toast('📂 Arquivo importado!');
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  };
+}
+
+function importarParaPlayground() {
+  document.getElementById('fileInput').click();
+  document.getElementById('fileInput').onchange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      document.getElementById('playgroundCode').value = ev.target.result;
+      executarPlayground();
+      toast('📂 Arquivo importado!');
+    };
+    reader.readAsText(file);
+    e.target.value = '';
+  };
+}
+
+function limparScanner() {
+  document.getElementById('scannerInput').value = '';
+  document.getElementById('scannerResults').innerHTML = '';
+}
+
+// ========== UTILS ==========
+function escHtml(s) {
+  return String(s).replace(/&amp;/g, '&amp;amp;').replace(/</g, '&amp;lt;').replace(/>/g, '&amp;gt;').replace(/&quot;/g, '&amp;quot;');
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.transform = 'translateY(0)';
+  t.style.opacity = '1';
+  setTimeout(() => {
+    t.style.transform = 'translateY(100px)';
+    t.style.opacity = '0';
+  }, 2500);
+}
+
+function baixarArquivo(conteudo, nome, tipo) {
+  const blob = new Blob([conteudo], { type: tipo });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = nome;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function atualizarContador() {
+  const count = getModulos().length;
+  const el = document.getElementById('modCount');
+  if (el) el.textContent = count;
+}
+
+// Init
+atualizarContador();
+renderModulos();
+</script>
+</body>
+</html>
+" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"></iframe></div>
+<div class="projeto " id="p3"><iframe srcdoc="<!DOCTYPE html>
+<html lang=&quot;pt-BR&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;>
+<title>🧩 Montador de Módulos — PWA Jurídico</title>
+<style>
+:root { --bg:#0a0a0f; --bg2:#12121a; --bg3:#1a1a2e; --text:#e2e8f0; --text2:#94a3b8; --accent:#a3a082; --accent2:#d4d0a8; --green:#4ade80; --blue:#60a5fa; --red:#f87171; --border:#2d2d3a; }
+* { box-sizing:border-box; margin:0; padding:0; }
+body { font-family:'Segoe UI',system-ui,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; }
+
+.header { background:var(--bg2); border-bottom:1px solid var(--border); padding:16px 24px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:12px; }
+.header h1 { font-size:18px; color:var(--accent); }
+.header h1 small { display:block; font-size:10px; color:var(--text2); font-weight:400; letter-spacing:2px; }
+
+.container { max-width:1400px; margin:0 auto; padding:20px; }
+
+/* Módulos salvos */
+.modules-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(300px, 1fr)); gap:16px; margin-bottom:24px; }
+.module-card { background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:16px; transition:all 0.2s; }
+.module-card:hover { border-color:var(--accent); }
+.module-card .card-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px; }
+.module-card h3 { font-size:13px; color:var(--accent2); margin-bottom:4px; }
+.module-card .desc { font-size:11px; color:var(--text2); margin-bottom:8px; line-height:1.4; }
+.module-card .tags { display:flex; flex-wrap:wrap; gap:4px; margin-bottom:8px; }
+.tag { font-size:9px; padding:2px 8px; border-radius:4px; background:var(--bg3); color:var(--blue); border:1px solid var(--border); }
+.tag.visual { color:var(--green); }
+.tag.logica { color:var(--accent); }
+.tag.api { color:var(--red); }
+.module-card pre { background:var(--bg); padding:8px; border-radius:6px; font-size:10px; max-height:100px; overflow:hidden; color:var(--text2); font-family:'Consolas',monospace; position:relative; }
+.module-card pre::after { content:''; position:absolute; bottom:0; left:0; right:0; height:30px; background:linear-gradient(transparent, var(--bg)); }
+.card-actions { display:flex; gap:4px; margin-top:8px; }
+
+/* Área de trabalho */
+.workspace { background:var(--bg2); border:1px solid var(--border); border-radius:12px; padding:20px; margin-bottom:20px; }
+.workspace h2 { font-size:14px; color:var(--accent); margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+
+/* Botões */
+.btn { display:inline-flex; align-items:center; gap:6px; padding:8px 14px; border:none; border-radius:8px; font-size:11px; font-weight:600; cursor:pointer; transition:all 0.15s; }
+.btn-sm { padding:5px 10px; font-size:10px; }
+.btn-primary { background:var(--accent); color:#000; }
+.btn-primary:hover { background:var(--accent2); }
+.btn-success { background:var(--green); color:#000; }
+.btn-danger { background:rgba(239,68,68,0.2); color:var(--red); border:1px solid rgba(239,68,68,0.3); }
+.btn-ghost { background:transparent; color:var(--text2); border:1px solid var(--border); }
+.btn-ghost:hover { background:var(--bg3); color:var(--text); }
+.btn-blue { background:rgba(96,165,250,0.15); color:var(--blue); border:1px solid rgba(96,165,250,0.3); }
+
+/* Textarea */
+.code-area { width:100%; min-height:200px; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px; font-family:'Consolas','Fira Code',monospace; font-size:12px; color:var(--text); resize:vertical; line-height:1.6; }
+.code-area:focus { outline:none; border-color:var(--accent); }
+.code-area.large { min-height:400px; }
+
+/* Input */
+.input { width:100%; padding:8px 12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; color:var(--text); font-size:12px; }
+.input:focus { outline:none; border-color:var(--accent); }
+.input-group { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:12px; }
+.input-row { margin-bottom:8px; }
+.input-row label { display:block; font-size:10px; color:var(--text2); margin-bottom:4px; text-transform:uppercase; letter-spacing:1px; font-weight:600; }
+
+/* Tabs */
+.tabs { display:flex; gap:4px; margin-bottom:16px; flex-wrap:wrap; }
+.tab-btn { padding:8px 16px; border:1px solid var(--border); background:transparent; color:var(--text2); border-radius:8px; font-size:11px; font-weight:600; cursor:pointer; }
+.tab-btn.active { background:var(--accent); color:#000; border-color:var(--accent); }
+
+/* Preview */
+.preview-frame { width:100%; height:500px; border:1px solid var(--border); border-radius:8px; background:white; }
+
+/* Status */
+.status { padding:10px 14px; border-radius:8px; font-size:11px; font-weight:600; margin-bottom:12px; }
+.status-info { background:rgba(96,165,250,0.1); color:var(--blue); border:1px solid rgba(96,165,250,0.2); }
+.status-success { background:rgba(74,222,128,0.1); color:var(--green); border:1px solid rgba(74,222,128,0.2); }
+
+/* Responsive */
+@media(max-width:768px) {
+  .modules-grid { grid-template-columns:1fr; }
+  .input-group { grid-template-columns:1fr; }
+  .container { padding:12px; }
+}
+
+.empty-state { text-align:center; padding:40px; color:var(--text2); }
+.empty-state .icon { font-size:48px; margin-bottom:12px; }
+
+.section-title { font-size:12px; color:var(--text2); text-transform:uppercase; letter-spacing:2px; font-weight:700; margin:24px 0 12px; padding-bottom:8px; border-bottom:1px solid var(--border); }
+
+.flex-between { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
+
+.checklist { list-style:none; }
+.checklist li { padding:6px 0; font-size:12px; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--border); }
+.checklist li:last-child { border:none; }
+.check { width:18px; height:18px; border-radius:4px; border:2px solid var(--border); cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:10px; transition:all 0.15s; }
+.check.checked { background:var(--green); border-color:var(--green); color:#000; }
+</style>
+</head>
+<body>
+
+<div class=&quot;header&quot;>
+  <h1>🧩 Montador de Módulos <small>PWA JURÍDICO — MAIKON CALDEIRA</small></h1>
+  <div style=&quot;display:flex;gap:6px;flex-wrap:wrap;&quot;>
+    <button class=&quot;btn btn-primary&quot; onclick=&quot;exportFinal()&quot;>📦 Gerar HTML Final</button>
+    <button class=&quot;btn btn-ghost&quot; onclick=&quot;exportBackup()&quot;>💾 Backup Módulos</button>
+    <button class=&quot;btn btn-ghost&quot; onclick=&quot;importBackup()&quot;>📂 Importar Backup</button>
+  </div>
+</div>
+
+<div class=&quot;container&quot;>
+
+  <!-- Instruções -->
+  <div class=&quot;status status-info&quot;>
+    💡 <strong>Como usar:</strong> Cole pedaços de código HTML nos módulos abaixo. Dê um nome e descrição para cada um. 
+    Depois marque quais quer incluir e clique em &quot;Gerar HTML Final&quot; para combinar tudo num arquivo só.
+  </div>
+
+  <!-- Tabs -->
+  <div class=&quot;tabs&quot;>
+    <button class=&quot;tab-btn active&quot; onclick=&quot;showSection('add')&quot;>➕ Adicionar Módulo</button>
+    <button class=&quot;tab-btn&quot; onclick=&quot;showSection('modules')&quot;>📦 Meus Módulos (<span id=&quot;moduleCount&quot;>0</span>)</button>
+    <button class=&quot;tab-btn&quot; onclick=&quot;showSection('build')&quot;>🔨 Montar Projeto</button>
+    <button class=&quot;tab-btn&quot; onclick=&quot;showSection('preview')&quot;>👁️ Preview</button>
+    <button class=&quot;tab-btn&quot; onclick=&quot;showSection('guide')&quot;>📖 Guia</button>
+  </div>
+
+  <!-- Section: Add Module -->
+  <div id=&quot;section-add&quot; class=&quot;workspace&quot;>
+    <h2>➕ Adicionar Novo Módulo de Código</h2>
+    
+    <div class=&quot;input-group&quot;>
+      <div class=&quot;input-row&quot;>
+        <label>Nome do Módulo</label>
+        <input type=&quot;text&quot; class=&quot;input&quot; id=&quot;modName&quot; placeholder=&quot;Ex: Importar PDF, Exportar Word, Formulário Cliente...&quot; />
+      </div>
+      <div class=&quot;input-row&quot;>
+        <label>Tipo</label>
+        <select class=&quot;input&quot; id=&quot;modType&quot;>
+          <option value=&quot;funcao&quot;>🔧 Função/Lógica (JavaScript)</option>
+          <option value=&quot;visual&quot;>🎨 Visual/Interface (HTML+CSS)</option>
+          <option value=&quot;completo&quot;>📄 Bloco Completo (HTML+CSS+JS)</option>
+          <option value=&quot;estilo&quot;>💅 Apenas CSS/Estilo</option>
+          <option value=&quot;dados&quot;>📊 Dados/Templates</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class=&quot;input-row&quot;>
+      <label>Descrição (o que esse código faz?)</label>
+      <input type=&quot;text&quot; class=&quot;input&quot; id=&quot;modDesc&quot; placeholder=&quot;Ex: Lê arquivo PDF e extrai nome, CPF e endereço do segurado...&quot; />
+    </div>
+    
+    <div class=&quot;input-row&quot;>
+      <label>Tags (separadas por vírgula)</label>
+      <input type=&quot;text&quot; class=&quot;input&quot; id=&quot;modTags&quot; placeholder=&quot;Ex: pdf, importar, inss, dados&quot; />
+    </div>
+    
+    <div class=&quot;input-row&quot;>
+      <label>Cole o Código Aqui</label>
+      <textarea class=&quot;code-area large&quot; id=&quot;modCode&quot; placeholder=&quot;Cole aqui o pedaço de código HTML/CSS/JS que quer salvar como módulo...&quot;></textarea>
+    </div>
+    
+    <div style=&quot;display:flex;gap:8px;margin-top:12px;&quot;>
+      <button class=&quot;btn btn-primary&quot; onclick=&quot;saveModule()&quot;>💾 Salvar Módulo</button>
+      <button class=&quot;btn btn-ghost&quot; onclick=&quot;clearForm()&quot;>🗑️ Limpar</button>
+      <button class=&quot;btn btn-blue&quot; onclick=&quot;importFromFile()&quot;>📂 Importar de Arquivo</button>
+    </div>
+  </div>
+
+  <!-- Section: Modules List -->
+  <div id=&quot;section-modules&quot; class=&quot;workspace&quot; style=&quot;display:none;&quot;>
+    <div class=&quot;flex-between&quot;>
+      <h2>📦 Módulos Salvos</h2>
+      <input type=&quot;text&quot; class=&quot;input&quot; style=&quot;width:200px;&quot; placeholder=&quot;🔍 Buscar...&quot; oninput=&quot;filterModules(this.value)&quot; />
+    </div>
+    <div class=&quot;modules-grid&quot; id=&quot;modulesGrid&quot;></div>
+  </div>
+
+  <!-- Section: Build -->
+  <div id=&quot;section-build&quot; class=&quot;workspace&quot; style=&quot;display:none;&quot;>
+    <h2>🔨 Montar Projeto Final</h2>
+    <p style=&quot;font-size:12px;color:var(--text2);margin-bottom:16px;&quot;>
+      Marque os módulos que deseja incluir no HTML final. A ordem importa — arraste ou use as setas para reorganizar.
+    </p>
+    
+    <div class=&quot;input-row&quot;>
+      <label>Título do Projeto Final</label>
+      <input type=&quot;text&quot; class=&quot;input&quot; id=&quot;buildTitle&quot; value=&quot;PWA Jurídico — Maikon Caldeira&quot; />
+    </div>
+    
+    <div class=&quot;input-row&quot;>
+      <label>CSS Base (opcional — será incluído no &amp;lt;head&amp;gt;)</label>
+      <textarea class=&quot;code-area&quot; id=&quot;buildBaseCss&quot; style=&quot;min-height:80px;&quot; placeholder=&quot;/* CSS base que vai em todos os projetos */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: system-ui, sans-serif; }&quot;></textarea>
+    </div>
+    
+    <div class=&quot;section-title&quot;>Selecione os Módulos para Incluir</div>
+    <div id=&quot;buildChecklist&quot;></div>
+    
+    <div style=&quot;margin-top:16px;display:flex;gap:8px;&quot;>
+      <button class=&quot;btn btn-success&quot; onclick=&quot;exportFinal()&quot;>📦 Gerar HTML Final</button>
+      <button class=&quot;btn btn-ghost&quot; onclick=&quot;selectAll()&quot;>✅ Selecionar Todos</button>
+      <button class=&quot;btn btn-ghost&quot; onclick=&quot;deselectAll()&quot;>⬜ Desmarcar Todos</button>
+    </div>
+  </div>
+
+  <!-- Section: Preview -->
+  <div id=&quot;section-preview&quot; class=&quot;workspace&quot; style=&quot;display:none;&quot;>
+    <div class=&quot;flex-between&quot;>
+      <h2>👁️ Preview do Projeto Montado</h2>
+      <div style=&quot;display:flex;gap:6px;&quot;>
+        <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;refreshPreview()&quot;>🔄 Atualizar</button>
+        <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;openFullPreview()&quot;>🔳 Tela Cheia</button>
+      </div>
+    </div>
+    <iframe class=&quot;preview-frame&quot; id=&quot;previewFrame&quot;></iframe>
+  </div>
+
+  <!-- Section: Guide -->
+  <div id=&quot;section-guide&quot; class=&quot;workspace&quot; style=&quot;display:none;&quot;>
+    <h2>📖 Guia — Como Montar seu PWA</h2>
+    
+    <div class=&quot;status status-info&quot; style=&quot;margin-top:12px;&quot;>
+      🎯 <strong>Estratégia:</strong> Em vez de tentar fazer tudo de uma vez, vamos por partes. 
+      Cada funcionalidade vira um &quot;módulo&quot; independente. Depois juntamos.
+    </div>
+    
+    <div class=&quot;section-title&quot;>Passo a Passo</div>
+    <ol style=&quot;font-size:12px;line-height:2;padding-left:20px;color:var(--text2);&quot;>
+      <li><strong style=&quot;color:var(--text)&quot;>Separe os códigos por função</strong> — cada pedaço faz UMA coisa (importar PDF, gerar documento, salvar dados...)</li>
+      <li><strong style=&quot;color:var(--text)&quot;>Cole cada pedaço como módulo</strong> — use a aba &quot;Adicionar Módulo&quot; e dê nome descritivo</li>
+      <li><strong style=&quot;color:var(--text)&quot;>Teste individual</strong> — na aba Preview, veja se cada módulo funciona sozinho</li>
+      <li><strong style=&quot;color:var(--text)&quot;>Monte o projeto</strong> — na aba &quot;Montar&quot;, selecione os módulos e gere o HTML final</li>
+      <li><strong style=&quot;color:var(--text)&quot;>Ajuste conflitos</strong> — se algo quebrar, traga aqui que te ajudo a resolver</li>
+    </ol>
+    
+    <div class=&quot;section-title&quot;>Tipos de Módulo</div>
+    <table style=&quot;width:100%;font-size:11px;border-collapse:collapse;&quot;>
+      <tr style=&quot;border-bottom:1px solid var(--border);&quot;>
+        <td style=&quot;padding:8px;color:var(--blue);&quot;>🔧 Função/Lógica</td>
+        <td style=&quot;padding:8px;color:var(--text2);&quot;>Código JavaScript puro (funções, cálculos, processamento de dados)</td>
+      </tr>
+      <tr style=&quot;border-bottom:1px solid var(--border);&quot;>
+        <td style=&quot;padding:8px;color:var(--green);&quot;>🎨 Visual/Interface</td>
+        <td style=&quot;padding:8px;color:var(--text2);&quot;>HTML + CSS (botões, formulários, layout, cards)</td>
+      </tr>
+      <tr style=&quot;border-bottom:1px solid var(--border);&quot;>
+        <td style=&quot;padding:8px;color:var(--accent);&quot;>📄 Bloco Completo</td>
+        <td style=&quot;padding:8px;color:var(--text2);&quot;>HTML + CSS + JS juntos (componente inteiro que funciona sozinho)</td>
+      </tr>
+      <tr style=&quot;border-bottom:1px solid var(--border);&quot;>
+        <td style=&quot;padding:8px;color:#c084fc;&quot;>💅 Apenas CSS</td>
+        <td style=&quot;padding:8px;color:var(--text2);&quot;>Estilos visuais (tema, cores, fontes, animações)</td>
+      </tr>
+      <tr>
+        <td style=&quot;padding:8px;color:var(--red);&quot;>📊 Dados/Templates</td>
+        <td style=&quot;padding:8px;color:var(--text2);&quot;>Modelos de documentos, arrays de dados, configurações</td>
+      </tr>
+    </table>
+    
+    <div class=&quot;section-title&quot;>Sobre o Banco de Dados (Neon)</div>
+    <div style=&quot;font-size:12px;color:var(--text2);line-height:1.8;&quot;>
+      <p>⚠️ <strong style=&quot;color:var(--text)&quot;>Importante:</strong> Um HTML puro no navegador <strong>NÃO consegue</strong> conectar direto no Neon (PostgreSQL). Precisa de um &quot;servidor&quot; no meio.</p>
+      <p style=&quot;margin-top:8px;&quot;>🟢 <strong style=&quot;color:var(--green)&quot;>Alternativa que funciona sem servidor:</strong></p>
+      <ul style=&quot;padding-left:16px;margin-top:4px;&quot;>
+        <li><strong>localStorage</strong> — salva no navegador (o que estamos usando aqui)</li>
+        <li><strong>IndexedDB</strong> — banco mais robusto no navegador (suporta mais dados)</li>
+        <li><strong>Exportar/Importar JSON</strong> — backup manual dos dados</li>
+      </ul>
+      <p style=&quot;margin-top:8px;&quot;>🔵 <strong style=&quot;color:var(--blue)&quot;>Se quiser Neon no futuro:</strong> Precisará de um backend (Vercel Functions, Cloudflare Workers, ou Supabase que já dá tudo pronto).</p>
+    </div>
+  </div>
+
+</div>
+
+<!-- Hidden -->
+<input type=&quot;file&quot; id=&quot;fileInput&quot; style=&quot;display:none&quot; accept=&quot;.html,.htm,.js,.css,.txt,.json&quot; />
+<input type=&quot;file&quot; id=&quot;backupInput&quot; style=&quot;display:none&quot; accept=&quot;.json&quot; />
+
+<!-- Toast -->
+<div class=&quot;toast&quot; id=&quot;toast&quot; style=&quot;position:fixed;bottom:20px;right:20px;background:var(--bg2);border:1px solid var(--accent);border-radius:10px;padding:12px 20px;font-size:12px;font-weight:600;color:var(--accent2);z-index:2000;transform:translateY(100px);opacity:0;transition:all 0.3s;&quot;></div>
+
+<script>
+// ========== STATE ==========
+const LS_MODULES = 'pwa-modules-v1';
+const LS_SELECTED = 'pwa-selected-v1';
+
+function getModules() {
+  try { return JSON.parse(localStorage.getItem(LS_MODULES) || '[]'); } catch { return []; }
+}
+function setModules(list) { localStorage.setItem(LS_MODULES, JSON.stringify(list)); }
+function getSelected() {
+  try { return JSON.parse(localStorage.getItem(LS_SELECTED) || '[]'); } catch { return []; }
+}
+function setSelected(list) { localStorage.setItem(LS_SELECTED, JSON.stringify(list)); }
+
+// ========== UI ==========
+function showSection(name) {
+  ['add','modules','build','preview','guide'].forEach(s => {
+    document.getElementById('section-' + s).style.display = s === name ? 'block' : 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+    const sections = ['add','modules','build','preview','guide'];
+    btn.classList.toggle('active', sections[i] === name);
+  });
+  if (name === 'modules') renderModules();
+  if (name === 'build') renderBuildChecklist();
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.transform = 'translateY(0)';
+  t.style.opacity = '1';
+  setTimeout(() => { t.style.transform = 'translateY(100px)'; t.style.opacity = '0'; }, 2500);
+}
+
+// ========== MODULES ==========
+function saveModule() {
+  const name = document.getElementById('modName').value.trim();
+  const type = document.getElementById('modType').value;
+  const desc = document.getElementById('modDesc').value.trim();
+  const tags = document.getElementById('modTags').value.split(',').map(t => t.trim()).filter(Boolean);
+  const code = document.getElementById('modCode').value;
+  
+  if (!name) { showToast('❌ Dê um nome ao módulo!'); return; }
+  if (!code.trim()) { showToast('❌ Cole algum código!'); return; }
+  
+  const modules = getModules();
+  modules.push({
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2,6),
+    name, type, desc, tags, code,
+    date: new Date().toISOString()
+  });
+  setModules(modules);
+  updateCount();
+  clearForm();
+  showToast('✅ Módulo &quot;' + name + '&quot; salvo!');
+}
+
+function clearForm() {
+  document.getElementById('modName').value = '';
+  document.getElementById('modDesc').value = '';
+  document.getElementById('modTags').value = '';
+  document.getElementById('modCode').value = '';
+}
+
+function renderModules(filter = '') {
+  const modules = getModules().filter(m => 
+    !filter || m.name.toLowerCase().includes(filter.toLowerCase()) || m.tags.some(t => t.toLowerCase().includes(filter.toLowerCase()))
+  );
+  const grid = document.getElementById('modulesGrid');
+  
+  if (modules.length === 0) {
+    grid.innerHTML = '<div class=&quot;empty-state&quot;><div class=&quot;icon&quot;>📭</div><p>Nenhum módulo salvo ainda.<br>Use a aba &quot;Adicionar Módulo&quot; para começar!</p></div>';
+    return;
+  }
+  
+  grid.innerHTML = modules.map(m => `
+    <div class=&quot;module-card&quot;>
+      <div class=&quot;card-header&quot;>
+        <h3>${escHtml(m.name)}</h3>
+        <span class=&quot;tag ${m.type === 'visual' ? 'visual' : m.type === 'funcao' ? 'logica' : ''}&quot;>${getTypeLabel(m.type)}</span>
+      </div>
+      ${m.desc ? `<div class=&quot;desc&quot;>${escHtml(m.desc)}</div>` : ''}
+      <div class=&quot;tags&quot;>${m.tags.map(t => `<span class=&quot;tag&quot;>${escHtml(t)}</span>`).join('')}</div>
+      <pre>${escHtml(m.code.slice(0, 200))}${m.code.length > 200 ? '...' : ''}</pre>
+      <div class=&quot;card-actions&quot;>
+        <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;viewModule('${m.id}')&quot;>👁️ Ver</button>
+        <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;editModule('${m.id}')&quot;>✏️ Editar</button>
+        <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;copyModule('${m.id}')&quot;>📋 Copiar</button>
+        <button class=&quot;btn btn-danger btn-sm&quot; onclick=&quot;deleteModule('${m.id}')&quot;>🗑️</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterModules(query) { renderModules(query); }
+
+function deleteModule(id) {
+  if (!confirm('Excluir este módulo?')) return;
+  setModules(getModules().filter(m => m.id !== id));
+  renderModules();
+  updateCount();
+  showToast('🗑️ Módulo excluído!');
+}
+
+function copyModule(id) {
+  const m = getModules().find(x => x.id === id);
+  if (m) { navigator.clipboard.writeText(m.code); showToast('📋 Código copiado!'); }
+}
+
+function viewModule(id) {
+  const m = getModules().find(x => x.id === id);
+  if (!m) return;
+  document.getElementById('modName').value = m.name;
+  document.getElementById('modType').value = m.type;
+  document.getElementById('modDesc').value = m.desc;
+  document.getElementById('modTags').value = m.tags.join(', ');
+  document.getElementById('modCode').value = m.code;
+  showSection('add');
+}
+
+function editModule(id) {
+  const m = getModules().find(x => x.id === id);
+  if (!m) return;
+  // Remove old and let user save as new
+  setModules(getModules().filter(x => x.id !== id));
+  viewModule(id); // This won't find it anymore, so we set manually
+  document.getElementById('modName').value = m.name;
+  document.getElementById('modType').value = m.type;
+  document.getElementById('modDesc').value = m.desc;
+  document.getElementById('modTags').value = m.tags.join(', ');
+  document.getElementById('modCode').value = m.code;
+  showSection('add');
+  updateCount();
+  showToast('✏️ Editando módulo — salve quando terminar!');
+}
+
+// ========== BUILD ==========
+function renderBuildChecklist() {
+  const modules = getModules();
+  const selected = getSelected();
+  const container = document.getElementById('buildChecklist');
+  
+  if (modules.length === 0) {
+    container.innerHTML = '<p style=&quot;color:var(--text2);font-size:12px;&quot;>Nenhum módulo disponível. Adicione módulos primeiro.</p>';
+    return;
+  }
+  
+  container.innerHTML = '<ul class=&quot;checklist&quot;>' + modules.map((m, i) => `
+    <li>
+      <div class=&quot;check ${selected.includes(m.id)?'checked':''}&quot; onclick=&quot;toggleSelect('${m.id}')&quot;>
+        ${selected.includes(m.id) ? '✓' : ''}
+      </div>
+      <div style=&quot;flex:1;&quot;>
+        <strong style=&quot;font-size:12px;&quot;>${escHtml(m.name)}</strong>
+        <span style=&quot;font-size:10px;color:var(--text2);margin-left:8px;&quot;>${getTypeLabel(m.type)}</span>
+        ${m.desc ? `<br><span style=&quot;font-size:10px;color:var(--text2);&quot;>${escHtml(m.desc)}</span>` : ''}
+      </div>
+      <div style=&quot;display:flex;gap:4px;&quot;>
+        <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;moveModule(${i},-1)&quot;>⬆️</button>
+        <button class=&quot;btn btn-ghost btn-sm&quot; onclick=&quot;moveModule(${i},1)&quot;>⬇️</button>
+      </div>
+    </li>
+  `).join('') + '</ul>';
+}
+
+function toggleSelect(id) {
+  let selected = getSelected();
+  if (selected.includes(id)) selected = selected.filter(x => x !== id);
+  else selected.push(id);
+  setSelected(selected);
+  renderBuildChecklist();
+}
+
+function selectAll() {
+  setSelected(getModules().map(m => m.id));
+  renderBuildChecklist();
+}
+
+function deselectAll() {
+  setSelected([]);
+  renderBuildChecklist();
+}
+
+function moveModule(index, dir) {
+  const modules = getModules();
+  const newIndex = index + dir;
+  if (newIndex < 0 || newIndex >= modules.length) return;
+  [modules[index], modules[newIndex]] = [modules[newIndex], modules[index]];
+  setModules(modules);
+  renderBuildChecklist();
+}
+
+// ========== EXPORT ==========
+function exportFinal() {
+  const modules = getModules();
+  const selected = getSelected();
+  const chosen = modules.filter(m => selected.includes(m.id));
+  
+  if (chosen.length === 0) {
+    showToast('⚠️ Selecione pelo menos um módulo na aba &quot;Montar&quot;!');
+    showSection('build');
+    return;
+  }
+  
+  const title = document.getElementById('buildTitle').value || 'PWA Jurídico';
+  const baseCss = document.getElementById('buildBaseCss').value || '';
+  
+  // Separate by type
+  const styles = chosen.filter(m => m.type === 'estilo').map(m => m.code).join('\n\n');
+  const htmlParts = chosen.filter(m => m.type === 'visual' || m.type === 'completo' || m.type === 'dados').map(m => `\n<!-- === MÓDULO: ${m.name} === -->\n${m.code}`).join('\n');
+  const scripts = chosen.filter(m => m.type === 'funcao').map(m => `\n// === MÓDULO: ${m.name} ===\n${m.code}`).join('\n');
+  
+  // Check if any module is a complete document
+  const completeDoc = chosen.find(m => m.code.trim().toLowerCase().includes('<!doctype') || m.code.trim().toLowerCase().includes('<html'));
+  
+  let finalHtml;
+  if (completeDoc &amp;&amp; chosen.length === 1) {
+    finalHtml = completeDoc.code;
+  } else {
+    finalHtml = `<!DOCTYPE html>
+<html lang=&quot;pt-BR&quot;>
+<head>
+<meta charset=&quot;UTF-8&quot;>
+<meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;>
+<title>${escHtml(title)}</title>
+<style>
+/* === CSS BASE === */
+${baseCss}
+
+/* === MÓDULOS CSS === */
+${styles}
+</style>
+</head>
+<body>
+
+${htmlParts}
+
+<script>
+${scripts}
+<\/script>
+</body>
+</html>`;
+  }
+  
+  // Download
+  const blob = new Blob([finalHtml], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = (title.replace(/[^a-zA-Z0-9]/g, '_') || 'projeto') + '.html';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('📦 HTML final gerado e baixado!');
+}
+
+function refreshPreview() {
+  const modules = getModules();
+  const selected = getSelected();
+  const chosen = modules.filter(m => selected.includes(m.id));
+  
+  const title = document.getElementById('buildTitle').value || 'PWA Jurídico';
+  const baseCss = document.getElementById('buildBaseCss').value || '';
+  const styles = chosen.filter(m => m.type === 'estilo').map(m => m.code).join('\n');
+  const htmlParts = chosen.filter(m => m.type === 'visual' || m.type === 'completo' || m.type === 'dados').map(m => m.code).join('\n');
+  const scripts = chosen.filter(m => m.type === 'funcao').map(m => m.code).join('\n');
+  
+  const doc = `<!DOCTYPE html><html><head><meta charset=&quot;UTF-8&quot;><style>${baseCss}\n${styles}</style></head><body>${htmlParts}<script>${scripts}<\/script></body></html>`;
+  
+  const blob = new Blob([doc], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  document.getElementById('previewFrame').src = url;
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
+}
+
+function openFullPreview() {
+  refreshPreview();
+  const frame = document.getElementById('previewFrame');
+  if (frame.src) window.open(frame.src, '_blank');
+}
+
+// ========== BACKUP ==========
+function exportBackup() {
+  const data = { modules: getModules(), selected: getSelected(), date: new Date().toISOString() };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'pwa-modulos-backup-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('💾 Backup exportado!');
+}
+
+function importBackup() {
+  document.getElementById('backupInput').click();
+}
+
+document.getElementById('backupInput').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    try {
+      const data = JSON.parse(ev.target.result);
+      if (data.modules) {
+        const existing = getModules();
+        const merged = [...existing, ...data.modules.filter(m => !existing.find(e => e.id === m.id))];
+        setModules(merged);
+        if (data.selected) setSelected(data.selected);
+        updateCount();
+        showToast('📂 Backup importado! ' + data.modules.length + ' módulos.');
+      }
+    } catch(err) {
+      showToast('❌ Arquivo inválido!');
+    }
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+
+// Import code from file
+function importFromFile() {
+  document.getElementById('fileInput').click();
+}
+
+document.getElementById('fileInput').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    document.getElementById('modCode').value = ev.target.result;
+    if (!document.getElementById('modName').value) {
+      document.getElementById('modName').value = file.name.replace(/\.[^.]+$/, '');
+    }
+    showToast('📂 Código do arquivo carregado!');
+  };
+  reader.readAsText(file);
+  e.target.value = '';
+});
+
+// ========== UTILS ==========
+function escHtml(s) { return String(s).replace(/&amp;/g,'&amp;amp;').replace(/</g,'&amp;lt;').replace(/>/g,'&amp;gt;').replace(/&quot;/g,'&amp;quot;'); }
+function getTypeLabel(type) {
+  const labels = { funcao:'🔧 Função', visual:'🎨 Visual', completo:'📄 Completo', estilo:'💅 CSS', dados:'📊 Dados' };
+  return labels[type] || type;
+}
+function updateCount() {
+  document.getElementById('moduleCount').textContent = getModules().length;
+}
+
+// Init
+updateCount();
+</script>
+</body>
+</html>" sandbox="allow-scripts allow-same-origin allow-forms allow-modals allow-popups"></iframe></div>
+
+<script>
+function trocar(i) {
+  document.querySelectorAll('.projeto').forEach(function(el){ el.classList.remove('ativo'); });
+  document.querySelectorAll('.nav-btn').forEach(function(el){ el.classList.remove('active'); });
+  document.getElementById('p'+i).classList.add('ativo');
+  document.querySelectorAll('.nav-btn')[i].classList.add('active');
+  localStorage.setItem('mc-ultimo', i);
+}
+window.onload = function() {
+  var u = localStorage.getItem('mc-ultimo');
+  if (u !== null) trocar(parseInt(u));
+};
+</script>
+</body>
+</html>
